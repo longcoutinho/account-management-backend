@@ -4,6 +4,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.sql.Connection;
+import java.sql.ConnectionBuilder;
+import java.sql.SQLException;
+import java.sql.ShardingKey;
+
 @Data
 public class UserDTO {
     @Size(min = 6, message = "{validation.name.size.too_short}")
@@ -16,9 +21,12 @@ public class UserDTO {
     @NotNull
     String password;
 
+    String id;
+
     String email;
 
     String phoneNumber;
 
     String fullName;
+
 }

@@ -1,5 +1,6 @@
 package com.example.demo.repositories.tables.entities;
 
+import com.example.demo.dtos.ResponseUserDTO;
 import com.example.demo.dtos.UserDTO;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -39,5 +40,14 @@ public class UserEntity implements Serializable {
         this.fullName = user.getFullName();
         this.phoneNumber = user.getPhoneNumber();
         this.userId = String.valueOf(UUID.randomUUID());
+    }
+
+    public ResponseUserDTO convertFromEntity() {
+        ResponseUserDTO responseUserDTO = new ResponseUserDTO();
+        responseUserDTO.setEmail(email);
+        responseUserDTO.setId(userId);
+        responseUserDTO.setFullName(fullName);
+        responseUserDTO.setPhoneNumber(phoneNumber);
+        return responseUserDTO;
     }
 }
