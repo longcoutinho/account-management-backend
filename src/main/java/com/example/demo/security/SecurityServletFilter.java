@@ -20,7 +20,7 @@ public class SecurityServletFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, ServletException {
         String token = request.getHeader("Authorization");
-        if (request.getRequestURI().equals("/user/login") || request.getRequestURI().equals("/user/register") || authenticated(token) || request.getMethod().equals("OPTIONS")) {
+        if (validSite(request.getRequestURI()) || authenticated(token) || request.getMethod().equals("OPTIONS")) {
             chain.doFilter(request, response); // (4)
             return;
         }
@@ -28,6 +28,13 @@ public class SecurityServletFilter extends HttpFilter {
         response.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         response.addHeader("Access-Control-Request-Method", "GET, PUT");
         response.addHeader("Access-Control-Allow-Headers", "Authorization");
+    }
+
+    private boolean validSite(String sitePath) {
+        if (sitePath.equals("/user/login")) return true;
+        if (sitePath.equals("/user/register")) return true;
+        if (sitePath.startsWith("/image/")) return true;
+        return false;
     }
 
     private boolean authenticated(String token) {

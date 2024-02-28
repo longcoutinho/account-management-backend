@@ -11,7 +11,7 @@ import java.util.List;
 public interface ItemRepositoryJPA extends JpaRepository<ItemEntity, Long> {
     @Query("SELECT i " +
             "FROM ItemEntity i " +
-            "where (i.name like :name)" +
+            "where (i.name like CONCAT('%',:name,'%'))" +
             "and (:typeId is null or i.typeId = :typeId)")
     List<ItemEntity> getAllItem(String name, Long typeId);
 }

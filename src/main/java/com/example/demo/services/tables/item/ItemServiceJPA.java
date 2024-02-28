@@ -21,7 +21,7 @@ public class ItemServiceJPA {
 
     public Object getItem(ItemDTO params) {
         List<ItemEntity> itemEntity = itemRepositoryJPA.getAllItem(params.getName(), params.getTypeId());
-        return itemEntity;
+        return convertFromListEntity(itemEntity);
     }
 
     public Object getItemById(Long id) {
@@ -34,6 +34,7 @@ public class ItemServiceJPA {
         ItemEntity newItem = new ItemEntity();
         newItem.setName(params.getName());
         newItem.setPrice(params.getPrice());
+        newItem.setTypeId(params.getTypeId());
         ItemEntity savedItem = itemRepositoryJPA.save(newItem);
         // save image
         imageServiceJPA.saveImage(params.getListImages(), savedItem.getId());
