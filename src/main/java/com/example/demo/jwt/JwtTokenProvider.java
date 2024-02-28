@@ -15,7 +15,7 @@ public class JwtTokenProvider {
     private final String JWT_SECRET = "longhvhdeptrai";
 
     //Thời gian có hiệu lực của chuỗi jwt
-    private final long JWT_EXPIRATION = 604800000L;
+    private final long JWT_EXPIRATION = 3600000L; //1hour
 
     // Tạo ra jwt từ thông tin user
     public String generateToken(ResponseUserDTO userDetails) {

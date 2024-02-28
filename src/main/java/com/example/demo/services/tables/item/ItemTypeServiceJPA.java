@@ -22,21 +22,15 @@ public class ItemTypeServiceJPA {
 
     public Object createNewType(ItemTypeDTO params) {
         ItemTypeEntity entity = new ItemTypeEntity();
-        entity.setCode(params.getCode());
         entity.setName(params.getName());
         entity.setCreateUser(null);
         entity.setCreateDate(null);
-        entity.setLevel(params.getLevel());
-        entity.setParentId(params.getParentId());
         itemTypeRepositoryJPA.save(entity);
         return entity;
     }
 
     public Object getItemType(ItemTypeDTO params) {
-        if (params.getId() != null) {
-            return itemTypeRepositoryJPA.findById(params.getId());
-        }
-        return itemTypeRepositoryJPA.findByLevelAndParentIdOrderByName(params.getLevel(), params.getParentId());
+        return itemTypeRepositoryJPA.findAll();
     }
 
     public Object editItemType(Long id, ItemTypeDTO params) {
@@ -44,23 +38,15 @@ public class ItemTypeServiceJPA {
         if (params.getName() != null) {
             itemTypeEntity.setName(params.getName());
         }
-        if (params.getCode() != null) {
-            itemTypeEntity.setCode(params.getCode());
-        }
         itemTypeRepositoryJPA.save(itemTypeEntity);
         return itemTypeEntity;
     }
 
     @Transactional
     public Object deleteItemType(Long id) {
-        ItemTypeEntity itemType = itemTypeRepositoryJPA.findById(id).get();
-        List<ItemEntity> listItem = itemServiceJPA.getItemByTypeIdAndLevel(id, itemType.getLevel());
-        if (!listItem.isEmpty()) throw new CustomException(ErrorApp.EXIST_ITEM_HAS_TYPE);
-        itemTypeRepositoryJPA.delete(itemType);
-        //remove child
-        if (itemType.getLevel() == 1) {
-            itemTypeRepositoryJPA.deleteByParentId(id);
-        }
+//        ItemTypeEntity itemType = itemTypeRepositoryJPA.findById(id).get();
+//        if (!listItem.isEmpty()) throw new CustomException(ErrorApp.EXIST_ITEM_HAS_TYPE);
+//        itemTypeRepositoryJPA.delete(itemType);
         return 1L;
     }
 }

@@ -20,11 +20,8 @@ public class ItemEntity implements Serializable {
     @Column(name = "PRICE")
     Long price;
 
-    @Column(name = "LV1_TYPE_ID")
-    Long lv1TypeId;
-
-    @Column(name = "LV2_TYPE_ID")
-    Long lv2TypeId;
+    @Column(name = "TYPE_ID")
+    Long typeId;
 
     @Column(name = "NAME")
     String name;

@@ -52,10 +52,7 @@ public class UserServiceJPA {
         UserEntity results = listUsers.get(0);
         if (!passwordEncoder.matches(user.getPassword(), results.getPassword())) throw new CustomException(ErrorApp.WRONG_LOGIN);
         ResponseUserDTO responseUser = results.convertFromEntity();
-        String token = jwtTokenProvider.generateToken(responseUser);
-        System.out.println(token);
-        String userId = jwtTokenProvider.getUserIdFromJWT(token);
-        System.out.println(userId);
+        responseUser.setAccessToken(jwtTokenProvider.generateToken(responseUser));
         return responseUser;
     }
 }

@@ -11,4 +11,5 @@ public class ResponseUserDTO {
     public String id;
     public String fullName;
     public String phoneNumber;
+    public String accessToken;
 }

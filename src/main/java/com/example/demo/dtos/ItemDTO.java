@@ -9,8 +9,7 @@ import java.util.List;
 public class ItemDTO {
     Long id;
     Long price;
-    Long lv1Id;
-    Long lv2Id;
+    Long typeId;
     String name;
     List<MultipartFile> listImages;
     List<Long> listImageIds;

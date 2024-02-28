@@ -17,9 +17,6 @@ public class ItemTypeEntity implements Serializable {
     @Column(name = "ITEM_TYPE_ID")
     String itemTypeId;
 
-    @Column(name = "CODE")
-    String code;
-
     @Column(name = "NAME")
     String name;
 
@@ -28,10 +25,4 @@ public class ItemTypeEntity implements Serializable {
 
     @Column(name = "CREATE_DATE")
     Date createDate;
-
-    @Column(name = "LEVEL")
-    Long level;
-
-    @Column(name = "PARENT_ID")
-    Long parentId;
 }

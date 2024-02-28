@@ -20,8 +20,8 @@ public class ItemServiceJPA {
     ImageServiceJPA imageServiceJPA;
 
     public Object getItem(ItemDTO params) {
-        List<ItemEntity> itemEntity = itemRepositoryJPA.getAllItem(params.getLv1Id(), params.getLv2Id(), params.getName());
-        return convertFromListEntity(itemEntity);
+        List<ItemEntity> itemEntity = itemRepositoryJPA.getAllItem(params.getName(), params.getTypeId());
+        return itemEntity;
     }
 
     public Object getItemById(Long id) {
@@ -34,8 +34,6 @@ public class ItemServiceJPA {
         ItemEntity newItem = new ItemEntity();
         newItem.setName(params.getName());
         newItem.setPrice(params.getPrice());
-        newItem.setLv1TypeId(params.getLv1Id());
-        newItem.setLv2TypeId(params.getLv2Id());
         ItemEntity savedItem = itemRepositoryJPA.save(newItem);
         // save image
         imageServiceJPA.saveImage(params.getListImages(), savedItem.getId());
@@ -47,8 +45,6 @@ public class ItemServiceJPA {
         itemDTO.setName(entity.getName());
         itemDTO.setPrice(entity.getPrice());
         itemDTO.setId(entity.getId());
-        itemDTO.setLv1Id(entity.getLv1TypeId());
-        itemDTO.setLv2Id(entity.getLv2TypeId());
         itemDTO.setListImageIds(imageServiceJPA.getImagesByItemId(entity.getId()));
         return itemDTO;
     }
@@ -63,12 +59,12 @@ public class ItemServiceJPA {
     }
 
     public List<ItemEntity> getItemByTypeIdAndLevel(Long typeId, Long level) {
-        if (level == 1) {
-            return itemRepositoryJPA.findByLv1TypeId(typeId);
-        }
-        else if (level == 2) {
-            return itemRepositoryJPA.findByLv2TypeId(typeId);
-        }
+//        if (level == 1) {
+//            return itemRepositoryJPA.findByLv1TypeId(typeId);
+//        }
+//        else if (level == 2) {
+//            return itemRepositoryJPA.findByLv2TypeId(typeId);
+//        }
         return new LinkedList<>();
     }
 
@@ -81,8 +77,6 @@ public class ItemServiceJPA {
     public Object editItem(Long id, ItemDTO params) {
         ItemEntity item = itemRepositoryJPA.findById(id).get();
         if (params.getPrice() != null && !params.getPrice().equals(item.getPrice())) item.setPrice(params.getPrice());
-        if (params.getLv1Id() != null && !params.getLv1Id().equals(item.getLv1TypeId())) item.setLv1TypeId(params.getLv1Id());
-        if (params.getLv2Id() != null && !params.getLv2Id().equals(item.getLv2TypeId())) item.setLv2TypeId(params.getLv2Id());
         if (params.getName() != null && !params.getName().equals(item.getName())) item.setName(params.getName());
         return 1L;
     }
