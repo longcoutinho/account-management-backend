@@ -1,6 +1,7 @@
 package com.example.demo.services.tables;
 
 import com.example.demo.dtos.ResponseUserDTO;
+import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.dtos.UserDTO;
 import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.repositories.tables.UserRepositoryJPA;
@@ -54,5 +55,16 @@ public class UserServiceJPA {
         ResponseUserDTO responseUser = results.convertFromEntity();
         responseUser.setAccessToken(jwtTokenProvider.generateToken(responseUser));
         return responseUser;
+    }
+
+    public Object addBalance(TopUpRequestDTO params) {
+        UserEntity user = userRepositoryJPA.findByUserId(params.getUserId());
+        user.setBalance(user.getBalance() + params.getBalance());
+        userRepositoryJPA.save(user);
+        return 1L;
+    }
+
+    public Object getUserById(String id) {
+        return userRepositoryJPA.findByUserId(id);
     }
 }

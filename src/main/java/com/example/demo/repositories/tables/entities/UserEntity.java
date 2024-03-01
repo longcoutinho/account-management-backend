@@ -33,6 +33,9 @@ public class UserEntity implements Serializable {
     @Column(name = "FULL_NAME")
     String fullName;
 
+    @Column(name = "BALANCE")
+    Long balance;
+
     public UserEntity(UserDTO user) {
         this.email = user.getEmail();
         this.username = user.getUsername();

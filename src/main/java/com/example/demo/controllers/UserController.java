@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.dtos.UserDTO;
 import com.example.demo.services.tables.UserAdminServiceJPA;
 import com.example.demo.services.tables.UserServiceJPA;
@@ -10,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
@@ -50,6 +50,18 @@ public class UserController {
     @PostMapping(value = "/login-admin", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> loginAdmin(@Valid @RequestBody UserDTO params) {
         Object result = userAdminServiceJPA.loginUser(params);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/add-balance", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> addBalance(@RequestBody TopUpRequestDTO params) {
+        Object result = userServiceJPA.addBalance(params);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getUserById(@PathVariable(value="id", required = true) String id) {
+        Object result = userServiceJPA.getUserById(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
