@@ -9,17 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/top-up")
 public class TopUpController {
     @Autowired
     TopUpServiceJPA topUpServiceJPA;
-
 
     @PostMapping(value = "/request", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> request(@Valid @RequestBody TopUpRequestDTO params) {
@@ -30,6 +26,12 @@ public class TopUpController {
     @PostMapping(value = "/confirm", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> confirm(@RequestBody TopUpRequestDTO params) {
         Object result = topUpServiceJPA.confirm(params);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getAll() {
+        Object result = topUpServiceJPA.getAll();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

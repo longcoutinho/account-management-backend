@@ -13,4 +13,7 @@ import java.util.List;
 public interface TopUpRepositoryJPA extends JpaRepository<TopUpEntity, Long> {
 
     TopUpEntity findById(String id);
+
+    @Query("select e from TopUpEntity e")
+    List<TopUpEntity> getAll();
 }

@@ -35,4 +35,8 @@ public class TopUpServiceJPA {
         userServiceJPA.addBalance(topUpRequestDTO);
         return 1L;
     }
+
+    public Object getAll() {
+        return topUpRepositoryJPA.getAll();
+    }
 }
