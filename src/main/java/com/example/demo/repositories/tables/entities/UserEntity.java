@@ -43,6 +43,7 @@ public class UserEntity implements Serializable {
         this.fullName = user.getFullName();
         this.phoneNumber = user.getPhoneNumber();
         this.userId = String.valueOf(UUID.randomUUID());
+        this.balance = 0L;
     }
 
     public ResponseUserDTO convertFromEntity() {
