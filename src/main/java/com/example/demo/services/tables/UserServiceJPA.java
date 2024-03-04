@@ -59,7 +59,7 @@ public class UserServiceJPA {
 
     public Object addBalance(TopUpRequestDTO params) {
         UserEntity user = userRepositoryJPA.findByUserId(params.getUserId());
-        user.setBalance(user.getBalance() + params.getBalance());
+        user.setBalance(user.getBalance() + params.getAmount());
         userRepositoryJPA.save(user);
         return 1L;
     }

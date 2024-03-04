@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -18,12 +19,18 @@ public class TopUpEntity implements Serializable {
     @Column(name = "ID")
     String id;
 
-    @Column(name = "BALANCE")
-    Long balance;
+    @Column(name = "AMOUNT")
+    Long amount;
 
     @Column(name = "STATUS")
     Long status;
 
     @Column(name = "USER_ID")
     String userId;
+
+    @Column(name = "CREATE_DATE")
+    Date createDate;
+
+    @Column(name = "METHOD")
+    Long method;
 }

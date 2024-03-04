@@ -4,7 +4,9 @@ import lombok.Data;
 
 @Data
 public class TopUpRequestDTO {
-    Long balance;
+    Long amount;
     String userId;
     String id;
+    Long method;
+    String createTime;
 }
