@@ -1,0 +1,62 @@
+create table admin_user
+(
+    username varchar(20) null,
+    password varchar(30) null
+);
+
+create table file
+(
+    id   int auto_increment
+        primary key,
+    name varchar(2000) not null,
+    path varchar(2000) not null
+);
+
+create table item
+(
+    id      int auto_increment
+        primary key,
+    price   int          not null,
+    type_id int          not null,
+    name    varchar(200) null
+);
+
+create table item_image
+(
+    id      int auto_increment
+        primary key,
+    item_id int not null,
+    file_id int not null
+);
+
+create table item_type
+(
+    ITEM_TYPE_ID int auto_increment
+        primary key,
+    NAME         varchar(100) not null,
+    CREATE_USER  varchar(10)  null,
+    CREATE_DATE  date         null
+);
+
+create table top_up
+(
+    id          varchar(200) not null,
+    create_date datetime     not null,
+    amount      decimal      not null,
+    status      decimal      not null,
+    user_id     varchar(200) not null,
+    method      int          not null
+);
+
+create table user
+(
+    USER_ID      varchar(200) not null
+        primary key,
+    USERNAME     varchar(20)  not null,
+    PASSWORD     varchar(100) not null,
+    EMAIL        varchar(100) null,
+    FULL_NAME    varchar(50)  null,
+    PHONE_NUMBER varchar(20)  null,
+    balance      mediumtext   not null
+);
+
