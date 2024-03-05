@@ -34,6 +34,7 @@ public class SecurityServletFilter extends HttpFilter {
         if (sitePath.equals("/user/login")) return true;
         if (sitePath.equals("/user/register")) return true;
         if (sitePath.startsWith("/image/")) return true;
+        if (sitePath.startsWith("/test")) return true;
         return false;
     }
 

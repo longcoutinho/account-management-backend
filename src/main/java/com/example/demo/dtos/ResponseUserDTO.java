@@ -12,4 +12,5 @@ public class ResponseUserDTO {
     public String fullName;
     public String phoneNumber;
     public String accessToken;
+    public Long balance;
 }
