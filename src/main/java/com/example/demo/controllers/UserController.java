@@ -76,7 +76,7 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getAll(RequestUserDTO params) {
         Object result = userServiceJPA.getAll(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
