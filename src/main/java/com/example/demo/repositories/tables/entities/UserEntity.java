@@ -31,12 +31,16 @@ public class UserEntity implements Serializable {
     @Column(name = "CREATE_DATE")
     Date createDate;
 
-    public UserEntity(UserDTO user) {
+    @Column(name = "ROLE")
+    String role;
+
+    public UserEntity(UserDTO user, Long type) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.userId = String.valueOf(UUID.randomUUID());
         this.balance = 0L;
         this.createDate = new Date(System.currentTimeMillis());
+        this.role = type == 1 ? "USER" : "ADMIN";
     }
 
     public ResponseUserDTO convertFromEntity() {

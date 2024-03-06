@@ -22,4 +22,6 @@ public class UserDTO {
     String password;
 
     String id;
+
+    Long type;
 }

@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.dtos.UserDTO;
+import com.example.demo.dtos.user.RequestUserDTO;
 import com.example.demo.services.tables.UserAdminServiceJPA;
 import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.validation.Valid;
@@ -27,6 +28,14 @@ public class UserController {
      */
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> register(@Valid @RequestBody UserDTO params) throws Exception {
+        params.setType(1L);
+        Object result = userServiceJPA.createNewUser(params);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/admin-account/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> registerAdmin(@Valid @RequestBody UserDTO params) throws Exception {
+        params.setType(2L);
         Object result = userServiceJPA.createNewUser(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -38,6 +47,7 @@ public class UserController {
      */
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> login(@Valid @RequestBody UserDTO params) {
+        params.setType(1L);
         Object result = userServiceJPA.loginUser(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -49,7 +59,8 @@ public class UserController {
      */
     @PostMapping(value = "/login-admin", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> loginAdmin(@Valid @RequestBody UserDTO params) {
-        Object result = userAdminServiceJPA.loginUser(params);
+        params.setType(2L);
+        Object result = userServiceJPA.loginUser(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -62,6 +73,12 @@ public class UserController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getUserById(@PathVariable(value="id", required = true) String id) {
         Object result = userServiceJPA.getUserById(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getAll(RequestUserDTO params) {
+        Object result = userServiceJPA.getAll(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

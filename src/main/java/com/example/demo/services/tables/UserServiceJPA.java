@@ -3,6 +3,7 @@ package com.example.demo.services.tables;
 import com.example.demo.dtos.ResponseUserDTO;
 import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.dtos.UserDTO;
+import com.example.demo.dtos.user.RequestUserDTO;
 import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.repositories.tables.UserRepositoryJPA;
 import com.example.demo.repositories.tables.entities.UserEntity;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserServiceJPA {
@@ -32,7 +34,7 @@ public class UserServiceJPA {
     public Object createNewUser(UserDTO user) throws Exception {
         validateUser(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        UserEntity newUser = new UserEntity(user);
+        UserEntity newUser = new UserEntity(user, user.getType());
         return userRepositoryJPA.save(newUser);
     }
 
@@ -47,7 +49,12 @@ public class UserServiceJPA {
 
     public Object loginUser(UserDTO user) {
         UserEntity results = userRepositoryJPA.findByUsername(user.getUsername());
+        if (results == null) {
+            throw new CustomException(ErrorApp.WRONG_LOGIN);
+        }
         if (!passwordEncoder.matches(user.getPassword(), results.getPassword())) throw new CustomException(ErrorApp.WRONG_LOGIN);
+        if (user.getType() == 1 && !results.getRole().equals("USER")) throw new CustomException(ErrorApp.WRONG_LOGIN);
+        if (user.getType() == 2 && !results.getRole().equals("ADMIN")) throw new CustomException(ErrorApp.WRONG_LOGIN);
         ResponseUserDTO responseUser = results.convertFromEntity();
         responseUser.setAccessToken(jwtTokenProvider.generateToken(responseUser));
         return responseUser;
@@ -66,5 +73,10 @@ public class UserServiceJPA {
 
     public UserEntity findByUserId(String userId) {
         return userRepositoryJPA.findByUserId(userId);
+    }
+
+    public Object getAll(RequestUserDTO params) {
+        String role = params.getType() == 1L ? "USER" : "ADMIN";
+        return userRepositoryJPA.findByRole(role);
     }
 }
