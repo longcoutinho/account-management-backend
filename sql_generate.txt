@@ -38,25 +38,48 @@ create table item_type
     CREATE_DATE  date         null
 );
 
+create table sale_order
+(
+    id          varchar(200) not null
+        primary key,
+    user_id     varchar(200) not null,
+    create_date datetime     not null,
+    item_id     varchar(200) not null,
+    status      int          not null,
+    account_id  varchar(200) null
+);
+
+create table stock_account
+(
+    id          varchar(200) not null
+        primary key,
+    create_date datetime     not null,
+    create_user varchar(200) null,
+    status      int          not null,
+    username    varchar(200) not null,
+    password    varchar(200) not null,
+    column_name int          null,
+    item_id     decimal      not null
+);
+
 create table top_up
 (
-    id          varchar(200) not null,
+    id          int auto_increment
+        primary key,
     create_date datetime     not null,
     amount      decimal      not null,
     status      decimal      not null,
-    user_id     varchar(200) not null,
+    username    varchar(200) not null,
     method      int          not null
 );
 
 create table user
 (
-    USER_ID      varchar(200) not null
+    USER_ID     varchar(200) not null
         primary key,
-    USERNAME     varchar(20)  not null,
-    PASSWORD     varchar(100) not null,
-    EMAIL        varchar(100) null,
-    FULL_NAME    varchar(50)  null,
-    PHONE_NUMBER varchar(20)  null,
-    balance      mediumtext   not null
+    USERNAME    varchar(20)  not null,
+    PASSWORD    varchar(100) not null,
+    balance     mediumtext   not null,
+    create_date int          null
 );
 
