@@ -6,4 +6,5 @@ import lombok.Data;
 public class GetAllTopUpDTO {
     Long status;
     String username;
+    String transId;
 }

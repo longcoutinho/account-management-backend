@@ -27,5 +27,4 @@ public class SaleOrderController {
         Object result = saleOrderServiceJPA.getAll(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
 }

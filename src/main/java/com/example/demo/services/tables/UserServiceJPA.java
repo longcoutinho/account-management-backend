@@ -3,7 +3,9 @@ package com.example.demo.services.tables;
 import com.example.demo.dtos.ResponseUserDTO;
 import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.dtos.UserDTO;
+import com.example.demo.dtos.user.AdjustBalanceDTO;
 import com.example.demo.dtos.user.RequestUserDTO;
+import com.example.demo.dtos.user.ResetPasswordDTO;
 import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.repositories.tables.UserRepositoryJPA;
 import com.example.demo.repositories.tables.entities.UserEntity;
@@ -78,5 +80,23 @@ public class UserServiceJPA {
     public Object getAll(RequestUserDTO params) {
         String role = params.getType() == 1L ? "USER" : "ADMIN";
         return userRepositoryJPA.findByRole(role);
+    }
+
+    public Object findByUsername(String username) {
+        return userRepositoryJPA.findByUsername(username);
+    }
+
+    public Object resetPassword(ResetPasswordDTO params) {
+        UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());
+        user.setPassword(passwordEncoder.encode(params.getPassword()));
+        userRepositoryJPA.save(user);
+        return 1L;
+    }
+
+    public Object adjustBalance(AdjustBalanceDTO params) {
+        UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());
+        user.setBalance(params.getNewBalance());
+        userRepositoryJPA.save(user);
+        return 1L;
     }
 }

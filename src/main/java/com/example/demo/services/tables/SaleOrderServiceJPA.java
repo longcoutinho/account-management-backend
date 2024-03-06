@@ -42,7 +42,7 @@ public class SaleOrderServiceJPA {
             saleOrderEntity.setStatus(0L);
             saleOrderEntity.setAccountId(null);
             SaleOrderEntity saved = saleOrderRepositoryJPA.save(saleOrderEntity);
-            kafkaProducer.sendOrderMessage(saved.getId());
+//            kafkaProducer.sendOrderMessage(saved.getId());
         }
         return 1L;
     }

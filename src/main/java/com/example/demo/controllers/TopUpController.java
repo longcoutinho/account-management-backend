@@ -38,10 +38,18 @@ public class TopUpController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/cancel", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> cancel(@RequestBody TopUpRequestDTO params) {
+        Object result = topUpServiceJPA.cancel(params);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getAll(GetAllTopUpDTO params, HttpServletRequest httpServletRequest) {
         UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
-        params.setUsername(userEntity.getUsername());
+        if (userEntity.getRole().equals("USER")) {
+            params.setUsername(userEntity.getUsername());
+        }
         Object result = topUpServiceJPA.getAll(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

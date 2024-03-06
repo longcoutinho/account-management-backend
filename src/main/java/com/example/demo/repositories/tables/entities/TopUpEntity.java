@@ -31,7 +31,6 @@ public class TopUpEntity implements Serializable {
     @Column(name = "USERNAME")
     String username;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
     @Column(name = "CREATE_DATE")
     Date createDate;
 
