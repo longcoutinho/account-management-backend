@@ -1,5 +1,6 @@
 package com.example.demo.services.tables;
 
+import com.example.demo.dtos.GetAllTopUpDTO;
 import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.repositories.tables.TopUpRepositoryJPA;
 import com.example.demo.repositories.tables.entities.TopUpEntity;
@@ -19,10 +20,9 @@ public class TopUpServiceJPA {
 
     public Object createRequest(TopUpRequestDTO params) {
         TopUpEntity topUpEntity = new TopUpEntity();
-        topUpEntity.setId(String.valueOf(UUID.randomUUID()));
         topUpEntity.setAmount(params.getAmount());
         topUpEntity.setStatus(0L);
-        topUpEntity.setUserId(params.getUserId());
+        topUpEntity.setUsername(params.getUsername());
         topUpEntity.setMethod(params.getMethod());
         topUpEntity.setCreateDate(new Date(System.currentTimeMillis()));
         topUpRepositoryJPA.save(topUpEntity);
@@ -30,16 +30,16 @@ public class TopUpServiceJPA {
     }
 
     public Object confirm(TopUpRequestDTO params) {
-        TopUpEntity topUpEntity = topUpRepositoryJPA.findById(params.getId());
+        TopUpEntity topUpEntity = topUpRepositoryJPA.findById(params.getId()).get();
         topUpEntity.setStatus(1L); //success;
         TopUpRequestDTO topUpRequestDTO = new TopUpRequestDTO();
         topUpRequestDTO.setAmount(topUpEntity.getAmount());
-        topUpRequestDTO.setUserId(topUpEntity.getUserId());
+        topUpRequestDTO.setUsername(topUpEntity.getUsername());
         userServiceJPA.addBalance(topUpRequestDTO);
         return 1L;
     }
 
-    public Object getAll() {
-        return topUpRepositoryJPA.getAll();
+    public Object getAll(GetAllTopUpDTO params) {
+        return topUpRepositoryJPA.getAll(params.getStatus(), params.getUsername());
     }
 }

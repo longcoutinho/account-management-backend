@@ -7,4 +7,6 @@ public class StockAccountDTO {
     String username;
     String password;
     String itemId;
+    String orderId;
+    String accountId;
 }

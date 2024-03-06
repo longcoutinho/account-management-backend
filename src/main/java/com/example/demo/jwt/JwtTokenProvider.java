@@ -41,10 +41,10 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    public boolean validateToken(String authToken) {
+    public String validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
-            return true;
+            return getUserIdFromJWT(authToken);
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
@@ -54,6 +54,6 @@ public class JwtTokenProvider {
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty.");
         }
-        return false;
+        return null;
     }
 }

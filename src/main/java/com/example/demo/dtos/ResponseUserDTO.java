@@ -4,13 +4,13 @@ import com.example.demo.repositories.tables.entities.UserEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 public class ResponseUserDTO {
-    public String email;
+    public Date createDate;
     public String id;
-    public String fullName;
-    public String phoneNumber;
     public String accessToken;
     public Long balance;
 }

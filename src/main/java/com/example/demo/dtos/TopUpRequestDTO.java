@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class TopUpRequestDTO {
     Long amount;
-    String userId;
-    String id;
+    String username;
+    Long id;
     Long method;
     String createTime;
 }

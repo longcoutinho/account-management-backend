@@ -24,7 +24,7 @@ public class ItemServiceJPA {
         return convertFromListEntity(itemEntity);
     }
 
-    public Object getItemById(Long id) {
+    public ItemDTO getItemById(Long id) {
         ItemEntity itemEntity = itemRepositoryJPA.findById(id).get();
         return convertFromEntity(itemEntity);
     }

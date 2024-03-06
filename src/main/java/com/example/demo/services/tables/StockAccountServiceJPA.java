@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -25,5 +27,23 @@ public class StockAccountServiceJPA {
         stockAccountEntity.setPassword(params.getPassword());
         stockAccountRepositoryJPA.save(stockAccountEntity);
         return stockAccountEntity;
+    }
+
+    public Object getAll(StockAccountDTO params) {
+        return stockAccountRepositoryJPA.getAll(params.getItemId());
+    }
+
+    public StockAccountEntity orderAccount(String itemId) {
+        List<StockAccountEntity> stockAccountEntity = stockAccountRepositoryJPA.getRandomAccount(itemId);
+        if (stockAccountEntity.size() == 0) return null;
+        Random rand = new Random();
+        StockAccountEntity randomElement = stockAccountEntity.get(rand.nextInt(stockAccountEntity.size()));
+        randomElement.setStatus(1L);
+        stockAccountRepositoryJPA.save(randomElement);
+        return randomElement;
+    }
+
+    public StockAccountEntity findById(String accountId) {
+        return stockAccountRepositoryJPA.findById(accountId);
     }
 }

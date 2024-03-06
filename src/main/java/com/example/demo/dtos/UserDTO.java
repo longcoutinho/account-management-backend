@@ -22,11 +22,4 @@ public class UserDTO {
     String password;
 
     String id;
-
-    String email;
-
-    String phoneNumber;
-
-    String fullName;
-
 }

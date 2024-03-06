@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface TopUpRepositoryJPA extends JpaRepository<TopUpEntity, Long> {
 
-    TopUpEntity findById(String id);
-
-    @Query("select e from TopUpEntity e")
-    List<TopUpEntity> getAll();
+    @Query("select e from TopUpEntity e " +
+            "where (:status is null or e.status = :status) and (:username is null or e.username = :username)" +
+            "order by e.createDate desc")
+    List<TopUpEntity> getAll(Long status, String username);
 }

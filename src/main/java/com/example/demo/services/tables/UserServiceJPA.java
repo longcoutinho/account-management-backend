@@ -41,16 +41,12 @@ public class UserServiceJPA {
     }
 
     public Boolean existUsername(String username) {
-        List<UserEntity> results = userRepositoryJPA.findByUsername(username);
-        return !results.isEmpty();
+        UserEntity results = userRepositoryJPA.findByUsername(username);
+        return results != null;
     }
 
     public Object loginUser(UserDTO user) {
-        List<UserEntity> listUsers = userRepositoryJPA.findByUsername(user.getUsername());
-        if (listUsers.size() != 1) {
-            throw new CustomException(ErrorApp.WRONG_LOGIN);
-        }
-        UserEntity results = listUsers.get(0);
+        UserEntity results = userRepositoryJPA.findByUsername(user.getUsername());
         if (!passwordEncoder.matches(user.getPassword(), results.getPassword())) throw new CustomException(ErrorApp.WRONG_LOGIN);
         ResponseUserDTO responseUser = results.convertFromEntity();
         responseUser.setAccessToken(jwtTokenProvider.generateToken(responseUser));
@@ -58,7 +54,7 @@ public class UserServiceJPA {
     }
 
     public Object addBalance(TopUpRequestDTO params) {
-        UserEntity user = userRepositoryJPA.findByUserId(params.getUserId());
+        UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());
         user.setBalance(user.getBalance() + params.getAmount());
         userRepositoryJPA.save(user);
         return 1L;
@@ -66,5 +62,9 @@ public class UserServiceJPA {
 
     public Object getUserById(String id) {
         return userRepositoryJPA.findByUserId(id);
+    }
+
+    public UserEntity findByUserId(String userId) {
+        return userRepositoryJPA.findByUserId(userId);
     }
 }

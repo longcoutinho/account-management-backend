@@ -7,7 +7,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepositoryJPA extends JpaRepository<UserEntity, Long> {
-    List<UserEntity> findByUsername(String username);
+    UserEntity findByUsername(String username);
 
     UserEntity findByUserId(String userId);
 }

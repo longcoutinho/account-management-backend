@@ -1,6 +1,8 @@
 package com.example.demo.security;
 
 import com.example.demo.jwt.JwtTokenProvider;
+import com.example.demo.repositories.tables.entities.UserEntity;
+import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpFilter;
@@ -17,13 +19,19 @@ public class SecurityServletFilter extends HttpFilter {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    UserServiceJPA userServiceJPA;
+
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, ServletException {
         String token = request.getHeader("Authorization");
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Request-Method", "GET, PUT");
         response.addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-        if (validSite(request.getRequestURI()) || authenticated(token) || request.getMethod().equals("OPTIONS")) {
+        if (validSite(request.getRequestURI()) || authenticated(token) != null || request.getMethod().equals("OPTIONS")) {
+            String userId = authenticated(token);
+            UserEntity userEntity = userServiceJPA.findByUserId(userId);
+            request.setAttribute("userInfo", userEntity);
             chain.doFilter(request, response); // (4)
             return;
         }
@@ -38,7 +46,7 @@ public class SecurityServletFilter extends HttpFilter {
         return false;
     }
 
-    private boolean authenticated(String token) {
+    private String authenticated(String token) {
         return jwtTokenProvider.validateToken(token);
     }
 }
