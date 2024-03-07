@@ -13,4 +13,6 @@ public class ItemDTO {
     String name;
     List<MultipartFile> listImages;
     List<Long> listImageIds;
+    int page;
+    int pageSize;
 }
