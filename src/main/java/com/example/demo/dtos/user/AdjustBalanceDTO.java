@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class AdjustBalanceDTO {
     String username;
-    Long newBalance;
+    Long amount;
 }

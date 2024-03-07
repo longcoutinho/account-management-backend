@@ -16,8 +16,8 @@ public class SaleOrderEntity implements Serializable {
     @Column(name = "ID")
     String id;
 
-    @Column(name = "USER_ID")
-    String userId;
+    @Column(name = "USERNAME")
+    String username;
 
     @Column(name = "CREATE_DATE")
     Date createDate;

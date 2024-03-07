@@ -13,4 +13,5 @@ public class ResponseUserDTO {
     public String id;
     public String accessToken;
     public Long balance;
+    public String username;
 }

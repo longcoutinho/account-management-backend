@@ -3,7 +3,9 @@ package com.example.demo.services.tables.item;
 import com.example.demo.dtos.ItemDTO;
 import com.example.demo.dtos.item.ResponseItemDTO;
 import com.example.demo.repositories.tables.ItemRepositoryJPA;
+import com.example.demo.repositories.tables.StockAccountRepositoryJPA;
 import com.example.demo.repositories.tables.entities.ItemEntity;
+import com.example.demo.repositories.tables.entities.StockAccountEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,9 @@ public class ItemServiceJPA {
 
     @Autowired
     ImageServiceJPA imageServiceJPA;
+
+    @Autowired
+    StockAccountRepositoryJPA stockAccountRepositoryJPA;
 
     public ResponseItemDTO getItem(ItemDTO params) {
         List<ItemEntity> itemEntity = itemRepositoryJPA.getAllItem(PageRequest.of(params.getPage(), params.getPageSize()), params.getName(), params.getTypeId());
@@ -55,6 +60,7 @@ public class ItemServiceJPA {
         itemDTO.setId(entity.getId());
         itemDTO.setTypeId(entity.getTypeId());
         itemDTO.setListImageIds(imageServiceJPA.getImagesByItemId(entity.getId()));
+        itemDTO.setAmount(stockAccountRepositoryJPA.findByItemId(entity.getId()));
         return itemDTO;
     }
 

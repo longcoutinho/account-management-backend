@@ -36,7 +36,7 @@ public class SaleOrderServiceJPA {
         for(int i = 0; i < params.getAmount(); i++) {
             SaleOrderEntity saleOrderEntity = new SaleOrderEntity();
             saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));
-            saleOrderEntity.setUserId(params.getUserId());
+            saleOrderEntity.setUsername(params.getUsername());
             saleOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));
             saleOrderEntity.setItemId(params.getItemId());
             saleOrderEntity.setStatus(0L);
@@ -69,7 +69,7 @@ public class SaleOrderServiceJPA {
         SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(orderId);
         ItemDTO itemEntity = itemServiceJPA.getItemById(Long.valueOf(saleOrderEntity.getItemId()));
         TopUpRequestDTO topUpRequestDTO = new TopUpRequestDTO();
-        topUpRequestDTO.setUsername(saleOrderEntity.getUserId());
+        topUpRequestDTO.setUsername(saleOrderEntity.getUsername());
         topUpRequestDTO.setAmount(-itemEntity.getPrice());
         userServiceJPA.addBalance(topUpRequestDTO);
         StockAccountEntity stockAccountEntity = stockAccountServiceJPA.orderAccount(saleOrderEntity.getItemId());

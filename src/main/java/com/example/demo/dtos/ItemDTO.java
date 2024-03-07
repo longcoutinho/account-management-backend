@@ -15,4 +15,5 @@ public class ItemDTO {
     List<Long> listImageIds;
     int page;
     int pageSize;
+    Long amount;
 }

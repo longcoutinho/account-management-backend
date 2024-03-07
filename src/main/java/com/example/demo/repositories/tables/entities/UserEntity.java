@@ -48,6 +48,7 @@ public class UserEntity implements Serializable {
         responseUserDTO.setId(userId);
         responseUserDTO.setBalance(balance);
         responseUserDTO.setCreateDate(createDate);
+        responseUserDTO.setUsername(username);
         return responseUserDTO;
     }
 }

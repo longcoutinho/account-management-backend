@@ -17,4 +17,7 @@ public interface StockAccountRepositoryJPA extends JpaRepository<StockAccountEnt
     List<StockAccountEntity> getRandomAccount(String itemId);
 
     StockAccountEntity findById(String accountId);
+
+    @Query("select count(e) from StockAccountEntity e where e.itemId = :id and e.status = 0")
+    Long findByItemId(Long id);
 }
