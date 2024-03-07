@@ -1,13 +1,12 @@
-package com.example.demo.dtos.saleorder;
+package com.example.demo.dtos;
 
 import com.example.demo.dtos.SaleOrderResponseDTO;
-import com.example.demo.repositories.tables.entities.SaleOrderEntity;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class ResponseSaleOrderDTO {
+public class SaleOrderResponseSummaryDTO {
     List<SaleOrderResponseDTO> listSaleOrder;
 
     Long totalAmount;

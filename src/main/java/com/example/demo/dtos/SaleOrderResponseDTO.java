@@ -11,4 +11,7 @@ public class SaleOrderResponseDTO {
     Long status;
     String username;
     String password;
+    String userId;
+    String itemName;
+    Long price;
 }

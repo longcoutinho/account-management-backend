@@ -95,7 +95,7 @@ public class UserServiceJPA {
 
     public Object adjustBalance(AdjustBalanceDTO params) {
         UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());
-        user.setBalance(params.getNewBalance());
+        user.setBalance(user.getBalance() + params.getAmount());
         userRepositoryJPA.save(user);
         return 1L;
     }

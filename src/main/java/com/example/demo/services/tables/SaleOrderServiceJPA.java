@@ -47,22 +47,32 @@ public class SaleOrderServiceJPA {
         return 1L;
     }
 
-    public List<SaleOrderResponseDTO> getAll(SaleOrderDTO params) {
+    public SaleOrderResponseSummaryDTO getAll(SaleOrderDTO params) {
         List<SaleOrderResponseDTO> res = new LinkedList<>();
         List<SaleOrderEntity> list = saleOrderRepositoryJPA.getAll();
+        Long amount = 0L;
         for(SaleOrderEntity saleOrderEntity: list) {
             SaleOrderResponseDTO saleOrderResponseDTO = new SaleOrderResponseDTO();
             saleOrderResponseDTO.setId(saleOrderEntity.getId());
             saleOrderResponseDTO.setCreateDate(saleOrderEntity.getCreateDate());
             saleOrderResponseDTO.setStatus(saleOrderEntity.getStatus());
+            saleOrderResponseDTO.setUserId(saleOrderEntity.getUsername());
             StockAccountEntity stockAccountEntity = stockAccountServiceJPA.findById(saleOrderEntity.getAccountId());
             if (stockAccountEntity != null) {
                 saleOrderResponseDTO.setUsername(stockAccountEntity.getUsername());
                 saleOrderResponseDTO.setPassword(stockAccountEntity.getPassword());
             }
+            ItemDTO itemEntity = itemServiceJPA.getItemById(Long.valueOf(saleOrderEntity.getItemId()));
+            saleOrderResponseDTO.setItemName(itemEntity.getName());
+            saleOrderResponseDTO.setPrice(itemEntity.getPrice());
+            amount += itemEntity.getPrice();
             res.add(saleOrderResponseDTO);
         }
-        return res;
+        SaleOrderResponseSummaryDTO result = new SaleOrderResponseSummaryDTO();
+        result.setListSaleOrder(res);
+        result.setTotalRequest((long) res.size());
+        result.setTotalAmount(amount);
+        return result;
     }
 
     public void processOrder(String orderId) {

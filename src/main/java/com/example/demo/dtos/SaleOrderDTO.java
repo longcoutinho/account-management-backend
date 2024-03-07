@@ -7,4 +7,5 @@ public class SaleOrderDTO {
     String username;
     String itemId;
     Long amount;
+    String userId;
 }
