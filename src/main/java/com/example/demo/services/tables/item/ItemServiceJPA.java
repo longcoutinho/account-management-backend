@@ -1,10 +1,14 @@
 package com.example.demo.services.tables.item;
 
 import com.example.demo.dtos.ItemDTO;
+import com.example.demo.dtos.item.ResponseItemDTO;
 import com.example.demo.repositories.tables.ItemRepositoryJPA;
 import com.example.demo.repositories.tables.entities.ItemEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,9 +23,12 @@ public class ItemServiceJPA {
     @Autowired
     ImageServiceJPA imageServiceJPA;
 
-    public Object getItem(ItemDTO params) {
-        List<ItemEntity> itemEntity = itemRepositoryJPA.getAllItem(params.getName(), params.getTypeId());
-        return convertFromListEntity(itemEntity);
+    public ResponseItemDTO getItem(ItemDTO params) {
+        List<ItemEntity> itemEntity = itemRepositoryJPA.getAllItem(PageRequest.of(params.getPage(), params.getPageSize()), params.getName(), params.getTypeId());
+        ResponseItemDTO res = new ResponseItemDTO();
+        res.setListData(convertFromListEntity(itemEntity));
+        res.setCount(itemRepositoryJPA.countItem(params.getName(), params.getTypeId()));
+        return res;
     }
 
     public ItemDTO getItemById(Long id) {
@@ -46,6 +53,7 @@ public class ItemServiceJPA {
         itemDTO.setName(entity.getName());
         itemDTO.setPrice(entity.getPrice());
         itemDTO.setId(entity.getId());
+        itemDTO.setTypeId(entity.getTypeId());
         itemDTO.setListImageIds(imageServiceJPA.getImagesByItemId(entity.getId()));
         return itemDTO;
     }
