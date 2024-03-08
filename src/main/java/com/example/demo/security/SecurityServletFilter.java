@@ -44,6 +44,8 @@ public class SecurityServletFilter extends HttpFilter {
         if (sitePath.equals("/user/admin-account/create")) return true;
         if (sitePath.startsWith("/image/")) return true;
         if (sitePath.startsWith("/test")) return true;
+        if (sitePath.startsWith("/create-payment-link")) return true;
+        if (sitePath.startsWith("/order")) return true;
         return false;
     }
 
