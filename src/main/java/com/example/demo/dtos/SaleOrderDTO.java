@@ -4,8 +4,7 @@ import lombok.Data;
 
 @Data
 public class SaleOrderDTO {
-    String username;
-    String itemId;
+    Long itemId;
     Long amount;
-    String userId;
+    String id;
 }

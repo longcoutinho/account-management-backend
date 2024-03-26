@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "COLOR")
-public class ColorEntity implements Serializable {
+@Table(name = "CARD")
+public class CardEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -18,12 +18,4 @@ public class ColorEntity implements Serializable {
 
     @Column(name = "NAME")
     String name;
-
-    @Column(name = "CODE")
-    String code;
-
-    public ColorEntity(String code, String name) {
-        this.name = name;
-        this.code = code;
-    }
 }

@@ -18,11 +18,11 @@ public class ItemEntity implements Serializable {
     Long id;
 
     @Column(name = "PRICE")
-    Long price;
+    Float price;
 
-    @Column(name = "TYPE_ID")
-    Long typeId;
+    @Column(name = "CARD_ID")
+    Long cardId;
 
-    @Column(name = "NAME")
-    String name;
+    @Column(name = "CODE")
+    String code;
 }

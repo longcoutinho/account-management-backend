@@ -22,7 +22,6 @@ public class SaleOrderController {
     public ResponseEntity<Object> create(SaleOrderDTO params, HttpServletRequest httpServletRequest) {
         UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
         if (userEntity.getRole().equals("USER")) {
-            params.setUsername(userEntity.getUsername());
         }
         Object result = saleOrderServiceJPA.create(params);
         return new ResponseEntity<>(result, HttpStatus.OK);

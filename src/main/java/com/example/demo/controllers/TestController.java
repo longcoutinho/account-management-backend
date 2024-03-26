@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.kafka.KafkaProducer;
+import com.example.demo.payment.TripleAPayment;
 import com.example.demo.payment.VNPayPayment;
 import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.servlet.ServletException;
@@ -18,7 +19,7 @@ public class TestController {
     UserServiceJPA userServiceJPA;
 
     @Autowired
-    KafkaProducer kafkaProducer;
+    TripleAPayment tripleAPayment;
 
     @Autowired
     VNPayPayment vnPayPayment;
@@ -31,5 +32,10 @@ public class TestController {
     @GetMapping(value = "/payment", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> healthz(HttpServletRequest httpServletRequest) throws ServletException, IOException {
         return new ResponseEntity<>(vnPayPayment.doPost(httpServletRequest), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> test() throws ServletException, IOException {
+        return new ResponseEntity<>(tripleAPayment.getAccessToken(), HttpStatus.OK);
     }
 }

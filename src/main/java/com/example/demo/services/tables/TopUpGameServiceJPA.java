@@ -3,25 +3,38 @@ package com.example.demo.services.tables;
 import com.example.demo.dtos.GetAllTopUpDTO;
 import com.example.demo.dtos.ReportTopUp;
 import com.example.demo.dtos.TopUpRequestDTO;
+import com.example.demo.dtos.ResponsePaymentStatus;
+import com.example.demo.dtos.payment.CreatePaymentLinkRequestBody;
+import com.example.demo.dtos.topup.PaymentStatusRequestDTO;
 import com.example.demo.dtos.topup.TopUpResponseDTO;
-import com.example.demo.repositories.tables.TopUpRepositoryJPA;
+import com.example.demo.repositories.tables.TopUpGameRepositoryJPA;
 import com.example.demo.repositories.tables.entities.TopUpEntity;
+import com.example.demo.services.payment.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 @Service
-public class TopUpServiceJPA {
+public class TopUpGameServiceJPA {
     @Autowired
-    TopUpRepositoryJPA topUpRepositoryJPA;
+    TopUpGameRepositoryJPA topUpRepositoryJPA;
 
     @Autowired
     UserServiceJPA userServiceJPA;
 
+    @Autowired
+    PaymentService paymentService;
+
+    @Value("${CANCEL_URL}")
+    String cancelURL;
+
+    @Value("${RETURN_URL}")
+    String returnURL;
+
     public Object createRequest(TopUpRequestDTO params) {
+        // create TopUp request;
         TopUpEntity topUpEntity = new TopUpEntity();
         topUpEntity.setAmount(params.getAmount());
         topUpEntity.setStatus(0L);
@@ -29,12 +42,21 @@ public class TopUpServiceJPA {
         topUpEntity.setMethod(params.getMethod());
         topUpEntity.setCreateDate(new Date(System.currentTimeMillis()));
         topUpRepositoryJPA.save(topUpEntity);
-        return topUpEntity;
+        // create Payment request;
+        CreatePaymentLinkRequestBody req = new CreatePaymentLinkRequestBody();
+        req.setDescription(params.getUsername() + " " + topUpEntity.getId());
+        req.setCancelUrl(cancelURL);
+        req.setReturnUrl(returnURL);
+        req.setOrderCode(topUpEntity.getId());
+        req.setPrice(params.getAmount());
+        req.setUsername(params.getUsername());
+        return paymentService.createTopUpRequest(req);
     }
 
     public Object confirm(TopUpRequestDTO params) {
         TopUpEntity topUpEntity = topUpRepositoryJPA.findById(params.getId()).get();
         topUpEntity.setStatus(1L); //success;
+        topUpRepositoryJPA.save(topUpEntity);
         TopUpRequestDTO topUpRequestDTO = new TopUpRequestDTO();
         topUpRequestDTO.setAmount(topUpEntity.getAmount());
         topUpRequestDTO.setUsername(topUpEntity.getUsername());
@@ -61,6 +83,14 @@ public class TopUpServiceJPA {
         TopUpEntity topUpEntity = topUpRepositoryJPA.findById(params.getId()).get();
         topUpEntity.setStatus(2L); //fail;
         topUpRepositoryJPA.save(topUpEntity);
+        return 1L;
+    }
+
+    public Object getPaymentStatus(PaymentStatusRequestDTO params) {
+        ResponsePaymentStatus response = (ResponsePaymentStatus) paymentService.getOrderById(Math.toIntExact(params.getOrderCode()));
+        if (response.getStatus().equals("PAID")) {
+            confirm(new TopUpRequestDTO(response.getOrderCode()));
+        }
         return 1L;
     }
 }

@@ -36,9 +36,7 @@ public class SaleOrderServiceJPA {
         for(int i = 0; i < params.getAmount(); i++) {
             SaleOrderEntity saleOrderEntity = new SaleOrderEntity();
             saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));
-            saleOrderEntity.setUsername(params.getUsername());
             saleOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));
-            saleOrderEntity.setItemId(params.getItemId());
             saleOrderEntity.setStatus(0L);
             saleOrderEntity.setAccountId(null);
             SaleOrderEntity saved = saleOrderRepositoryJPA.save(saleOrderEntity);
@@ -62,10 +60,6 @@ public class SaleOrderServiceJPA {
                 saleOrderResponseDTO.setUsername(stockAccountEntity.getUsername());
                 saleOrderResponseDTO.setPassword(stockAccountEntity.getPassword());
             }
-            ItemDTO itemEntity = itemServiceJPA.getItemById(Long.valueOf(saleOrderEntity.getItemId()));
-            saleOrderResponseDTO.setItemName(itemEntity.getName());
-            saleOrderResponseDTO.setPrice(itemEntity.getPrice());
-            amount += itemEntity.getPrice();
             res.add(saleOrderResponseDTO);
         }
         SaleOrderResponseSummaryDTO result = new SaleOrderResponseSummaryDTO();
@@ -77,10 +71,8 @@ public class SaleOrderServiceJPA {
 
     public void processOrder(String orderId) {
         SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(orderId);
-        ItemDTO itemEntity = itemServiceJPA.getItemById(Long.valueOf(saleOrderEntity.getItemId()));
         TopUpRequestDTO topUpRequestDTO = new TopUpRequestDTO();
         topUpRequestDTO.setUsername(saleOrderEntity.getUsername());
-        topUpRequestDTO.setAmount(-itemEntity.getPrice());
         userServiceJPA.addBalance(topUpRequestDTO);
         StockAccountEntity stockAccountEntity = stockAccountServiceJPA.orderAccount(saleOrderEntity.getItemId());
         if (stockAccountEntity != null) {
@@ -89,7 +81,6 @@ public class SaleOrderServiceJPA {
             saleOrderRepositoryJPA.save(saleOrderEntity);
         }
         else {
-            topUpRequestDTO.setAmount(itemEntity.getPrice());
             userServiceJPA.addBalance(topUpRequestDTO);
             saleOrderEntity.setStatus(2L);
             saleOrderRepositoryJPA.save(saleOrderEntity);

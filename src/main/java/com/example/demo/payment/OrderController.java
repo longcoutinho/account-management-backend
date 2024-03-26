@@ -32,46 +32,6 @@ public class OrderController {
         this.payOS = payOS;
     }
 
-    @PostMapping(path = "/create")
-    public ObjectNode createPaymentLink(@RequestBody CreatePaymentLinkRequestBody RequestBody) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            final String productName = RequestBody.getProductName();
-            final String description = RequestBody.getDescription();
-            final String returnUrl = RequestBody.getReturnUrl();
-            final String cancelUrl = RequestBody.getCancelUrl();
-            final int price = RequestBody.getPrice();
-            //Gen order code
-            String currentTimeString = String.valueOf(String.valueOf(new Date().getTime()));
-            int orderCode =
-                    Integer.parseInt(currentTimeString.substring(currentTimeString.length() - 6));
-
-            ItemData item = new ItemData("Mì tôm hảo hảo Ly", 1, 1000);
-            List<ItemData> itemList = new ArrayList<ItemData>();
-            itemList.add(item);
-
-            PaymentData paymentData = new PaymentData(orderCode, price, description,
-                    itemList, cancelUrl, returnUrl);
-
-            JsonNode data = payOS.createPaymentLink(paymentData);
-
-            ObjectNode respon = objectMapper.createObjectNode();
-            respon.put("error", 0);
-            respon.put("message", "success");
-            respon.set("data", data);
-            return respon;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ObjectNode respon = objectMapper.createObjectNode();
-            respon.put("error", -1);
-            respon.put("message", "fail");
-            respon.set("data", null);
-            return respon;
-
-        }
-    }
-
     private String formatterDateTimeFromArray(JsonNode dateTimeArray) {
         int year = dateTimeArray.get(0).asInt();
         int month = dateTimeArray.get(1).asInt();
@@ -84,26 +44,8 @@ public class OrderController {
     }
 
     @GetMapping(path = "/{orderId}")
-    public ObjectNode getOrderById(@PathVariable("orderId") int orderId) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode respon = objectMapper.createObjectNode();
 
-        try {
-            JsonNode order = payOS.getPaymentLinkInfomation(orderId);
 
-            respon.set("data", order);
-            respon.put("error", 0);
-            respon.put("message", "ok");
-            return respon;
-        } catch (Exception e) {
-            e.printStackTrace();
-            respon.put("error", -1);
-            respon.put("message", e.getMessage());
-            respon.set("data", null);
-            return respon;
-        }
-
-    }
     @PutMapping(path = "/{orderId}")
     public ObjectNode cancelOrder(@PathVariable("orderId") int orderId) {
         ObjectMapper objectMapper = new ObjectMapper();

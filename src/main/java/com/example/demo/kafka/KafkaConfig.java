@@ -13,8 +13,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-@EnableKafka
-@Configuration
+//@EnableKafka
+//@Configuration
 public class KafkaConfig {
     @Value("localhost:9094")
     String bootstrapAddress;
