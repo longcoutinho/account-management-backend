@@ -3,9 +3,8 @@ package com.example.demo.services.tables;
 import com.example.demo.dtos.*;
 import com.example.demo.kafka.KafkaProducer;
 import com.example.demo.repositories.tables.SaleOrderRepositoryJPA;
-import com.example.demo.repositories.tables.entities.ItemEntity;
 import com.example.demo.repositories.tables.entities.SaleOrderEntity;
-import com.example.demo.repositories.tables.entities.StockAccountEntity;
+import com.example.demo.repositories.tables.entities.GameEntity;
 import com.example.demo.services.tables.item.ItemServiceJPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class SaleOrderServiceJPA {
     KafkaProducer kafkaProducer;
 
     @Autowired
-    StockAccountServiceJPA stockAccountServiceJPA;
+    GameServiceJPA stockAccountServiceJPA;
 
     @Autowired
     ItemServiceJPA itemServiceJPA;
@@ -55,11 +54,6 @@ public class SaleOrderServiceJPA {
             saleOrderResponseDTO.setCreateDate(saleOrderEntity.getCreateDate());
             saleOrderResponseDTO.setStatus(saleOrderEntity.getStatus());
             saleOrderResponseDTO.setUserId(saleOrderEntity.getUsername());
-            StockAccountEntity stockAccountEntity = stockAccountServiceJPA.findById(saleOrderEntity.getAccountId());
-            if (stockAccountEntity != null) {
-                saleOrderResponseDTO.setUsername(stockAccountEntity.getUsername());
-                saleOrderResponseDTO.setPassword(stockAccountEntity.getPassword());
-            }
             res.add(saleOrderResponseDTO);
         }
         SaleOrderResponseSummaryDTO result = new SaleOrderResponseSummaryDTO();
@@ -74,16 +68,5 @@ public class SaleOrderServiceJPA {
         TopUpRequestDTO topUpRequestDTO = new TopUpRequestDTO();
         topUpRequestDTO.setUsername(saleOrderEntity.getUsername());
         userServiceJPA.addBalance(topUpRequestDTO);
-        StockAccountEntity stockAccountEntity = stockAccountServiceJPA.orderAccount(saleOrderEntity.getItemId());
-        if (stockAccountEntity != null) {
-            saleOrderEntity.setStatus(1L);
-            saleOrderEntity.setAccountId(stockAccountEntity.getId());
-            saleOrderRepositoryJPA.save(saleOrderEntity);
-        }
-        else {
-            userServiceJPA.addBalance(topUpRequestDTO);
-            saleOrderEntity.setStatus(2L);
-            saleOrderRepositoryJPA.save(saleOrderEntity);
-        }
     }
 }
