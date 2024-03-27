@@ -1,4 +1,4 @@
-package com.example.demo.jwt;
+package com.example.demo.security.jwt;
 
 import com.example.demo.dtos.ResponseUserDTO;
 import com.example.demo.dtos.UserDTO;

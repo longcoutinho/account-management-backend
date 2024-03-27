@@ -9,7 +9,7 @@ import com.example.demo.dtos.topup.PaymentStatusRequestDTO;
 import com.example.demo.dtos.topup.TopUpResponseDTO;
 import com.example.demo.repositories.tables.TopUpGameRepositoryJPA;
 import com.example.demo.repositories.tables.entities.TopUpEntity;
-import com.example.demo.services.payment.PaymentService;
+import com.example.demo.services.payment.PayOSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class TopUpGameServiceJPA {
     UserServiceJPA userServiceJPA;
 
     @Autowired
-    PaymentService paymentService;
+    PayOSService paymentService;
 
     @Value("${CANCEL_URL}")
     String cancelURL;

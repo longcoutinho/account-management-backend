@@ -1,4 +1,4 @@
-package com.example.demo.dtos;
+package com.example.demo.dtos.saleorder;
 
 import lombok.Data;
 
@@ -6,5 +6,5 @@ import lombok.Data;
 public class SaleOrderDTO {
     Long itemId;
     Long amount;
-    String id;
+    String createUser;
 }

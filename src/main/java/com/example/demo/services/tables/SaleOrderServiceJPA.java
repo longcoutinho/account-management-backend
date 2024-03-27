@@ -1,11 +1,14 @@
 package com.example.demo.services.tables;
 
 import com.example.demo.dtos.*;
-import com.example.demo.kafka.KafkaProducer;
+import com.example.demo.dtos.saleorder.*;
 import com.example.demo.repositories.tables.SaleOrderRepositoryJPA;
 import com.example.demo.repositories.tables.entities.SaleOrderEntity;
-import com.example.demo.repositories.tables.entities.GameEntity;
-import com.example.demo.services.tables.item.ItemServiceJPA;
+import com.example.demo.services.payment.TripleAService;
+import com.example.demo.utils.constants.Constants;
+import com.example.demo.utils.enums.ErrorApp;
+import com.example.demo.utils.exception.CustomException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,28 +23,19 @@ public class SaleOrderServiceJPA {
     SaleOrderRepositoryJPA saleOrderRepositoryJPA;
 
     @Autowired
-    KafkaProducer kafkaProducer;
+    TripleAService tripleAService;
 
-    @Autowired
-    GameServiceJPA stockAccountServiceJPA;
-
-    @Autowired
-    ItemServiceJPA itemServiceJPA;
-
-    @Autowired
-    UserServiceJPA userServiceJPA;
-
-    public Object create(SaleOrderDTO params) {
-        for(int i = 0; i < params.getAmount(); i++) {
-            SaleOrderEntity saleOrderEntity = new SaleOrderEntity();
-            saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));
-            saleOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));
-            saleOrderEntity.setStatus(0L);
-            saleOrderEntity.setAccountId(null);
-            SaleOrderEntity saved = saleOrderRepositoryJPA.save(saleOrderEntity);
-//            kafkaProducer.sendOrderMessage(saved.getId());
-        }
-        return 1L;
+    public Object create(SaleOrderDTO params) throws JsonProcessingException {
+        // Create sale order
+        SaleOrderEntity saleOrderEntity = new SaleOrderEntity();
+        saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));
+        saleOrderEntity.setCreateUser(params.getCreateUser());
+        saleOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));
+        saleOrderEntity.setItemId(params.getItemId());
+        saleOrderEntity.setAmount(params.getAmount());
+        saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.CREATE);
+        // Create payment
+        return tripleAService.createPayment(saleOrderRepositoryJPA.save(saleOrderEntity));
     }
 
     public SaleOrderResponseSummaryDTO getAll(SaleOrderDTO params) {
@@ -53,7 +47,6 @@ public class SaleOrderServiceJPA {
             saleOrderResponseDTO.setId(saleOrderEntity.getId());
             saleOrderResponseDTO.setCreateDate(saleOrderEntity.getCreateDate());
             saleOrderResponseDTO.setStatus(saleOrderEntity.getStatus());
-            saleOrderResponseDTO.setUserId(saleOrderEntity.getUsername());
             res.add(saleOrderResponseDTO);
         }
         SaleOrderResponseSummaryDTO result = new SaleOrderResponseSummaryDTO();
@@ -63,10 +56,16 @@ public class SaleOrderServiceJPA {
         return result;
     }
 
-    public void processOrder(String orderId) {
-        SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(orderId);
-        TopUpRequestDTO topUpRequestDTO = new TopUpRequestDTO();
-        topUpRequestDTO.setUsername(saleOrderEntity.getUsername());
-        userServiceJPA.addBalance(topUpRequestDTO);
+    public ResponseProcessOrderDTO processOrder(RequestProcessOrderDTO request) {
+        if (!validateOrder(request)) throw new CustomException(ErrorApp.INVALID_ORDER);
+
+        return null;
+    }
+
+    private boolean validateOrder(RequestProcessOrderDTO request) {
+        SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(request.getOrderId());
+        if (!saleOrderEntity.getPaymentReference().equals(request.getPaymentReference())) return false;
+        if (!saleOrderEntity.getCreateUser().equals(request.getCreateUser())) return false;
+        return true;
     }
 }

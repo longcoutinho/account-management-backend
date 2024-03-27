@@ -1,10 +1,11 @@
-package com.example.demo.payment;
+package com.example.demo.services.payment;
 
-import com.example.demo.dtos.SaleOrderDTO;
 import com.example.demo.dtos.payment.tripleA.RequestPaymentDTO;
 import com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;
+import com.example.demo.dtos.payment.tripleA.ResponseDetailPaymentDTO;
 import com.example.demo.dtos.payment.tripleA.ResponsePaymentDTO;
 import com.example.demo.repositories.tables.entities.SaleOrderEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
-public class TripleAPayment {
+public class TripleAService {
     @Value("${triple-a.auth.url}")
     String authUrl;
+
+    @Value("${triple-a.payment.url}")
+    String paymentUrl;
 
     @Value("${triple-a.client-id}")
     String client_id;
@@ -66,17 +70,36 @@ public class TripleAPayment {
         return null;
     }
 
-    public ResponsePaymentDTO createPayment(SaleOrderDTO saleOrder) {
-        RequestPaymentDTO request = new RequestPaymentDTO();
-        request.setType("triplea");
-        request.setMerchant_key("mkey-cltzq8mtk0i8f2nisdy8124zp");
-        request.setOrder_currency("VND");
-        request.setOrder_amount(saleOrder.getAmount());
-        request.setPayer_id("minhbn.gm@gmail.com");
-        request.setOrder_id(saleOrder.getId());
-        request.setCancel_url(cancelUrl);
-        request.setSuccess_url(successUrl);
+    public ResponsePaymentDTO createPayment(SaleOrderEntity saleOrder) throws JsonProcessingException {
+        RequestPaymentDTO requestBody = new RequestPaymentDTO();
+        requestBody.setType("triplea");
+        requestBody.setMerchant_key("mkey-cltzq8mtk0i8f2nisdy8124zp");
+        requestBody.setOrder_currency("VND");
+        requestBody.setOrder_amount(saleOrder.getAmount());
+        requestBody.setPayer_id("minhbn.gm@gmail.com");
+        requestBody.setCancel_url(cancelUrl);
+        requestBody.setSuccess_url(successUrl);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String url = paymentUrl;
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(requestBody)))
+                .build();
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            ResponsePaymentDTO responsePaymentDTO = objectMapper.readValue(response.body(), ResponsePaymentDTO.class);
+            return responsePaymentDTO;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
+    }
+
+    public ResponseDetailPaymentDTO getDetailPayment(String paymentReference) {
+
     }
 
     private static String encodeFormData(Map<String, String> formData) {

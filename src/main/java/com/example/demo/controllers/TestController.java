@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.kafka.KafkaProducer;
-import com.example.demo.payment.TripleAPayment;
+import com.example.demo.services.payment.TripleAService;
 import com.example.demo.payment.VNPayPayment;
 import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.servlet.ServletException;
@@ -19,7 +18,7 @@ public class TestController {
     UserServiceJPA userServiceJPA;
 
     @Autowired
-    TripleAPayment tripleAPayment;
+    TripleAService tripleAPayment;
 
     @Autowired
     VNPayPayment vnPayPayment;

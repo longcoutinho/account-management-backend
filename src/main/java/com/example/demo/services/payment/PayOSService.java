@@ -4,23 +4,19 @@ import com.example.demo.dtos.ResponsePaymentStatus;
 import com.example.demo.dtos.payment.CreatePaymentLinkRequestBody;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.lib.payos.PayOS;
 import com.lib.payos.type.ItemData;
 import com.lib.payos.type.PaymentData;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
-public class PaymentService {
+public class PayOSService {
     private final PayOS payOS;
 
-    public PaymentService(PayOS payOS) {
+    public PayOSService(PayOS payOS) {
         this.payOS = payOS;
     }
 

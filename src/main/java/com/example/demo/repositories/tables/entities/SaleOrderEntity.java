@@ -16,18 +16,21 @@ public class SaleOrderEntity implements Serializable {
     @Column(name = "ID")
     String id;
 
-    @Column(name = "USERNAME")
-    String username;
+    @Column(name = "CREATE_USER")
+    String createUser;
 
     @Column(name = "CREATE_DATE")
     Date createDate;
 
     @Column(name = "ITEM_ID")
-    String itemId;
+    Long itemId;
+
+    @Column(name = "AMOUNT")
+    Long amount;
 
     @Column(name = "STATUS")
     Long status;
 
-    @Column(name = "ACCOUNT_ID")
-    String accountId;
+    @Column(name = "PAYMENT_REFERENCE")
+    String paymentReference;
 }

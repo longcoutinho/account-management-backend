@@ -1,6 +1,6 @@
 package com.example.demo.security;
 
-import com.example.demo.jwt.JwtTokenProvider;
+import com.example.demo.security.jwt.JwtTokenProvider;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.servlet.FilterChain;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 @Component
 public class SecurityServletFilter extends HttpFilter {
@@ -45,7 +44,7 @@ public class SecurityServletFilter extends HttpFilter {
         if (sitePath.startsWith("/item")) return true;
         if (sitePath.startsWith("/test")) return true;
         if (sitePath.startsWith("/card")) return true;
-        if (sitePath.startsWith("/game")) return true;
+        if (sitePath.startsWith("/sale-order")) return true;
         return false;
     }
 

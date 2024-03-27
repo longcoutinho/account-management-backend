@@ -1,6 +1,6 @@
-package com.example.demo.dtos;
+package com.example.demo.dtos.saleorder;
 
-import com.example.demo.dtos.SaleOrderResponseDTO;
+import com.example.demo.dtos.saleorder.SaleOrderResponseDTO;
 import lombok.Data;
 
 import java.util.List;

@@ -30,6 +30,7 @@ public class CheckoutController {
     }
     @RequestMapping(value = "/cancel")
     public String Cancel() {
+        System.out.println("/cancel");
         return "cancel";
     }
     @RequestMapping(method = RequestMethod.POST, value = "/create-payment-link", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

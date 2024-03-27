@@ -1,10 +1,10 @@
-package com.example.demo.controllers.item;
+package com.example.demo.controllers;
 
-import com.example.demo.dtos.ItemDTO;
-import com.example.demo.dtos.SaleOrderDTO;
-import com.example.demo.repositories.tables.SaleOrderRepositoryJPA;
+import com.example.demo.dtos.saleorder.RequestProcessOrderDTO;
+import com.example.demo.dtos.saleorder.SaleOrderDTO;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.services.tables.SaleOrderServiceJPA;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,11 +19,22 @@ public class SaleOrderController {
     SaleOrderServiceJPA saleOrderServiceJPA;
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(SaleOrderDTO params, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Object> create(SaleOrderDTO params, HttpServletRequest httpServletRequest) throws JsonProcessingException {
         UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
         if (userEntity.getRole().equals("USER")) {
+            params.setCreateUser(userEntity.getUsername());
         }
         Object result = saleOrderServiceJPA.create(params);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/process", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> process(RequestProcessOrderDTO params, HttpServletRequest httpServletRequest) throws JsonProcessingException {
+        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
+        if (userEntity.getRole().equals("USER")) {
+            params.setCreateUser(userEntity.getUsername());
+        }
+        Object result = saleOrderServiceJPA.processOrder(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
