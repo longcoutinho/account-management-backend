@@ -99,7 +99,20 @@ public class TripleAService {
     }
 
     public ResponseDetailPaymentDTO getDetailPayment(String paymentReference) {
-
+        String url = paymentUrl + '/' + paymentReference;
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url)) // Specify the URL you want to send the GET request to
+                .build();
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            ObjectMapper objectMapper = new ObjectMapper();
+            ResponseDetailPaymentDTO responseDetailPaymentDTO = objectMapper.readValue(response.body(), ResponseDetailPaymentDTO.class);
+            return responseDetailPaymentDTO;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static String encodeFormData(Map<String, String> formData) {

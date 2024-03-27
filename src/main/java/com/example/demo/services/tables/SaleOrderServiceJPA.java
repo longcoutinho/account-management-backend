@@ -1,6 +1,7 @@
 package com.example.demo.services.tables;
 
 import com.example.demo.dtos.*;
+import com.example.demo.dtos.payment.tripleA.ResponseDetailPaymentDTO;
 import com.example.demo.dtos.saleorder.*;
 import com.example.demo.repositories.tables.SaleOrderRepositoryJPA;
 import com.example.demo.repositories.tables.entities.SaleOrderEntity;
@@ -57,13 +58,22 @@ public class SaleOrderServiceJPA {
     }
 
     public ResponseProcessOrderDTO processOrder(RequestProcessOrderDTO request) {
-        if (!validateOrder(request)) throw new CustomException(ErrorApp.INVALID_ORDER);
-
-        return null;
+        SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(request.getOrderId());
+        if (!validateOrder(request, saleOrderEntity)) throw new CustomException(ErrorApp.INVALID_ORDER);
+        ResponseDetailPaymentDTO orderDetail = tripleAService.getDetailPayment(request.getPaymentReference());
+        if (orderDetail.getStatus().equals("good")) {
+            saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.SUCCESS);
+        }
+        else {
+            saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.FAIL);
+        }
+        saleOrderRepositoryJPA.save(saleOrderEntity);
+        ResponseProcessOrderDTO response = new ResponseProcessOrderDTO();
+        response.setStatus(saleOrderEntity.getStatus());
+        return response;
     }
 
-    private boolean validateOrder(RequestProcessOrderDTO request) {
-        SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(request.getOrderId());
+    private boolean validateOrder(RequestProcessOrderDTO request, SaleOrderEntity saleOrderEntity) {
         if (!saleOrderEntity.getPaymentReference().equals(request.getPaymentReference())) return false;
         if (!saleOrderEntity.getCreateUser().equals(request.getCreateUser())) return false;
         return true;

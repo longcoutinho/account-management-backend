@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class ResponseDetailPaymentDTO {
-    Long status;
+    String status;
 }

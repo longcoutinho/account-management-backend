@@ -6,11 +6,9 @@ import org.springframework.stereotype.Component;
 
 //@Component
 public class KafkaConsumer {
-    @Autowired
-    SaleOrderServiceJPA saleOrderServiceJPA;
 
-    @KafkaListener(topics = "order", groupId = "order-group")
-    public void listenOrderMessage(String orderId) {
-        saleOrderServiceJPA.processOrder(orderId);
-    }
+//    @KafkaListener(topics = "order", groupId = "order-group")
+//    public void listenOrderMessage(String orderId) {
+//        saleOrderServiceJPA.processOrder(orderId);
+//    }
 }
