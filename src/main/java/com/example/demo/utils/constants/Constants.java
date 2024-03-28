@@ -1,5 +1,15 @@
 package com.example.demo.utils.constants;
 
+import com.example.demo.dtos.payment.tripleA.ResponsePaymentDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.catalina.connector.Response;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 
 public class Constants {

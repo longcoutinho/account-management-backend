@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping(value = "/sale-order")
 public class SaleOrderController {
@@ -19,7 +21,7 @@ public class SaleOrderController {
     SaleOrderServiceJPA saleOrderServiceJPA;
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(SaleOrderDTO params, HttpServletRequest httpServletRequest) throws JsonProcessingException {
+    public ResponseEntity<Object> create(SaleOrderDTO params, HttpServletRequest httpServletRequest) throws IOException {
         UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
         if (userEntity.getRole().equals("USER")) {
             params.setCreateUser(userEntity.getUsername());

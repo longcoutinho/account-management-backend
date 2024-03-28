@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class SaleOrderServiceJPA {
     @Autowired
     TripleAService tripleAService;
 
-    public Object create(SaleOrderDTO params) throws JsonProcessingException {
+    public Object create(SaleOrderDTO params) throws IOException {
         // Create sale order
         SaleOrderEntity saleOrderEntity = new SaleOrderEntity();
         saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));
