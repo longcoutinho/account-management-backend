@@ -24,4 +24,7 @@ public class GameEntity implements Serializable {
 
     @Column(name = "CODE")
     String code;
+
+    @Column(name = "IMAGE")
+    String image;
 }

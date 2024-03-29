@@ -18,4 +18,7 @@ public class CardEntity implements Serializable {
 
     @Column(name = "NAME")
     String name;
+
+    @Column(name = "IMAGE")
+    String image;
 }

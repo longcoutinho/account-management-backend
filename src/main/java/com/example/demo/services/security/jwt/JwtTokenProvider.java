@@ -19,12 +19,10 @@ public class JwtTokenProvider {
     @Value("${login.secret}")
     String loginSecret;
 
-    @Value("${login.token-expire-time}")
-    String expireTime;
-
     // Tạo ra jwt từ thông tin user
     public String generateToken(ResponseUserDTO userDetails) {
         Date now = new Date();
+        Long expireTime = 36000000L;
         Date expiryDate = new Date(now.getTime() + expireTime);
         System.out.println("Expired in" + expiryDate);
         // Tạo chuỗi json web token từ id của user.

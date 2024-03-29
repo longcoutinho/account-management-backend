@@ -18,7 +18,7 @@ public class ItemEntity implements Serializable {
     Long id;
 
     @Column(name = "PRICE")
-    Float price;
+    Long price;
 
     @Column(name = "CARD_ID")
     Long cardId;

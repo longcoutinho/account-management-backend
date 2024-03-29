@@ -7,7 +7,7 @@ public class RequestPaymentDTO {
     String type;
     String merchant_key;
     String order_currency;
-    float order_amount;
+    Long order_amount;
     String payer_id;
     String order_id;
     String cancel_url;

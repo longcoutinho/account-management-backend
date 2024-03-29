@@ -37,5 +37,5 @@ public class AppotaPayService {
         return jwtTokenProvider.generateToken(header, FnCommon.toString(payload), secretKey, SignatureAlgorithm.HS512);
     }
 
-    
+
 }

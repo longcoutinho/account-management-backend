@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "SIZE")
-public class SizeEntity implements Serializable {
+@Table(name = "PAYMENT_METHOD")
+public class PaymentMethodEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -19,6 +19,6 @@ public class SizeEntity implements Serializable {
     @Column(name = "NAME")
     String name;
 
-    @Column(name = "CODE")
-    String code;
+    @Column(name = "IMAGE")
+    String image;
 }

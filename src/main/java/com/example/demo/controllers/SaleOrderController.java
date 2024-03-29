@@ -21,7 +21,7 @@ public class SaleOrderController {
     SaleOrderServiceJPA saleOrderServiceJPA;
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(SaleOrderDTO params, HttpServletRequest httpServletRequest) throws IOException {
+    public ResponseEntity<Object> create(@RequestBody SaleOrderDTO params, HttpServletRequest httpServletRequest) throws IOException {
         UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
         if (userEntity.getRole().equals("USER")) {
             params.setCreateUser(userEntity.getUsername());

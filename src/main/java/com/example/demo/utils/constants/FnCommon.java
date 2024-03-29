@@ -23,6 +23,7 @@ public class FnCommon {
                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(obj)))
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
             return response.body();
         }
         catch (Exception e) {
@@ -31,18 +32,19 @@ public class FnCommon {
         return null;
     }
 
-    public static String doGetRequest(String url, Map<String, String> params, String token) {
+    public static String doPostRequestFormData(String url, Map<String, String> params, String token) {
         String encodedFormData = encodeFormData(params);
         HttpRequest.BodyPublisher requestBody = HttpRequest.BodyPublishers.ofString(encodedFormData);
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Accept", "application/json")
-                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/x-www-form-urlencoded")
                 .POST(requestBody)
                 .build();
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
             return response.body();
         } catch (Exception e) {
             e.printStackTrace();

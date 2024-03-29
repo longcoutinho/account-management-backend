@@ -1,6 +1,7 @@
 package com.example.demo.services.tables.item;
 
 import com.example.demo.repositories.tables.ItemRepositoryJPA;
+import com.example.demo.repositories.tables.entities.ItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,5 +12,9 @@ public class ItemServiceJPA {
 
     public Object getItemByCardId(Long id) {
         return itemRepositoryJPA.findByCardId(id);
+    }
+
+    public ItemEntity findById(Long itemId) {
+        return itemRepositoryJPA.findById(itemId).get();
     }
 }
