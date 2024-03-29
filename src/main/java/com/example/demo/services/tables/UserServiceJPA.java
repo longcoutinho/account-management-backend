@@ -6,7 +6,7 @@ import com.example.demo.dtos.UserDTO;
 import com.example.demo.dtos.user.AdjustBalanceDTO;
 import com.example.demo.dtos.user.RequestUserDTO;
 import com.example.demo.dtos.user.ResetPasswordDTO;
-import com.example.demo.security.jwt.JwtTokenProvider;
+import com.example.demo.services.security.jwt.JwtTokenProvider;
 import com.example.demo.repositories.tables.UserRepositoryJPA;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.utils.enums.ErrorApp;

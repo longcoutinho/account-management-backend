@@ -1,6 +1,6 @@
 package com.example.demo.security;
 
-import com.example.demo.security.jwt.JwtTokenProvider;
+import com.example.demo.services.security.jwt.JwtTokenProvider;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.servlet.FilterChain;

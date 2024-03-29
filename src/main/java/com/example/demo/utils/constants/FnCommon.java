@@ -62,4 +62,13 @@ public class FnCommon {
         }
         return encodedForm.toString();
     }
+
+    public static String toString(Map<String, ?> map) {
+        StringBuilder mapAsString = new StringBuilder("{");
+        for (String key : map.keySet()) {
+            mapAsString.append(key + "=" + map.get(key) + ", ");
+        }
+        mapAsString.delete(mapAsString.length()-2, mapAsString.length()).append("}");
+        return mapAsString.toString();
+    }
 }
