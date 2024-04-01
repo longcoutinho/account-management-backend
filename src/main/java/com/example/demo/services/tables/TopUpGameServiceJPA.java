@@ -6,10 +6,12 @@ import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.dtos.ResponsePaymentStatus;
 import com.example.demo.dtos.payment.CreatePaymentLinkRequestBody;
 import com.example.demo.dtos.topup.PaymentStatusRequestDTO;
+import com.example.demo.dtos.topup.RequestTokenLordMobile;
 import com.example.demo.dtos.topup.TopUpResponseDTO;
 import com.example.demo.repositories.tables.TopUpGameRepositoryJPA;
 import com.example.demo.repositories.tables.entities.TopUpEntity;
 import com.example.demo.services.payment.PayOSService;
+import com.example.demo.services.topupgame.LordMobileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,8 @@ public class TopUpGameServiceJPA {
     @Autowired
     PayOSService paymentService;
 
-    @Value("${CANCEL_URL}")
-    String cancelURL;
+    @Autowired
+    LordMobileService lordMobileService;
 
     @Value("${RETURN_URL}")
     String returnURL;
@@ -45,7 +47,6 @@ public class TopUpGameServiceJPA {
         // create Payment request;
         CreatePaymentLinkRequestBody req = new CreatePaymentLinkRequestBody();
         req.setDescription(params.getUsername() + " " + topUpEntity.getId());
-        req.setCancelUrl(cancelURL);
         req.setReturnUrl(returnURL);
         req.setOrderCode(topUpEntity.getId());
         req.setPrice(params.getAmount());
@@ -92,5 +93,13 @@ public class TopUpGameServiceJPA {
             confirm(new TopUpRequestDTO(response.getOrderCode()));
         }
         return 1L;
+    }
+
+    public Object sendOtpLordMobile(String id) {
+        return lordMobileService.sendOtpLordMobile(id);
+    }
+
+    public Object getTokenLordMobile(String id, RequestTokenLordMobile params) {
+        return lordMobileService.getAccessToken(id, params);
     }
 }

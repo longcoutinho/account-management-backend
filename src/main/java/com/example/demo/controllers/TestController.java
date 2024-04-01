@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.services.payment.TripleAService;
 import com.example.demo.payment.VNPayPayment;
+import com.example.demo.services.tables.TopUpGameServiceJPA;
 import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,9 @@ public class TestController {
     @Autowired
     VNPayPayment vnPayPayment;
 
+    @Autowired
+    TopUpGameServiceJPA topUpGameServiceJPA;
+
     /**
      * API Health Check
      *
@@ -36,5 +40,11 @@ public class TestController {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> test() throws ServletException, IOException {
         return new ResponseEntity<>(tripleAPayment.getAccessToken(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/lord-mobile/send-otp/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> request(@PathVariable(value = "id") String id) {
+        Object result = topUpGameServiceJPA.sendOtpLordMobile(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

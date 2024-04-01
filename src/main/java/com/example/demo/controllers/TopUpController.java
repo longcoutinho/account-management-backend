@@ -19,15 +19,6 @@ public class TopUpController {
     @Autowired
     TopUpGameServiceJPA topUpServiceJPA;
 
-    @PostMapping(value = "/request", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> request(@Valid @RequestBody TopUpRequestDTO params,
-                                          HttpServletRequest httpServletRequest) {
-        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
-        params.setUsername(userEntity.getUsername());
-        Object result = topUpServiceJPA.createRequest(params);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @PostMapping(value = "/confirm", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> confirm(@RequestBody TopUpRequestDTO params) {
         Object result = topUpServiceJPA.confirm(params);
