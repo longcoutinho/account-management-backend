@@ -19,12 +19,10 @@ public class TopUpController {
     @Autowired
     TopUpGameServiceJPA topUpServiceJPA;
 
-    @PostMapping(value = "/request", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> request(@Valid @RequestBody TopUpRequestDTO params,
+    @GetMapping(value = "/lord-mobile/send-otp/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> request(@PathVariable(value = "id") String id,
                                           HttpServletRequest httpServletRequest) {
-        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
-        params.setUsername(userEntity.getUsername());
-        Object result = topUpServiceJPA.createRequest(params);
+        Object result = topUpServiceJPA.sendOtpLordMobile(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

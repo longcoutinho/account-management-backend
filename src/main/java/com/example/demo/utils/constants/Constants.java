@@ -18,4 +18,10 @@ public class Constants {
         Long SUCCESS = 1L;
         Long FAIL = 2L;
     }
+
+    public interface ERROR_CODE_SEND_OTP {
+        String TOO_MANY_REQUEST = "226";
+        String IGG_ID_INVALID = "202";
+        String SUCCESS = "0";
+    }
 }

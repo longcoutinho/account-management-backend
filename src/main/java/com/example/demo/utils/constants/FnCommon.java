@@ -9,6 +9,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FnCommon {
@@ -47,6 +48,34 @@ public class FnCommon {
             System.out.println(response.body());
             return response.body();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String doGetRequest(String url, String token, Map<String, String> params) {
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        // Construct the full URL with parameters
+        StringBuilder urlBuilder = new StringBuilder(url);
+        urlBuilder.append("?");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            urlBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+        String urlString = urlBuilder.toString();
+        urlString = urlString.substring(0, urlString.length() - 1); // Remove the trailing "&"
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(urlString))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            return response.body();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;
