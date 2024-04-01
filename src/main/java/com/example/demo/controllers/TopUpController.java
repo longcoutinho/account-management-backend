@@ -19,13 +19,6 @@ public class TopUpController {
     @Autowired
     TopUpGameServiceJPA topUpServiceJPA;
 
-    @GetMapping(value = "/lord-mobile/send-otp/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> request(@PathVariable(value = "id") String id,
-                                          HttpServletRequest httpServletRequest) {
-        Object result = topUpServiceJPA.sendOtpLordMobile(id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @PostMapping(value = "/confirm", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> confirm(@RequestBody TopUpRequestDTO params) {
         Object result = topUpServiceJPA.confirm(params);
