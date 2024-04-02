@@ -1,15 +1,18 @@
 package com.example.demo.utils.constants;
 
 import com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;
+import com.example.demo.dtos.topup.ResponseSendOTPLordMobile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FnCommon {
@@ -47,6 +50,35 @@ public class FnCommon {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
             return response.body();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<String> doPostRequestGetCookie(String url, Map<String, String> params, String token) {
+        String encodedFormData = encodeFormData(params);
+        HttpRequest.BodyPublisher requestBody = HttpRequest.BodyPublishers.ofString(encodedFormData);
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(requestBody)
+                .build();
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            ObjectMapper objectMapper = new ObjectMapper();
+            ResponseSendOTPLordMobile responseSendOTPLordMobile = objectMapper.readValue(response.body(), ResponseSendOTPLordMobile.class);
+            System.out.println(response.body());
+            if (responseSendOTPLordMobile.getError().getCode().equals(Constants.ERROR_CODE_SEND_OTP.SUCCESS)) {
+                HttpHeaders headers = response.headers();
+                Map<String, List<String>> headerMap = headers.map();
+                List<String> setCookieValues = headerMap.get("Set-Cookie");
+                System.out.println(setCookieValues);
+                return setCookieValues;
+            }
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -34,9 +34,9 @@ public class TopUpGameController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/lord-mobile/token/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/lord-mobile/token/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> request(@PathVariable(value = "id") String id,
-                                          RequestTokenLordMobile params) {
+                                          @RequestBody RequestTokenLordMobile params) {
         Object result = topUpGameServiceJPA.getTokenLordMobile(id, params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

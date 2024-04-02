@@ -6,7 +6,8 @@ public enum ErrorApp {
     EXIST_ITEM_HAS_TYPE("Exist item has this type"),
     INVALID_ORDER("Invalid Order"),
     TOO_MANY_REQUEST("Too many request. Please try again later"),
-    IGG_INVALID_ID("IGG ID invalid");
+    IGG_INVALID_ID("IGG ID invalid"),
+    WRONG_OTP("Wrong OTP");
 
     private final String description;
 

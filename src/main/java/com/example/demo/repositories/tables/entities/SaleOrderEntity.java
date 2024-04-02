@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "SALE_ORDER")
+@Table(name = "ORDER")
 public class SaleOrderEntity implements Serializable {
     @Id
     @Column(name = "ID")

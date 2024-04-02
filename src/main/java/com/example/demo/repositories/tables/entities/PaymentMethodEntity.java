@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "PAYMENT_METHOD")
+@Table(name = "PAYMENT")
 public class PaymentMethodEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
