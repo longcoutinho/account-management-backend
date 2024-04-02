@@ -20,7 +20,7 @@ public class Constants {
     }
 
     public interface ERROR_CODE_SEND_OTP {
-        String TOO_MANY_REQUEST = "226";
+        String TOO_MANY_REQUEST = "216";
         String IGG_ID_INVALID = "202";
         String SUCCESS = "0";
     }

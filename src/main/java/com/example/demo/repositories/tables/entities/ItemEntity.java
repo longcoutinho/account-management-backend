@@ -10,7 +10,7 @@ import java.sql.Date;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "ITEM")
+@Table(name = "CARD_ITEM")
 public class ItemEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
