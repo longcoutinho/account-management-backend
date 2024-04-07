@@ -8,6 +8,7 @@ import com.example.demo.utils.enums.ErrorApp;
 import com.example.demo.utils.exception.CustomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ import java.util.Map;
 
 @Service
 public class LordMobileService {
+    @Autowired
+    GamotaService gamotaService;
+
     @Value("${lord-mobile.send-otp}")
     String lordMobileSendOtpUrl;
 
@@ -74,5 +78,9 @@ public class LordMobileService {
         }
         else throw new CustomException(ErrorApp.WRONG_OTP);
         return null;
+    }
+
+    public Object getUsernameById(String username) {
+        return gamotaService.getUsernameById(username);
     }
 }

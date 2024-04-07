@@ -56,6 +56,27 @@ public class FnCommon {
         return null;
     }
 
+    public static String doPostRequestWithCookie(String url, Map<String, String> params, String token, String cookie) {
+        String encodedFormData = encodeFormData(params);
+        HttpRequest.BodyPublisher requestBody = HttpRequest.BodyPublishers.ofString(encodedFormData);
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Cookie", cookie)
+                .POST(requestBody)
+                .build();
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            return response.body();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static List<String> doPostRequestGetCookie(String url, Map<String, String> params, String token) {
         String encodedFormData = encodeFormData(params);
         HttpRequest.BodyPublisher requestBody = HttpRequest.BodyPublishers.ofString(encodedFormData);
