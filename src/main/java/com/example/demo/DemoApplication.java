@@ -2,7 +2,6 @@ package com.example.demo;
 
 import com.example.demo.controllers.TestController;
 import com.example.demo.kafka.KafkaProducer;
-import com.lib.payos.PayOS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -26,11 +25,6 @@ public class DemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
-	}
-
-	@Bean
-	public PayOS payOS() {
-		return new PayOS(clientId, apiKey, checksumKey);
 	}
 
 	@Bean

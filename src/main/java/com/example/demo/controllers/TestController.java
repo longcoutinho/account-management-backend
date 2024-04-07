@@ -2,7 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.services.payment.TripleAService;
 import com.example.demo.payment.VNPayPayment;
-import com.example.demo.services.tables.TopUpGameServiceJPA;
+import com.example.demo.services.topupgame.TopUpGameServiceJPA;
 import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

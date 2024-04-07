@@ -1,4 +1,4 @@
-package com.example.demo.services.tables;
+package com.example.demo.services.topupgame;
 
 import com.example.demo.dtos.GetAllTopUpDTO;
 import com.example.demo.dtos.ReportTopUp;
@@ -10,7 +10,7 @@ import com.example.demo.dtos.topup.RequestTokenLordMobile;
 import com.example.demo.dtos.topup.TopUpResponseDTO;
 import com.example.demo.repositories.tables.TopUpGameRepositoryJPA;
 import com.example.demo.repositories.tables.entities.TopUpEntity;
-import com.example.demo.services.payment.PayOSService;
+import com.example.demo.services.tables.UserServiceJPA;
 import com.example.demo.services.topupgame.LordMobileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,9 +25,6 @@ public class TopUpGameServiceJPA {
 
     @Autowired
     UserServiceJPA userServiceJPA;
-
-    @Autowired
-    PayOSService paymentService;
 
     @Autowired
     LordMobileService lordMobileService;
@@ -51,7 +48,7 @@ public class TopUpGameServiceJPA {
         req.setOrderCode(topUpEntity.getId());
         req.setPrice(params.getAmount());
         req.setUsername(params.getUsername());
-        return paymentService.createTopUpRequest(req);
+        return null;
     }
 
     public Object confirm(TopUpRequestDTO params) {
@@ -88,10 +85,10 @@ public class TopUpGameServiceJPA {
     }
 
     public Object getPaymentStatus(PaymentStatusRequestDTO params) {
-        ResponsePaymentStatus response = (ResponsePaymentStatus) paymentService.getOrderById(Math.toIntExact(params.getOrderCode()));
-        if (response.getStatus().equals("PAID")) {
-            confirm(new TopUpRequestDTO(response.getOrderCode()));
-        }
+//        ResponsePaymentStatus response = (ResponsePaymentStatus) paymentService.getOrderById(Math.toIntExact(params.getOrderCode()));
+//        if (response.getStatus().equals("PAID")) {
+//            confirm(new TopUpRequestDTO(response.getOrderCode()));
+//        }
         return 1L;
     }
 

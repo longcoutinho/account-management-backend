@@ -46,6 +46,7 @@ public class SecurityServletFilter extends HttpFilter {
         if (sitePath.startsWith("/game")) return true;
         if (sitePath.startsWith("/card")) return true;
         if (sitePath.startsWith("/item")) return true;
+        if (sitePath.startsWith("/top-up-item")) return true;
         return false;
     }
 

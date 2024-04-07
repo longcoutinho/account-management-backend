@@ -3,7 +3,7 @@ package com.example.demo.controllers.topupgame;
 import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.dtos.topup.RequestTokenLordMobile;
 import com.example.demo.repositories.tables.entities.UserEntity;
-import com.example.demo.services.tables.TopUpGameServiceJPA;
+import com.example.demo.services.topupgame.TopUpGameServiceJPA;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -27,4 +27,7 @@ public class GameEntity implements Serializable {
 
     @Column(name = "IMAGE")
     String image;
+
+    @Column(name = "ROUTER")
+    String router;
 }

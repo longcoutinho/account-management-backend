@@ -5,7 +5,7 @@ import com.example.demo.dtos.UserDTO;
 import com.example.demo.dtos.user.AdjustBalanceDTO;
 import com.example.demo.dtos.user.RequestUserDTO;
 import com.example.demo.dtos.user.ResetPasswordDTO;
-import com.example.demo.services.tables.UserAdminServiceJPA;
+import com.example.demo.services.topupgame.TopUpItemServiceJPA;
 import com.example.demo.services.tables.UserServiceJPA;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class UserController {
     UserServiceJPA userServiceJPA;
 
     @Autowired
-    UserAdminServiceJPA userAdminServiceJPA;
+    TopUpItemServiceJPA userAdminServiceJPA;
 
     /**
      * API dang ky user moi
