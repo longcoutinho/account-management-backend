@@ -34,6 +34,9 @@ public class UserEntity implements Serializable {
     @Column(name = "ROLE")
     String role;
 
+    @Column(name = "EMAIL")
+    String email;
+
     public UserEntity(UserDTO user, Long type) {
         this.username = user.getUsername();
         this.password = user.getPassword();
@@ -41,6 +44,7 @@ public class UserEntity implements Serializable {
         this.balance = 0L;
         this.createDate = new Date(System.currentTimeMillis());
         this.role = type == 1 ? "USER" : "ADMIN";
+        this.email = user.getEmail();
     }
 
     public ResponseUserDTO convertFromEntity() {
@@ -49,6 +53,7 @@ public class UserEntity implements Serializable {
         responseUserDTO.setBalance(balance);
         responseUserDTO.setCreateDate(createDate);
         responseUserDTO.setUsername(username);
+        responseUserDTO.setEmail(email);
         return responseUserDTO;
     }
 }

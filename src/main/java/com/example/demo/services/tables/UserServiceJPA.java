@@ -36,7 +36,8 @@ public class UserServiceJPA {
         validateUser(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         UserEntity newUser = new UserEntity(user, user.getType());
-        return userRepositoryJPA.save(newUser);
+        userRepositoryJPA.save(newUser);
+        return 1L;
     }
 
     public void validateUser(UserDTO user) throws Exception {

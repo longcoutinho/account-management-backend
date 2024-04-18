@@ -19,8 +19,8 @@ public class LordMobileController {
     @Autowired
     LordMobileService lordMobileService;
 
-    @GetMapping(value = "/search/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getAll(@PathVariable(value = "username") String username) throws ServletException, IOException {
-        return new ResponseEntity<>(lordMobileService.getUsernameById(username), HttpStatus.OK);
+    @GetMapping(value = "/search/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getAll(@PathVariable(value = "id") String id) throws ServletException, IOException {
+        return new ResponseEntity<>(lordMobileService.getUsernameById(id), HttpStatus.OK);
     }
 }

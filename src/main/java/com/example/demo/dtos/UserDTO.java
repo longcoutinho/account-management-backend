@@ -24,4 +24,6 @@ public class UserDTO {
     String id;
 
     Long type;
+
+    String email;
 }
