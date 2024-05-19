@@ -2,15 +2,10 @@ package com.example.demo.services.tables.item;
 
 import com.example.demo.dtos.ItemTypeDTO;
 import com.example.demo.repositories.tables.ItemTypeRepositoryJPA;
-import com.example.demo.repositories.tables.entities.ItemEntity;
 import com.example.demo.repositories.tables.entities.ItemTypeEntity;
-import com.example.demo.utils.enums.ErrorApp;
-import com.example.demo.utils.exception.CustomException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ItemTypeServiceJPA {
@@ -18,7 +13,7 @@ public class ItemTypeServiceJPA {
     ItemTypeRepositoryJPA itemTypeRepositoryJPA;
 
     @Autowired
-    ItemServiceJPA itemServiceJPA;
+    CardItemServiceJPA cardItemServiceJPA;
 
     public Object createNewType(ItemTypeDTO params) {
         ItemTypeEntity entity = new ItemTypeEntity();

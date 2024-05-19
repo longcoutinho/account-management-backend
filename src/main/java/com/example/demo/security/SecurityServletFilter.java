@@ -27,7 +27,7 @@ public class SecurityServletFilter extends HttpFilter {
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Request-Method", "GET, PUT");
         response.addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-        if (validSite(request.getRequestURI()) || authenticated(token) != null || request.getMethod().equals("OPTIONS")) {
+        if (validSite(request.getRequestURI(), request.getMethod()) || authenticated(token) != null || request.getMethod().equals("OPTIONS")) {
             String userId = authenticated(token);
             UserEntity userEntity = userServiceJPA.findByUserId(userId);
             request.setAttribute("userInfo", userEntity);
@@ -37,16 +37,16 @@ public class SecurityServletFilter extends HttpFilter {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // HTTP 401.
     }
 
-    private boolean validSite(String sitePath) {
+    private boolean validSite(String sitePath, String method) {
         if (sitePath.startsWith("/user/login")) return true;
         if (sitePath.equals("/user/register")) return true;
-        if (sitePath.equals("/user/admin-account/create")) return true;
         if (sitePath.startsWith("/test")) return true;
         if (sitePath.startsWith("/payment")) return true;
         if (sitePath.startsWith("/game")) return true;
-        if (sitePath.startsWith("/card")) return true;
+        if (sitePath.equals("/card") && method.equals("GET")) return true;
         if (sitePath.startsWith("/item")) return true;
         if (sitePath.startsWith("/top-up-item")) return true;
+        if (sitePath.startsWith("/lord-mobile")) return true;
         return false;
     }
 

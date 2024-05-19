@@ -90,8 +90,7 @@ public class UserServiceJPA {
     }
 
     public Object getAll(RequestUserDTO params) {
-        String role = params.getType() == 1L ? "USER" : "ADMIN";
-        return userRepositoryJPA.findByRole(role);
+        return userRepositoryJPA.getAll(params.getUsername());
     }
 
     public Object findByUsername(String username) {

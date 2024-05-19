@@ -5,13 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "CARD_ITEM")
-public class ItemEntity implements Serializable {
+public class CardItemEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
