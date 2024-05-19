@@ -1,5 +1,6 @@
 package com.example.demo.dtos;
 
+import com.example.demo.repositories.tables.entities.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class UserDTO {
 
     String id;
 
-    Long type;
+    String role;
 
     String email;
 }

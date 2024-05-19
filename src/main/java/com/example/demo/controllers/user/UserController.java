@@ -1,12 +1,16 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.user;
 
-import com.example.demo.dtos.TopUpRequestDTO;
 import com.example.demo.dtos.UserDTO;
 import com.example.demo.dtos.user.AdjustBalanceDTO;
 import com.example.demo.dtos.user.RequestUserDTO;
 import com.example.demo.dtos.user.ResetPasswordDTO;
+import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.services.topupgame.TopUpItemServiceJPA;
 import com.example.demo.services.tables.UserServiceJPA;
+import com.example.demo.utils.constants.FnCommon;
+import com.example.demo.utils.enums.ErrorApp;
+import com.example.demo.utils.exception.CustomException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,74 +34,71 @@ public class UserController {
      */
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> register(@Valid @RequestBody UserDTO params) throws Exception {
-        params.setType(1L);
         Object result = userServiceJPA.createNewUser(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/admin-account/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> registerAdmin(@Valid @RequestBody UserDTO params) throws Exception {
-        params.setType(2L);
-        Object result = userServiceJPA.createNewUser(params);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+//    @PostMapping(value = "/admin-account/create", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Object> registerAdmin(@Valid @RequestBody UserDTO params) throws Exception {
+//        Object result = userServiceJPA.createNewUser(params);
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
 
     /**
-     * API dang ky user moi
+     * API dang nhap user thuong
      *
      * @return
      */
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> login(@Valid @RequestBody UserDTO params) {
-        params.setType(1L);
+        params.setRole(UserEntity.Role.USER.value);
         Object result = userServiceJPA.loginUser(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
-     * API dang ky user moi
-     *
+     * API dang nhap admin
+     * @param params - thong tin dang nhap
      * @return
      */
     @PostMapping(value = "/login-admin", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> loginAdmin(@Valid @RequestBody UserDTO params) {
-        params.setType(2L);
+        params.setRole(UserEntity.Role.ADMIN.value);
         Object result = userServiceJPA.loginUser(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/add-balance", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> addBalance(@RequestBody TopUpRequestDTO params) {
-        Object result = userServiceJPA.addBalance(params);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getUserById(@PathVariable(value="id", required = true) String id) {
-        Object result = userServiceJPA.getUserById(id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
+    /**
+     * Lay thong tin user
+     * @param params
+     * @return
+     */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getAll(RequestUserDTO params) {
+    public ResponseEntity<Object> getAll(RequestUserDTO params, HttpServletRequest httpServletRequest) {
+        if (!FnCommon.isAdmin(httpServletRequest)) throw new CustomException(ErrorApp.ACCESS_DENIED);
         Object result = userServiceJPA.getAll(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getAll(@PathVariable(value = "username") String username) {
-        Object result = userServiceJPA.findByUsername(username);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
+    /**
+     * Doi mat khau
+     * @param params
+     * @return
+     */
     @PostMapping(value = "/reset-password", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> resetPassword(@Valid @RequestBody ResetPasswordDTO params) {
         Object result = userServiceJPA.resetPassword(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    /**
+     * Dieu chinh so du
+     * @param params
+     * @return
+     */
     @PostMapping(value = "/adjust-balance", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> adjustBalance(@Valid @RequestBody AdjustBalanceDTO params) {
+    public ResponseEntity<Object> adjustBalance(@Valid @RequestBody AdjustBalanceDTO params, HttpServletRequest httpServletRequest) {
+        if (!FnCommon.isAdmin(httpServletRequest)) throw new CustomException(ErrorApp.ACCESS_DENIED);
         Object result = userServiceJPA.adjustBalance(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

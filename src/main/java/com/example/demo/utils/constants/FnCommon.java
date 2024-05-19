@@ -2,7 +2,9 @@ package com.example.demo.utils.constants;
 
 import com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;
 import com.example.demo.dtos.topup.ResponseSendOTPLordMobile;
+import com.example.demo.repositories.tables.entities.UserEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -154,5 +156,10 @@ public class FnCommon {
         }
         mapAsString.delete(mapAsString.length()-2, mapAsString.length()).append("}");
         return mapAsString.toString();
+    }
+
+    public static boolean isAdmin(HttpServletRequest httpServletRequest) {
+        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
+        return userEntity.getRole().equals(UserEntity.Role.ADMIN.value);
     }
 }

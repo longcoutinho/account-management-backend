@@ -7,7 +7,8 @@ public enum ErrorApp {
     INVALID_ORDER("Invalid Order"),
     TOO_MANY_REQUEST("Too many request. Please try again later"),
     IGG_INVALID_ID("IGG ID invalid"),
-    WRONG_OTP("Wrong OTP");
+    WRONG_OTP("Wrong OTP"),
+    ACCESS_DENIED("Access denied");
 
     private final String description;
 

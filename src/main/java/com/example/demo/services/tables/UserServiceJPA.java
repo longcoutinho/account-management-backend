@@ -34,8 +34,9 @@ public class UserServiceJPA {
 
     public Object createNewUser(UserDTO user) throws Exception {
         validateUser(user);
+        user.setRole(UserEntity.Role.USER.value);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        UserEntity newUser = new UserEntity(user, user.getType());
+        UserEntity newUser = new UserEntity(user);
         userRepositoryJPA.save(newUser);
         return 1L;
     }
@@ -51,12 +52,23 @@ public class UserServiceJPA {
 
     public Object loginUser(UserDTO user) {
         UserEntity results = userRepositoryJPA.findByUsername(user.getUsername());
+
+        // username not exist
         if (results == null) {
             throw new CustomException(ErrorApp.WRONG_LOGIN);
         }
-        if (!passwordEncoder.matches(user.getPassword(), results.getPassword())) throw new CustomException(ErrorApp.WRONG_LOGIN);
-        if (user.getType() == 1 && !results.getRole().equals("USER")) throw new CustomException(ErrorApp.WRONG_LOGIN);
-        if (user.getType() == 2 && !results.getRole().equals("ADMIN")) throw new CustomException(ErrorApp.WRONG_LOGIN);
+
+        // wrong pass
+        if (!passwordEncoder.matches(user.getPassword(), results.getPassword())) {
+            throw new CustomException(ErrorApp.WRONG_LOGIN);
+        }
+
+        // wrong role
+        if (!user.getRole().equals(results.getRole())) {
+            throw new CustomException(ErrorApp.WRONG_LOGIN);
+        }
+
+        // gen token and response
         ResponseUserDTO responseUser = results.convertFromEntity();
         responseUser.setAccessToken(jwtTokenProvider.generateToken(responseUser));
         return responseUser;

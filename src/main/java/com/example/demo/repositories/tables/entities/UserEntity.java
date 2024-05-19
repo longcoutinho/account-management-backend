@@ -37,13 +37,23 @@ public class UserEntity implements Serializable {
     @Column(name = "EMAIL")
     String email;
 
-    public UserEntity(UserDTO user, Long type) {
+    public enum Role {
+        USER("USER"),
+        ADMIN("ADMIN");
+
+        public String value;
+        Role(String value) {
+            this.value = value;
+        }
+    }
+
+    public UserEntity(UserDTO user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.userId = String.valueOf(UUID.randomUUID());
         this.balance = 0L;
         this.createDate = new Date(System.currentTimeMillis());
-        this.role = type == 1 ? "USER" : "ADMIN";
+        this.role = user.getRole();
         this.email = user.getEmail();
     }
 
