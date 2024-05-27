@@ -81,6 +81,17 @@ public class UserController {
     }
 
     /**
+     * Lay thong tin user theo id
+     * @param id - user id
+     * @return
+     */
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getUserById(@PathVariable(value="id", required = true) String id) {
+        Object result = userServiceJPA.getUserById(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
      * Doi mat khau
      * @param params
      * @return

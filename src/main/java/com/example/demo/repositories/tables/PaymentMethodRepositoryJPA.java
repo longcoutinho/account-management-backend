@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PaymentMethodRepositoryJPA extends JpaRepository<PaymentMethodEntity, Long> {
-    @Query(value = "SELECT e FROM PaymentMethodEntity e")
+    @Query(value = "SELECT e FROM PaymentMethodEntity e where e.isActive = 1")
     List<PaymentMethodEntity> getAll();
 }

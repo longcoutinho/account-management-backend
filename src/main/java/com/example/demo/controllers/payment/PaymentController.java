@@ -1,4 +1,4 @@
-package com.example.demo.controllers.item;
+package com.example.demo.controllers.payment;
 
 import com.example.demo.services.tables.PaymentMethodServiceJPA;
 import org.springframework.beans.factory.annotation.Autowired;

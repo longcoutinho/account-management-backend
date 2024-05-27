@@ -1,5 +1,5 @@
 package com.example.demo.repositories.tables;
-import com.example.demo.repositories.tables.entities.SaleOrderEntity;
+import com.example.demo.repositories.tables.entities.CardOrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SaleOrderRepositoryJPA extends JpaRepository<SaleOrderEntity, Long> {
+public interface SaleOrderRepositoryJPA extends JpaRepository<CardOrderEntity, Long> {
 
-    @Query("select e from SaleOrderEntity e order by e.createDate desc")
-    List<SaleOrderEntity> getAll();
+    @Query("select e from CardOrderEntity e order by e.createDate desc")
+    List<CardOrderEntity> getAll();
 
-    SaleOrderEntity findById(String orderId);
+    CardOrderEntity findById(String orderId);
 }

@@ -1,11 +1,13 @@
 package com.example.demo.utils.constants;
 
-import com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;
 import com.example.demo.dtos.topup.ResponseSendOTPLordMobile;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.TreeMap;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -13,12 +15,12 @@ import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
 public class FnCommon {
-    public static String doPostRequest(String url, String token, Object obj) {
+    public static String doPostRequest2(String url, String token, Object body) {
         HttpClient httpClient = HttpClient.newHttpClient();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -26,7 +28,7 @@ public class FnCommon {
                     .uri(URI.create(url))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
-                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(obj)))
+                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)))
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
@@ -36,6 +38,32 @@ public class FnCommon {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static HttpResponse<String> doPostRequest(String url, String token, Map<String, String> params, Object body) {
+        // Tạo một HttpClient
+        HttpClient client = HttpClient.newHttpClient();
+
+        try {
+            // Tạo một HttpRequest.Builder
+            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .POST(HttpRequest.BodyPublishers.ofString(body.toString()));
+
+            // Thêm tham số vào request
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                requestBuilder.header(entry.getKey(), entry.getValue());
+            }
+
+            // Tạo và gửi request
+            HttpRequest request = requestBuilder.build();
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String doPostRequestFormData(String url, Map<String, String> params, String token) {
@@ -161,5 +189,46 @@ public class FnCommon {
     public static boolean isAdmin(HttpServletRequest httpServletRequest) {
         UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
         return userEntity.getRole().equals(UserEntity.Role.ADMIN.value);
+    }
+
+    public static String generateHmacSha256Signature(Map<String, String> parameters, String secretKey) {
+        try {
+            String dataString = convertHashMapToString(parameters);
+
+            // Create a Mac instance with the HMAC-SHA256 algorithm
+            Mac mac = Mac.getInstance("HmacSHA256");
+
+            // Create a SecretKeySpec from the secret key
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+
+            // Initialize the Mac with the secret key
+            mac.init(secretKeySpec);
+
+            // Calculate the HMAC-SHA256 signature
+            byte[] signature = mac.doFinal(dataString.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the byte array to a Base64-encoded string
+            return Base64.getEncoder().encodeToString(signature);
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating HMAC-SHA256 signature", e);
+        }
+    }
+
+    public static String convertHashMapToString(Map<String, String> parameters) {
+        // Create a new TreeMap to sort the parameters by key
+        Map<String, String> sortedParameters = new TreeMap<>(parameters);
+
+        // Build the parameter string
+        StringBuilder parameterString = new StringBuilder();
+        for (Map.Entry<String, String> entry : sortedParameters.entrySet()) {
+            if (parameterString.length() > 0) {
+                parameterString.append("&");
+            }
+            parameterString.append(entry.getKey())
+                    .append("=")
+                    .append(entry.getValue());
+        }
+
+        return parameterString.toString();
     }
 }

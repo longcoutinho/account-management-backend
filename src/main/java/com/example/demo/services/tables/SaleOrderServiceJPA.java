@@ -1,15 +1,13 @@
 package com.example.demo.services.tables;
 
-import com.example.demo.dtos.*;
 import com.example.demo.dtos.payment.tripleA.ResponseDetailPaymentDTO;
 import com.example.demo.dtos.saleorder.*;
 import com.example.demo.repositories.tables.SaleOrderRepositoryJPA;
-import com.example.demo.repositories.tables.entities.SaleOrderEntity;
+import com.example.demo.repositories.tables.entities.CardOrderEntity;
 import com.example.demo.services.payment.TripleAService;
 import com.example.demo.utils.constants.Constants;
 import com.example.demo.utils.enums.ErrorApp;
 import com.example.demo.utils.exception.CustomException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,28 +25,28 @@ public class SaleOrderServiceJPA {
     @Autowired
     TripleAService tripleAService;
 
-    public Object create(SaleOrderDTO params) throws IOException {
+    public Object create(RequestCardDTO params) throws IOException {
         // Create sale order
-        SaleOrderEntity saleOrderEntity = new SaleOrderEntity();
-        saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));
-        saleOrderEntity.setCreateUser(params.getCreateUser());
-        saleOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));
-        saleOrderEntity.setItemId(params.getItemId());
-        saleOrderEntity.setAmount(params.getAmount());
-        saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.CREATE);
+        CardOrderEntity cardOrderEntity = new CardOrderEntity();
+        cardOrderEntity.setId(String.valueOf(UUID.randomUUID()));
+//        cardOrderEntity.setCreateUser(params.getCreateUser());
+        cardOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));
+//        cardOrderEntity.setItemId(params.getItemId());
+//        cardOrderEntity.setAmount(params.getAmount());
+        cardOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.CREATE);
         // Create payment
-        return tripleAService.createPayment(saleOrderRepositoryJPA.save(saleOrderEntity));
+        return tripleAService.createPayment(saleOrderRepositoryJPA.save(cardOrderEntity));
     }
 
-    public SaleOrderResponseSummaryDTO getAll(SaleOrderDTO params) {
+    public SaleOrderResponseSummaryDTO getAll(RequestCardDTO params) {
         List<SaleOrderResponseDTO> res = new LinkedList<>();
-        List<SaleOrderEntity> list = saleOrderRepositoryJPA.getAll();
+        List<CardOrderEntity> list = saleOrderRepositoryJPA.getAll();
         Long amount = 0L;
-        for(SaleOrderEntity saleOrderEntity: list) {
+        for(CardOrderEntity cardOrderEntity : list) {
             SaleOrderResponseDTO saleOrderResponseDTO = new SaleOrderResponseDTO();
-            saleOrderResponseDTO.setId(saleOrderEntity.getId());
-            saleOrderResponseDTO.setCreateDate(saleOrderEntity.getCreateDate());
-            saleOrderResponseDTO.setStatus(saleOrderEntity.getStatus());
+            saleOrderResponseDTO.setId(cardOrderEntity.getId());
+            saleOrderResponseDTO.setCreateDate(cardOrderEntity.getCreateDate());
+            saleOrderResponseDTO.setStatus(cardOrderEntity.getStatus());
             res.add(saleOrderResponseDTO);
         }
         SaleOrderResponseSummaryDTO result = new SaleOrderResponseSummaryDTO();
@@ -59,24 +57,24 @@ public class SaleOrderServiceJPA {
     }
 
     public ResponseProcessOrderDTO processOrder(RequestProcessOrderDTO request) {
-        SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(request.getOrderId());
-        if (!validateOrder(request, saleOrderEntity)) throw new CustomException(ErrorApp.INVALID_ORDER);
+        CardOrderEntity cardOrderEntity = saleOrderRepositoryJPA.findById(request.getOrderId());
+        if (!validateOrder(request, cardOrderEntity)) throw new CustomException(ErrorApp.INVALID_ORDER);
         ResponseDetailPaymentDTO orderDetail = tripleAService.getDetailPayment(request.getPaymentReference());
         if (orderDetail.getStatus().equals("good")) {
-            saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.SUCCESS);
+            cardOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.SUCCESS);
         }
         else {
-            saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.FAIL);
+            cardOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.FAIL);
         }
-        saleOrderRepositoryJPA.save(saleOrderEntity);
+        saleOrderRepositoryJPA.save(cardOrderEntity);
         ResponseProcessOrderDTO response = new ResponseProcessOrderDTO();
-        response.setStatus(saleOrderEntity.getStatus());
+        response.setStatus(cardOrderEntity.getStatus());
         return response;
     }
 
-    private boolean validateOrder(RequestProcessOrderDTO request, SaleOrderEntity saleOrderEntity) {
-        if (!saleOrderEntity.getPaymentReference().equals(request.getPaymentReference())) return false;
-        if (!saleOrderEntity.getCreateUser().equals(request.getCreateUser())) return false;
+    private boolean validateOrder(RequestProcessOrderDTO request, CardOrderEntity cardOrderEntity) {
+        if (!cardOrderEntity.getPaymentReference().equals(request.getPaymentReference())) return false;
+        if (!cardOrderEntity.getCreateUser().equals(request.getCreateUser())) return false;
         return true;
     }
 }

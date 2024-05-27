@@ -106,6 +106,8 @@ public class UserServiceJPA {
 
     public Object adjustBalance(AdjustBalanceDTO params) {
         UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());
+        Long balanceAfter = user.getBalance() + params.getAmount();
+        if (balanceAfter < 0) throw new CustomException(ErrorApp.INSUFFICIENT_BALANCE);
         user.setBalance(user.getBalance() + params.getAmount());
         userRepositoryJPA.save(user);
         return 1L;

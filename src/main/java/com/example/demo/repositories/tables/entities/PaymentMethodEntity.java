@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "PAYMENT")
+@Table(name = "PAYMENT_METHOD")
 public class PaymentMethodEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +21,7 @@ public class PaymentMethodEntity implements Serializable {
 
     @Column(name = "IMAGE")
     String image;
+
+    @Column(name="IS_ACTIVE")
+    int isActive;
 }

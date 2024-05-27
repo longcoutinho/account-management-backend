@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dtos.saleorder.RequestProcessOrderDTO;
-import com.example.demo.dtos.saleorder.SaleOrderDTO;
+import com.example.demo.dtos.saleorder.RequestCardDTO;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.services.tables.SaleOrderServiceJPA;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,10 +21,10 @@ public class SaleOrderController {
     SaleOrderServiceJPA saleOrderServiceJPA;
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(@RequestBody SaleOrderDTO params, HttpServletRequest httpServletRequest) throws IOException {
+    public ResponseEntity<Object> create(@RequestBody RequestCardDTO params, HttpServletRequest httpServletRequest) throws IOException {
         UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
         if (userEntity.getRole().equals("USER")) {
-            params.setCreateUser(userEntity.getUsername());
+//            params.setCreateUser(userEntity.getUsername());
         }
         Object result = saleOrderServiceJPA.create(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -41,7 +41,7 @@ public class SaleOrderController {
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getItem(SaleOrderDTO params) {
+    public ResponseEntity<Object> getItem(RequestCardDTO params) {
         Object result = saleOrderServiceJPA.getAll(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

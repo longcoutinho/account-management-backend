@@ -10,8 +10,8 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "ORDER")
-public class SaleOrderEntity implements Serializable {
+@Table(name = "CARD_ORDERS")
+public class CardOrderEntity implements Serializable {
     @Id
     @Column(name = "ID")
     String id;

@@ -4,23 +4,22 @@ import com.example.demo.dtos.payment.tripleA.RequestPaymentDTO;
 import com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;
 import com.example.demo.dtos.payment.tripleA.ResponseDetailPaymentDTO;
 import com.example.demo.dtos.payment.tripleA.ResponsePaymentDTO;
-import com.example.demo.repositories.tables.entities.ItemEntity;
-import com.example.demo.repositories.tables.entities.SaleOrderEntity;
-import com.example.demo.services.tables.item.ItemServiceJPA;
+import com.example.demo.repositories.tables.entities.CardItemEntity;
+import com.example.demo.repositories.tables.entities.CardOrderEntity;
+import com.example.demo.services.tables.item.CardItemServiceJPA;
 import com.example.demo.utils.constants.FnCommon;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
 public class TripleAService {
     @Autowired
-    ItemServiceJPA itemServiceJPA;
+    CardItemServiceJPA cardItemServiceJPA;
 
     @Value("${triple-a.auth.url}")
     String authUrl;
@@ -60,20 +59,20 @@ public class TripleAService {
         return null;
     }
 
-    public ResponsePaymentDTO createPayment(SaleOrderEntity saleOrder) {
-        ItemEntity itemEntity = itemServiceJPA.findById(saleOrder.getItemId());
+    public ResponsePaymentDTO createPayment(CardOrderEntity saleOrder) {
+        CardItemEntity cardItemEntity = cardItemServiceJPA.findById(saleOrder.getItemId());
         RequestPaymentDTO requestBody = new RequestPaymentDTO();
         requestBody.setType("triplea");
         requestBody.setMerchant_key("mkey-cltzq8mtk0i8f2nisdy8124zp");
         requestBody.setOrder_currency("VND");
-        requestBody.setOrder_amount(saleOrder.getAmount() * itemEntity.getPrice());
+        requestBody.setOrder_amount(saleOrder.getAmount() * cardItemEntity.getPrice());
         requestBody.setPayer_id("minhbn.gm@gmail.com");
         requestBody.setCancel_url(cancelUrl);
         requestBody.setSuccess_url(successUrl);
         ResponseAccessTokenDTO token = getAccessToken();
         String access_token = token != null ? token.getAccess_token() : "";
         System.out.println(requestBody);
-        String response = FnCommon.doPostRequest(paymentUrl, access_token, requestBody);
+        String response = FnCommon.doPostRequest2(paymentUrl, access_token, requestBody);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
            return objectMapper.readValue(response, ResponsePaymentDTO.class);
@@ -86,7 +85,7 @@ public class TripleAService {
 
     public ResponseDetailPaymentDTO getDetailPayment(String paymentReference) {
         ResponseAccessTokenDTO token = getAccessToken();
-        String response = FnCommon.doPostRequest(paymentUrl + '/' + paymentReference , token.getAccess_token(), null);
+        String response = FnCommon.doPostRequest2(paymentUrl + '/' + paymentReference , token.getAccess_token(), null);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.readValue(response, ResponseDetailPaymentDTO.class);
