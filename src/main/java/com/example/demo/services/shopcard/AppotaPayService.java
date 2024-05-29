@@ -1,5 +1,7 @@
 package com.example.demo.services.shopcard;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.dtos.RequestBuyCardDTO;
 import com.example.demo.services.security.jwt.JwtTokenProvider;
 import com.example.demo.utils.constants.FnCommon;
@@ -40,18 +42,32 @@ public class AppotaPayService {
         payload.put("jti", apiKey + '-' + timeNow);
         payload.put("api_key", apiKey);
         payload.put("exp", tenMinutesLater);
-        return jwtTokenProvider.generateToken(header, FnCommon.toString(payload), secretKey, SignatureAlgorithm.HS512);
+        return generateToken(header, payload, secretKey);
     }
 
-    public void buyCard(RequestBuyCardDTO requestBuyCardDTO) {
+    public void buyCard(RequestBuyCardDTO request) {
         String url = "https://api.appotapay.com/api/v1/service/shopcard/buy";
         String token = genAccessToken();
         HashMap<String, String> params = new LinkedHashMap<>();
-        params.put("partnerRefId", requestBuyCardDTO.getTransactionId());
-        params.put("productCode", requestBuyCardDTO.getProductCode());
-        params.put("quantity", requestBuyCardDTO.getQuantity());
-        params.put("signature", FnCommon.generateHmacSha256Signature(params, secretKey));
-        HttpResponse<String> response = FnCommon.doPostRequest(url, token, params, null);
+        params.put("partnerRefId", request.getTransactionId());
+        params.put("productCode", request.getProductCode());
+        params.put("quantity", request.getQuantity());
+        request.setSignature(FnCommon.generateHmacSha256Signature(params, secretKey));
+        HttpResponse<String> response = FnCommon.doPostRequest(url, token, null, request);
         System.out.println(response.body());
+    }
+
+    public static String generateToken(Map<String, Object> header, Map<String, Object> payload, String secretKey) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+            return JWT.create()
+                    .withHeader(header)
+                    .withPayload(payload)
+                    .sign(algorithm);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
