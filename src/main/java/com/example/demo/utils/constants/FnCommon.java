@@ -43,24 +43,31 @@ public class FnCommon {
     public static HttpResponse<String> doPostRequest(String url, String token, Map<String, String> params, Object body) {
         // Tạo một HttpClient
         HttpClient client = HttpClient.newHttpClient();
+        String bodyStr = "";
+        if (body != null) {
+            bodyStr = body.toString();
+        }
 
         try {
             // Tạo một HttpRequest.Builder
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + token)
-                    .POST(HttpRequest.BodyPublishers.ofString(body.toString()));
+                    .header("X-APPOTAPAY-AUTH", "Bearer " + token)
+                    .POST(HttpRequest.BodyPublishers.ofString(bodyStr));
 
             // Thêm tham số vào request
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                requestBuilder.header(entry.getKey(), entry.getValue());
-            }
+//            for (Map.Entry<String, String> entry : params.entrySet()) {
+//                requestBuilder.header(entry.getKey(), entry.getValue());
+//            }
 
             // Tạo và gửi request
             HttpRequest request = requestBuilder.build();
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response =  client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            return response;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
             return null;
         }

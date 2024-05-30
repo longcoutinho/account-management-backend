@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.controllers.TestController;
 import com.example.demo.kafka.KafkaProducer;
+import com.example.demo.services.shopcard.AppotaPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -14,14 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
 public class DemoApplication {
-	@Value("${PAYOS_CLIENT_ID}")
-	private String clientId;
-
-	@Value("${PAYOS_API_KEY}")
-	private String apiKey;
-
-	@Value("${PAYOS_CHECKSUM_KEY}")
-	private String checksumKey;
+	@Autowired
+	AppotaPayService appotaPayService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);

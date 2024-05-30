@@ -1,5 +1,6 @@
 package com.example.demo.services.tables.item;
 
+import com.example.demo.dtos.RequestBuyCardDTO;
 import com.example.demo.repositories.tables.CardItemRepositoryJPA;
 import com.example.demo.repositories.tables.entities.CardItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,9 @@ public class CardOrderServiceJPA {
 
     public Object getAll() {
         return cardItemRepositoryJPA.getAll();
+    }
+
+    public Object create(RequestBuyCardDTO request) {
+        return null;
     }
 }

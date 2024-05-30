@@ -45,7 +45,7 @@ public class AppotaPayService {
         return generateToken(header, payload, secretKey);
     }
 
-    public void buyCard(RequestBuyCardDTO request) {
+    public Object buyCard(RequestBuyCardDTO request) {
         String url = "https://api.appotapay.com/api/v1/service/shopcard/buy";
         String token = genAccessToken();
         HashMap<String, String> params = new LinkedHashMap<>();
@@ -54,7 +54,7 @@ public class AppotaPayService {
         params.put("quantity", request.getQuantity());
         request.setSignature(FnCommon.generateHmacSha256Signature(params, secretKey));
         HttpResponse<String> response = FnCommon.doPostRequest(url, token, null, request);
-        System.out.println(response.body());
+        return response;
     }
 
     public static String generateToken(Map<String, Object> header, Map<String, Object> payload, String secretKey) {

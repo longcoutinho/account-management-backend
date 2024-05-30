@@ -9,6 +9,7 @@ import com.example.demo.dtos.user.ResetPasswordDTO;
 import com.example.demo.services.security.jwt.JwtTokenProvider;
 import com.example.demo.repositories.tables.UserRepositoryJPA;
 import com.example.demo.repositories.tables.entities.UserEntity;
+import com.example.demo.utils.constants.Constants;
 import com.example.demo.utils.enums.ErrorApp;
 import com.example.demo.utils.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,16 @@ public class UserServiceJPA {
         return results != null;
     }
 
-    public Object loginUser(UserDTO user) {
+    public Object login(UserDTO user) {
+        switch (Constants.LoginMethod.valueOf(user.getLoginMethod())) {
+            case DIRECT:
+                return directLogin(user);
+            default:
+                return null;
+        }
+    }
+
+    private Object directLogin(UserDTO user) {
         UserEntity results = userRepositoryJPA.findByUsername(user.getUsername());
 
         // username not exist

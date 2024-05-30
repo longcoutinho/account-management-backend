@@ -26,5 +26,7 @@ public class UserDTO {
 
     String role;
 
+    String loginMethod;
+
     String email;
 }

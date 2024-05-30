@@ -46,25 +46,25 @@ public class UserController {
 
     /**
      * API dang nhap user thuong
-     *
-     * @return
+     * @param params - thong tin dang nhap
+     * @return thong tin dang nhap
      */
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> login(@Valid @RequestBody UserDTO params) {
         params.setRole(UserEntity.Role.USER.value);
-        Object result = userServiceJPA.loginUser(params);
+        Object result = userServiceJPA.login(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
      * API dang nhap admin
      * @param params - thong tin dang nhap
-     * @return
+     * @return thong tin dang nhap
      */
     @PostMapping(value = "/login-admin", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> loginAdmin(@Valid @RequestBody UserDTO params) {
         params.setRole(UserEntity.Role.ADMIN.value);
-        Object result = userServiceJPA.loginUser(params);
+        Object result = userServiceJPA.login(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

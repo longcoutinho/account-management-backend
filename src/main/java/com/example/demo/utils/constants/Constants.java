@@ -24,4 +24,26 @@ public class Constants {
         String IGG_ID_INVALID = "202";
         String SUCCESS = "0";
     }
+
+    public enum LoginMethod {
+        DIRECT(1),
+        FACEBOOK(2),
+        GOOGLE(3),
+        X(4),
+        TELEGRAM(5);
+
+        final int value;
+        LoginMethod(int val) {
+            this.value = val;
+        }
+    }
+
+    public enum PaymentMethod {
+        EPOINT(1);
+
+        final int value;
+        PaymentMethod(int val) {
+            this.value = val;
+        }
+    }
 }
