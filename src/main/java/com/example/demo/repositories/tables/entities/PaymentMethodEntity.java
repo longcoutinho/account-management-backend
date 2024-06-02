@@ -24,4 +24,7 @@ public class PaymentMethodEntity implements Serializable {
 
     @Column(name="IS_ACTIVE")
     int isActive;
+
+    @Column(name="CODE")
+    String code;
 }

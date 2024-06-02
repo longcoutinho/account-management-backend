@@ -6,10 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import com.example.demo.dtos.card.CardOrderDTO;
+import com.example.demo.repositories.tables.entities.UserEntity;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class RequestOrderCardDTO {
-    List<CardDTO> cardInfo;
-    String paymentMethod;
+    List<CardOrderDTO> cardInfo;
+    String paymentMethodCode;
+    UserEntity userInfo;
 }

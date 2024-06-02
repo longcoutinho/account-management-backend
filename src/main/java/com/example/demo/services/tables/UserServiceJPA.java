@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,5 +174,9 @@ public class UserServiceJPA {
         user.setBalance(user.getBalance() + params.getAmount());
         userRepositoryJPA.save(user);
         return 1L;
+    }
+
+    public void save(UserEntity user) {
+        userRepositoryJPA.save(user);
     }
 }

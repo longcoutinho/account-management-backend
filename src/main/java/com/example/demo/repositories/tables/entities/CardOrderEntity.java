@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
+
+import com.example.demo.dtos.RequestOrderCardDTO;
 
 @Data
 @NoArgsConstructor
@@ -16,21 +19,37 @@ public class CardOrderEntity implements Serializable {
     @Column(name = "ID")
     String id;
 
+    @Column(name = "PAYMENT_ID")
+    Long paymentId;
+
+    @Column(name = "CARD_ORDER_ID")
+    Long cardOrderId;
+
+    @Column(name = "PRICE")
+    Long price;
+
     @Column(name = "CREATE_USER")
     String createUser;
 
     @Column(name = "CREATE_DATE")
     Date createDate;
 
-    @Column(name = "ITEM_ID")
-    Long itemId;
-
-    @Column(name = "AMOUNT")
-    Long amount;
-
     @Column(name = "STATUS")
-    Long status;
+    String status;
 
-    @Column(name = "PAYMENT_REFERENCE")
-    String paymentReference;
+    @Column(name = "MSG_ERROR")
+    Long msgError;
+
+    public CardOrderEntity(RequestOrderCardDTO request) {
+        this.id = String.valueOf(UUID.randomUUID());
+        this.createUser = request.getUserInfo().getUsername();
+        this.createDate = new Date(System.currentTimeMillis());
+        this.status = Status.PENDING.name();
+    }
+
+    public enum Status {
+        PENDING,
+        SUCCESS,
+        FAILED
+    }
 }

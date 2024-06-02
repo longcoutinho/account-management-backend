@@ -34,10 +34,10 @@ public class Constants {
     }
 
     public enum PaymentMethod {
-        EPOINT(1);
+        EPOINT("EP");
 
-        final int value;
-        PaymentMethod(int val) {
+        final String value;
+        PaymentMethod(String val) {
             this.value = val;
         }
     }

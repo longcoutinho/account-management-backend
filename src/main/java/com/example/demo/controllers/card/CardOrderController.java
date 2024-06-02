@@ -1,12 +1,8 @@
 package com.example.demo.controllers.card;
 
-import com.example.demo.dtos.CardDTO;
-import com.example.demo.dtos.RequestBuyCardDTO;
-import com.example.demo.services.tables.item.CardItemServiceJPA;
+import com.example.demo.dtos.RequestOrderCardDTO;
+import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.services.tables.item.CardOrderServiceJPA;
-import com.example.demo.utils.constants.FnCommon;
-import com.example.demo.utils.enums.ErrorApp;
-import com.example.demo.utils.exception.CustomException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +21,9 @@ public class CardOrderController {
      * @param request - Thong tin mua the
      */
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> create(@RequestBody RequestBuyCardDTO request) {
+    public ResponseEntity<Object> create(@RequestBody RequestOrderCardDTO request, HttpServletRequest servletRequest) {
+        UserEntity userEntity = (UserEntity) servletRequest.getAttribute("userInfo");
+        request.setUserInfo(userEntity);
         return new ResponseEntity<>(cardOrderServiceJPA.create(request), HttpStatus.OK);
     }
 }
