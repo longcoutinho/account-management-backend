@@ -17,4 +17,6 @@ public interface UserRepositoryJPA extends JpaRepository<UserEntity, Long> {
             "where (:username is null or e.username = :username) " +
             "order by e.createDate desc")
     List<UserEntity> getAll(String username);
+
+    UserEntity findByUserIdAndLoginMethod(String id, String loginMethod);
 }

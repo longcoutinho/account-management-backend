@@ -37,6 +37,9 @@ public class UserEntity implements Serializable {
     @Column(name = "EMAIL")
     String email;
 
+    @Column(name = "LOGIN_METHOD")
+    String loginMethod;
+
     public enum Role {
         USER("USER"),
         ADMIN("ADMIN");

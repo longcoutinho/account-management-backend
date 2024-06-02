@@ -10,13 +10,19 @@ import com.example.demo.services.security.jwt.JwtTokenProvider;
 import com.example.demo.repositories.tables.UserRepositoryJPA;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.utils.constants.Constants;
+import com.example.demo.utils.constants.FnCommon;
 import com.example.demo.utils.enums.ErrorApp;
 import com.example.demo.utils.exception.CustomException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServiceJPA {
@@ -42,6 +48,21 @@ public class UserServiceJPA {
         return 1L;
     }
 
+    public Object createNewUserThirdApp(UserDTO userDTO) {
+        UserEntity user = userRepositoryJPA.findByUserIdAndLoginMethod(userDTO.getId(), userDTO.getLoginMethod());
+        if (user == null) {
+            user = new UserEntity();
+            user.setUserId(userDTO.getId());
+            user.setBalance(0L);
+            user.setUsername(userDTO.getUsername());
+            user.setPassword(null);
+            user.setRole(UserEntity.Role.USER.value);
+            user.setLoginMethod(userDTO.getLoginMethod());
+            userRepositoryJPA.save(user);
+        }
+        return user;
+    }
+
     public void validateUser(UserDTO user) throws Exception {
         if (existUsername(user.getUsername())) throw new CustomException(ErrorApp.USERNAME_EXIST);
     }
@@ -55,8 +76,24 @@ public class UserServiceJPA {
         switch (Constants.LoginMethod.valueOf(user.getLoginMethod())) {
             case DIRECT:
                 return directLogin(user);
+            case GOOGLE:
+                return googleLogin(user);
             default:
                 return null;
+        }
+    }
+
+    private Object googleLogin(UserDTO user) {
+        String url = "https://api.example.com/userinfo"; // Giả sử URL được lưu ở đây
+        try {
+            Map<String, String> params = new LinkedHashMap<>();
+            params.put("access_token", user.getAccessToken());
+            String jsonResponse = FnCommon.doGetRequest(url, null, params);
+            ObjectMapper objectMapper = new ObjectMapper();
+            GoogleLoginResponse response = objectMapper.readValue(jsonResponse, GoogleLoginResponse.class);
+            return response;
+        } catch (Exception e) {
+            throw new CustomException(ErrorApp.WRONG_LOGIN);
         }
     }
 

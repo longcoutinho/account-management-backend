@@ -9,7 +9,8 @@ public enum ErrorApp {
     IGG_INVALID_ID("IGG ID invalid"),
     WRONG_OTP("Wrong OTP"),
     ACCESS_DENIED("Access denied"),
-    INSUFFICIENT_BALANCE("Insufficient balance");
+    INSUFFICIENT_BALANCE("Insufficient balance"),
+    LOGIN_FAILED("Login failed");
 
 
     private final String description;
