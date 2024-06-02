@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="demo:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="579b502a-53b0-423c-a771-da1b36937344" name="Changes" comment="update">
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/DemoApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/DemoApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/GameController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/GameController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/ReportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/ReportController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/SaleOrderController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/SaleOrderController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/TestController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/TestController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/TopUpController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/TopUpController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/item/ImageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/item/ImageController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/item/TypeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/item/TypeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/topupgame/TopUpGameController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/topupgame/TopUpGameController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/transaction/TransactionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/controllers/transaction/TransactionController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/CardDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/CardDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/FileDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/FileDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/GetAllTopUpDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/GetAllTopUpDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ItemDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ItemDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ItemTypeDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ItemTypeDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ReportTopUp.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ReportTopUp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ResponsePaymentStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ResponsePaymentStatus.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ResponseUserDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/ResponseUserDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/SizeDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/SizeDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/StockAccountDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/StockAccountDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/TopUpRequestDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/TopUpRequestDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/UserDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/UserDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/item/ResponseItemDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/item/ResponseItemDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/ConfirmWebhookRequestBody.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/ConfirmWebhookRequestBody.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/CreatePaymentLinkRequestBody.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/CreatePaymentLinkRequestBody.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/appotaPay/CardDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/appotaPay/CardDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/appotaPay/RequestBuyCardDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/appotaPay/RequestBuyCardDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/appotaPay/ResponseBuyCardDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/appotaPay/ResponseBuyCardDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/appotaPay/Transaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/appotaPay/Transaction.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/RequestAccessTokenDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/RequestAccessTokenDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/RequestPaymentDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/RequestPaymentDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/ResponseAccessTokenDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/ResponseAccessTokenDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/ResponseDetailPaymentDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/ResponseDetailPaymentDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/ResponsePaymentDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/payment/tripleA/ResponsePaymentDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/saleorder/RequestProcessOrderDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/saleorder/RequestProcessOrderDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/saleorder/ResponseProcessOrderDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/saleorder/ResponseProcessOrderDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/saleorder/SaleOrderResponseDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/saleorder/SaleOrderResponseDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/topup/ErrorSendOTP.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/topup/ErrorSendOTP.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/topup/PaymentStatusRequestDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/topup/PaymentStatusRequestDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/topup/ResponseSendOTPLordMobile.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/topup/ResponseSendOTPLordMobile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/topup/TopUpResponseDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/topup/TopUpResponseDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/transaction/TransactionDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/transaction/TransactionDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/user/AdjustBalanceDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/user/AdjustBalanceDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/user/RequestUserDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/user/RequestUserDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/user/ResetPasswordDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/dtos/user/ResetPasswordDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/kafka/KafkaConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/kafka/KafkaConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/kafka/KafkaConsumer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/kafka/KafkaConsumer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/kafka/KafkaProducer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/kafka/KafkaProducer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/payment/Config.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/payment/Config.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/payment/VNPayPayment.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/payment/VNPayPayment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/CardRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/CardRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/ColorRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/ColorRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/FileRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/FileRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/GameRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/GameRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/ImageRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/ImageRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/ItemTypeRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/ItemTypeRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/PaymentMethodRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/PaymentMethodRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/SaleOrderRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/SaleOrderRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/TopUpGameRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/TopUpGameRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/UserRepositoryJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/UserRepositoryJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/CardEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/CardEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/FileEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/FileEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/GameEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/GameEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/ItemImageEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/ItemImageEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/ItemTypeEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/ItemTypeEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/PaymentMethodEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/PaymentMethodEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/TopUpEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/TopUpEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/UserEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/repositories/tables/entities/UserEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/security/SecurityServletFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/security/SecurityServletFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/payment/TripleAService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/payment/TripleAService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/security/jwt/JwtTokenProvider.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/security/jwt/JwtTokenProvider.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/shopcard/AppotaPayService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/shopcard/AppotaPayService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/CardServiceJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/CardServiceJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/FileServiceJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/FileServiceJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/GameServiceJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/GameServiceJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/PaymentMethodServiceJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/PaymentMethodServiceJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/SaleOrderServiceJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/SaleOrderServiceJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/UserServiceJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/UserServiceJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/item/ImageServiceJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/item/ImageServiceJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/item/ItemTypeServiceJPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/services/tables/item/ItemTypeServiceJPA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/utils/constants/Constants$ERROR_CODE_SEND_OTP.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/utils/constants/Constants$ERROR_CODE_SEND_OTP.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/utils/constants/Constants$SALE_ORDER_STATUS.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/utils/constants/Constants$SALE_ORDER_STATUS.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/utils/constants/Constants.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/utils/constants/Constants.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/utils/constants/FnCommon.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/utils/constants/FnCommon.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/utils/enums/ErrorApp.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/utils/enums/ErrorApp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/utils/exception/CustomException.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/utils/exception/CustomException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/utils/exception/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/utils/exception/GlobalExceptionHandler.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;longcoutinho&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="e3b566f3-8b16-4b0f-9c37-2251970fa614" />
+        <option name="url" value="https://github.com/longcoutinho/account-management-backend.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenRunner">
+    <option name="skipTests" value="true" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2cxtC1ph4xEp1n0Kqrw42OP2uRX" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.DemoApplicationTests.executor": "Run",
+    "Maven.demo [clean].executor": "Run",
+    "Maven.demo [compile].executor": "Run",
+    "Maven.demo [install].executor": "Run",
+    "Maven.demo [org.apache.maven.plugins:maven-clean-plugin:3.3.2:clean].executor": "Run",
+    "Maven.demo [org.apache.maven.plugins:maven-install-plugin:3.1.1:help].executor": "Run",
+    "Maven.demo [org.apache.maven.plugins:maven-install-plugin:3.1.1:install-file].executor": "Run",
+    "Maven.demo [org.apache.maven.plugins:maven-install-plugin:3.1.1:install].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.DemoApplication.executor": "Run",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/long/Desktop/project/account-shop-web/account-management-backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.idesettings.debugger.capture",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\long\Desktop\project\account-shop-web\account-management-backend\libs" />
+      <recent name="C:\Users\long\Desktop\project\account-shop-web\account-management-backend" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\long\Desktop\project\account-shop-web\account-management-backend\target\com" />
+      <recent name="C:\Users\long\Desktop\project\account-shop-web\account-management-backend\target\libs" />
+      <recent name="C:\Users\long\Desktop\project\account-shop-web\account-management-backend" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.example.demo.repositories.tables.entities" />
+      <recent name="com.example.demo.services.tables.item" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.DemoApplication">
+    <configuration name="DemoApplicationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="demo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.demo.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.demo" />
+      <option name="MAIN_CLASS_NAME" value="com.example.demo.DemoApplicationTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="demo" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.demo.DemoApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.demo.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.DemoApplication" />
+        <item itemvalue="JUnit.DemoApplicationTests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-17.0.9-corretto-17.0.9-f644763e9732-ebaef533" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="579b502a-53b0-423c-a771-da1b36937344" name="Changes" comment="" />
+      <created>1709064925324</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1709064925324</updated>
+      <workItem from="1709064926377" duration="8416000" />
+      <workItem from="1709154434960" duration="4466000" />
+      <workItem from="1709245434645" duration="7357000" />
+      <workItem from="1709531992377" duration="3062000" />
+      <workItem from="1709570596821" duration="40852000" />
+      <workItem from="1709700129748" duration="23970000" />
+      <workItem from="1711204659151" duration="635000" />
+      <workItem from="1711217354819" duration="753000" />
+      <workItem from="1711399106757" duration="6640000" />
+      <workItem from="1711480880455" duration="9068000" />
+      <workItem from="1711650517209" duration="177000" />
+      <workItem from="1711666164672" duration="435000" />
+      <workItem from="1711666722366" duration="935000" />
+      <workItem from="1711728399710" duration="8604000" />
+      <workItem from="1711795135909" duration="16006000" />
+      <workItem from="1711988798847" duration="16423000" />
+      <workItem from="1712156609771" duration="3119000" />
+      <workItem from="1712159750040" duration="138000" />
+      <workItem from="1712159896976" duration="62000" />
+      <workItem from="1712159968007" duration="9184000" />
+      <workItem from="1712511387405" duration="6893000" />
+      <workItem from="1712778841551" duration="771000" />
+      <workItem from="1712785830661" duration="1112000" />
+      <workItem from="1713182828257" duration="1037000" />
+      <workItem from="1713367315364" duration="596000" />
+      <workItem from="1713459288057" duration="3037000" />
+      <workItem from="1713481398862" duration="1592000" />
+      <workItem from="1713781190353" duration="1553000" />
+      <workItem from="1713824164418" duration="2513000" />
+      <workItem from="1714156006753" duration="3883000" />
+      <workItem from="1714176623000" duration="2434000" />
+      <workItem from="1714190070898" duration="34000" />
+      <workItem from="1714193498460" duration="725000" />
+      <workItem from="1714324211997" duration="740000" />
+      <workItem from="1714343423655" duration="1835000" />
+      <workItem from="1714356128820" duration="2479000" />
+      <workItem from="1714418316526" duration="1125000" />
+      <workItem from="1714608097447" duration="655000" />
+      <workItem from="1714688787539" duration="224000" />
+      <workItem from="1714778995432" duration="1419000" />
+      <workItem from="1714941903726" duration="1122000" />
+      <workItem from="1715092027346" duration="9000" />
+      <workItem from="1715707124504" duration="185000" />
+      <workItem from="1716108460962" duration="6110000" />
+      <workItem from="1716148678973" duration="1865000" />
+      <workItem from="1716175376177" duration="772000" />
+      <workItem from="1716221672252" duration="595000" />
+      <workItem from="1716661420702" duration="10348000" />
+      <workItem from="1716738214990" duration="11454000" />
+      <workItem from="1717014399897" duration="8117000" />
+      <workItem from="1717078922084" duration="8479000" />
+      <workItem from="1717325374919" duration="544000" />
+    </task>
+    <task id="LOCAL-00009" summary="feat(kafka): add kafka">
+      <option name="closed" value="true" />
+      <created>1709683316550</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1709683316550</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat(kafka): add kafka">
+      <option name="closed" value="true" />
+      <created>1709683423186</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1709683423186</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat(kafka): add kafka">
+      <option name="closed" value="true" />
+      <created>1709683496625</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1709683496625</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat(kafka): add kafka">
+      <option name="closed" value="true" />
+      <created>1709705626611</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1709705626611</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat(kafka): add kafka">
+      <option name="closed" value="true" />
+      <created>1709783939660</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1709783939660</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat(kafka): add kafka">
+      <option name="closed" value="true" />
+      <created>1709789485946</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1709789485946</updated>
+    </task>
+    <task id="LOCAL-00015" summary="feat(kafka): add kafka">
+      <option name="closed" value="true" />
+      <created>1709789756008</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1709789756008</updated>
+    </task>
+    <task id="LOCAL-00016" summary="refactor(item, card, game): refactor code">
+      <option name="closed" value="true" />
+      <created>1711488483579</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1711488483579</updated>
+    </task>
+    <task id="LOCAL-00017" summary="refactor(item, card, game): refactor code">
+      <option name="closed" value="true" />
+      <created>1711488518186</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1711488518186</updated>
+    </task>
+    <task id="LOCAL-00018" summary="refactor(item, card, game): refactor code">
+      <option name="closed" value="true" />
+      <created>1711489083258</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1711489083258</updated>
+    </task>
+    <task id="LOCAL-00019" summary="refactor(item, card, game): refactor code">
+      <option name="closed" value="true" />
+      <created>1711748470373</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1711748470373</updated>
+    </task>
+    <task id="LOCAL-00020" summary="refactor(item, card, game): refactor code">
+      <option name="closed" value="true" />
+      <created>1711989043258</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1711989043258</updated>
+    </task>
+    <task id="LOCAL-00021" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712098915209</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1712098915209</updated>
+    </task>
+    <task id="LOCAL-00022" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712098933441</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1712098933441</updated>
+    </task>
+    <task id="LOCAL-00023" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712101714529</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1712101714529</updated>
+    </task>
+    <task id="LOCAL-00024" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712162693679</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1712162693679</updated>
+    </task>
+    <task id="LOCAL-00025" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712167334619</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1712167334619</updated>
+    </task>
+    <task id="LOCAL-00026" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712201759025</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1712201759025</updated>
+    </task>
+    <task id="LOCAL-00027" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712231009978</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1712231009978</updated>
+    </task>
+    <task id="LOCAL-00028" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712231097113</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1712231097113</updated>
+    </task>
+    <task id="LOCAL-00029" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712233305024</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1712233305024</updated>
+    </task>
+    <task id="LOCAL-00030" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712512591081</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1712512591081</updated>
+    </task>
+    <task id="LOCAL-00031" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712512636957</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1712512636957</updated>
+    </task>
+    <task id="LOCAL-00032" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712522732681</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1712522732681</updated>
+    </task>
+    <task id="LOCAL-00033" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712522797185</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1712522797185</updated>
+    </task>
+    <task id="LOCAL-00034" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712525416461</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1712525416461</updated>
+    </task>
+    <task id="LOCAL-00035" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1712787006183</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1712787006183</updated>
+    </task>
+    <task id="LOCAL-00036" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1713481475047</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1713481475047</updated>
+    </task>
+    <task id="LOCAL-00037" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1713481521380</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1713481521380</updated>
+    </task>
+    <task id="LOCAL-00038" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1713781297843</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1713781297843</updated>
+    </task>
+    <task id="LOCAL-00039" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1713781548690</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1713781548690</updated>
+    </task>
+    <task id="LOCAL-00040" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1714779320322</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1714779320322</updated>
+    </task>
+    <task id="LOCAL-00041" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1716108496457</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1716108496457</updated>
+    </task>
+    <task id="LOCAL-00042" summary="refactor(user-controller): remove unused API, refactor API">
+      <option name="closed" value="true" />
+      <created>1716110970442</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1716110970442</updated>
+    </task>
+    <task id="LOCAL-00043" summary="refactor(card-controller): refactor API">
+      <option name="closed" value="true" />
+      <created>1716150568187</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1716150568187</updated>
+    </task>
+    <task id="LOCAL-00044" summary="jar file">
+      <option name="closed" value="true" />
+      <created>1716150597409</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1716150597409</updated>
+    </task>
+    <task id="LOCAL-00045" summary="update">
+      <option name="closed" value="true" />
+      <created>1716801361036</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1716801361036</updated>
+    </task>
+    <task id="LOCAL-00046" summary="update">
+      <option name="closed" value="true" />
+      <created>1717025589606</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1717025589606</updated>
+    </task>
+    <task id="LOCAL-00047" summary="update">
+      <option name="closed" value="true" />
+      <created>1717025637731</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1717025637731</updated>
+    </task>
+    <task id="LOCAL-00048" summary="update">
+      <option name="closed" value="true" />
+      <created>1717060656700</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1717060656700</updated>
+    </task>
+    <task id="LOCAL-00049" summary="update">
+      <option name="closed" value="true" />
+      <created>1717062416080</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1717062416080</updated>
+    </task>
+    <task id="LOCAL-00050" summary="update">
+      <option name="closed" value="true" />
+      <created>1717063914369</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1717063914371</updated>
+    </task>
+    <task id="LOCAL-00051" summary="update">
+      <option name="closed" value="true" />
+      <created>1717100137440</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1717100137441</updated>
+    </task>
+    <task id="LOCAL-00052" summary="update">
+      <option name="closed" value="true" />
+      <created>1717100696465</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1717100696465</updated>
+    </task>
+    <task id="LOCAL-00053" summary="update">
+      <option name="closed" value="true" />
+      <created>1717101078099</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1717101078099</updated>
+    </task>
+    <task id="LOCAL-00054" summary="update">
+      <option name="closed" value="true" />
+      <created>1717105261814</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1717105261814</updated>
+    </task>
+    <task id="LOCAL-00055" summary="update">
+      <option name="closed" value="true" />
+      <created>1717105299660</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1717105299660</updated>
+    </task>
+    <task id="LOCAL-00056" summary="update">
+      <option name="closed" value="true" />
+      <created>1717105567573</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1717105567573</updated>
+    </task>
+    <task id="LOCAL-00057" summary="update">
+      <option name="closed" value="true" />
+      <created>1717105583598</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1717105583599</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="authorization logic" />
+    <MESSAGE value="get image logic" />
+    <MESSAGE value="add some logic" />
+    <MESSAGE value="fix(top-up-list, top-up-request): fix some logic code" />
+    <MESSAGE value="feat(sql): add sql command generator" />
+    <MESSAGE value="feat(kafka): add kafka" />
+    <MESSAGE value="refactor(item, card, game): refactor code" />
+    <MESSAGE value="refactor(user-controller): remove unused API, refactor API" />
+    <MESSAGE value="refactor(card-controller): refactor API" />
+    <MESSAGE value="jar file" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/example/demo/services/order/OrderServiceJPA.java</url>
+          <line>39</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/example/demo/services/topupgame/GamotaService.java</url>
+          <line>17</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="jdk.internal.net.http.ImmutableHttpRequest" memberName="expectContinue" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

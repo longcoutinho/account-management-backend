@@ -1,0 +1,947 @@
+Index: src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java b/src/main/java/com/example/demo/services/order/OrderServiceJPA.java
+rename from src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java
+rename to src/main/java/com/example/demo/services/order/OrderServiceJPA.java
+--- a/src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/services/order/OrderServiceJPA.java	(date 1711826722004)
+@@ -1,81 +1,96 @@
+-package com.example.demo.services.tables;
++package com.example.demo.services.order;
+ 
+-import com.example.demo.dtos.*;
+ import com.example.demo.dtos.payment.tripleA.ResponseDetailPaymentDTO;
+-import com.example.demo.dtos.saleorder.*;
+-import com.example.demo.repositories.tables.SaleOrderRepositoryJPA;
+-import com.example.demo.repositories.tables.entities.SaleOrderEntity;
++import com.example.demo.dtos.order.*;
++import com.example.demo.repositories.tables.OrderDetailRepositoryJPA;
++import com.example.demo.repositories.tables.OrderRepositoryJPA;
++import com.example.demo.repositories.tables.entities.order.OrderDetailEntity;
++import com.example.demo.repositories.tables.entities.order.OrderEntity;
+ import com.example.demo.services.payment.TripleAService;
+ import com.example.demo.utils.constants.Constants;
+ import com.example.demo.utils.enums.ErrorApp;
+ import com.example.demo.utils.exception.CustomException;
+-import com.fasterxml.jackson.core.JsonProcessingException;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Service;
+ 
+-import java.io.IOException;
+ import java.util.Date;
+ import java.util.LinkedList;
+ import java.util.List;
+ import java.util.UUID;
+ 
+ @Service
+-public class SaleOrderServiceJPA {
++public class OrderServiceJPA {
+     @Autowired
+-    SaleOrderRepositoryJPA saleOrderRepositoryJPA;
++    OrderRepositoryJPA orderRepositoryJPA;
++
++    @Autowired
++    OrderDetailRepositoryJPA orderDetailRepositoryJPA;
+ 
+     @Autowired
+     TripleAService tripleAService;
+ 
+-    public Object create(SaleOrderDTO params) throws IOException {
+-        // Create sale order
+-        SaleOrderEntity saleOrderEntity = new SaleOrderEntity();
+-        saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));
+-        saleOrderEntity.setCreateUser(params.getCreateUser());
+-        saleOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));
+-        saleOrderEntity.setItemId(params.getItemId());
+-        saleOrderEntity.setAmount(params.getAmount());
+-        saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.CREATE);
+-        // Create payment
+-        return tripleAService.createPayment(saleOrderRepositoryJPA.save(saleOrderEntity));
++    public Object create(RequestCreateOrderDTO orderList, String username) {
++        // save order
++        OrderEntity order = new OrderEntity();
++        order.setId(String.valueOf(UUID.randomUUID()));
++        order.setCreateUser(username);
++        order.setCreateDate(new Date(System.currentTimeMillis()));
++        order.setPrice(orderList.getPrice());
++        order.setStatus(Constants.SALE_ORDER_STATUS.CREATE);
++        order = orderRepositoryJPA.save(order);
++        // save list order detail
++        if (orderList.getOrderList() != null) {
++            for(OrderDTO orderDTO: orderList.getOrderList()) {
++                OrderDetailEntity orderDetail = new OrderDetailEntity();
++                orderDetail.setId(String.valueOf(UUID.randomUUID()));
++                orderDetail.setItemId(orderDTO.getItemId());
++                orderDetail.setAmount(orderDTO.getAmount());
++                orderDetail.setCreateDate(new Date(System.currentTimeMillis()));
++                orderDetail.setOrderId(order.getId());
++                orderDetailRepositoryJPA.save(orderDetail);
++            }
++        }
++        // create payment link
++        return tripleAService.createPayment(order);
+     }
+ 
+-    public SaleOrderResponseSummaryDTO getAll(SaleOrderDTO params) {
++    public Object getAll(OrderDTO params, String username) {
+         List<SaleOrderResponseDTO> res = new LinkedList<>();
+-        List<SaleOrderEntity> list = saleOrderRepositoryJPA.getAll();
+-        Long amount = 0L;
+-        for(SaleOrderEntity saleOrderEntity: list) {
+-            SaleOrderResponseDTO saleOrderResponseDTO = new SaleOrderResponseDTO();
+-            saleOrderResponseDTO.setId(saleOrderEntity.getId());
+-            saleOrderResponseDTO.setCreateDate(saleOrderEntity.getCreateDate());
+-            saleOrderResponseDTO.setStatus(saleOrderEntity.getStatus());
+-            res.add(saleOrderResponseDTO);
+-        }
+-        SaleOrderResponseSummaryDTO result = new SaleOrderResponseSummaryDTO();
+-        result.setListSaleOrder(res);
+-        result.setTotalRequest((long) res.size());
+-        result.setTotalAmount(amount);
+-        return result;
++        List<OrderEntity> list = orderRepositoryJPA.getAll(username);
++        return list;
++//        Long amount = 0L;
++//        for(OrderEntity saleOrderEntity: list) {
++//            SaleOrderResponseDTO saleOrderResponseDTO = new SaleOrderResponseDTO();
++//            saleOrderResponseDTO.setId(saleOrderEntity.getId());
++//            saleOrderResponseDTO.setCreateDate(saleOrderEntity.getCreateDate());
++//            saleOrderResponseDTO.setStatus(saleOrderEntity.getStatus());
++//            res.add(saleOrderResponseDTO);
++//        }
++//        SaleOrderResponseSummaryDTO result = new SaleOrderResponseSummaryDTO();
++//        result.setListSaleOrder(res);
++//        result.setTotalRequest((long) res.size());
++//        result.setTotalAmount(amount);
++//        return result;
+     }
+ 
+-    public ResponseProcessOrderDTO processOrder(RequestProcessOrderDTO request) {
+-        SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(request.getOrderId());
++    public ResponseProcessOrderDTO processOrder(RequestProcessOrderDTO request, String username) {
++        OrderEntity saleOrderEntity = orderRepositoryJPA.findById(request.getOrderId());
+         if (!validateOrder(request, saleOrderEntity)) throw new CustomException(ErrorApp.INVALID_ORDER);
+         ResponseDetailPaymentDTO orderDetail = tripleAService.getDetailPayment(request.getPaymentReference());
+-        if (orderDetail.getStatus().equals("good")) {
+-            saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.SUCCESS);
+-        }
+-        else {
+-            saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.FAIL);
+-        }
+-        saleOrderRepositoryJPA.save(saleOrderEntity);
++//        if (orderDetail.getStatus().equals("good")) {
++//            saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.SUCCESS);
++//        }
++//        else {
++//            saleOrderEntity.setStatus(Constants.SALE_ORDER_STATUS.FAIL);
++//        }
++        orderRepositoryJPA.save(saleOrderEntity);
+         ResponseProcessOrderDTO response = new ResponseProcessOrderDTO();
+         response.setStatus(saleOrderEntity.getStatus());
+         return response;
+     }
+ 
+-    private boolean validateOrder(RequestProcessOrderDTO request, SaleOrderEntity saleOrderEntity) {
+-        if (!saleOrderEntity.getPaymentReference().equals(request.getPaymentReference())) return false;
++    private boolean validateOrder(RequestProcessOrderDTO request, OrderEntity saleOrderEntity) {
++//        if (!saleOrderEntity.getPaymentReference().equals(request.getPaymentReference())) return false;
+         if (!saleOrderEntity.getCreateUser().equals(request.getCreateUser())) return false;
+         return true;
+     }
+Index: src/main/java/com/example/demo/controllers/TestController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.controllers;\r\n\r\nimport com.example.demo.services.payment.TripleAService;\r\nimport com.example.demo.payment.VNPayPayment;\r\nimport com.example.demo.services.tables.UserServiceJPA;\r\nimport jakarta.servlet.ServletException;\r\nimport jakarta.servlet.http.HttpServletRequest;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.web.bind.annotation.*;\r\nimport org.springframework.http.*;\r\n\r\nimport java.io.IOException;\r\n\r\n@RestController\r\n@RequestMapping(value = \"/test\")\r\npublic class TestController {\r\n    @Autowired\r\n    UserServiceJPA userServiceJPA;\r\n\r\n    @Autowired\r\n    TripleAService tripleAPayment;\r\n\r\n    @Autowired\r\n    VNPayPayment vnPayPayment;\r\n\r\n    /**\r\n     * API Health Check\r\n     *\r\n     * @return\r\n     */\r\n    @GetMapping(value = \"/payment\", produces = MediaType.APPLICATION_JSON_VALUE)\r\n    public ResponseEntity<Object> healthz(HttpServletRequest httpServletRequest) throws ServletException, IOException {\r\n        return new ResponseEntity<>(vnPayPayment.doPost(httpServletRequest), HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(value = \"\", produces = MediaType.APPLICATION_JSON_VALUE)\r\n    public ResponseEntity<Object> test() throws ServletException, IOException {\r\n        return new ResponseEntity<>(tripleAPayment.getAccessToken(), HttpStatus.OK);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/controllers/TestController.java b/src/main/java/com/example/demo/controllers/TestController.java
+--- a/src/main/java/com/example/demo/controllers/TestController.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/controllers/TestController.java	(date 1711876862447)
+@@ -3,6 +3,7 @@
+ import com.example.demo.services.payment.TripleAService;
+ import com.example.demo.payment.VNPayPayment;
+ import com.example.demo.services.tables.UserServiceJPA;
++import com.example.demo.utils.constants.FnCommon;
+ import jakarta.servlet.ServletException;
+ import jakarta.servlet.http.HttpServletRequest;
+ import org.springframework.beans.factory.annotation.Autowired;
+@@ -10,6 +11,8 @@
+ import org.springframework.http.*;
+ 
+ import java.io.IOException;
++import java.util.HashMap;
++import java.util.Map;
+ 
+ @RestController
+ @RequestMapping(value = "/test")
+@@ -35,6 +38,14 @@
+ 
+     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<Object> test() throws ServletException, IOException {
++        Map<String, String> res = new HashMap<>();
++        res.put("user_id", "1867045616");
++        res.put("code", "325068");
++        res.put("from", "com");
++        res.put("game_id", "1051029902");
++        res.put("lang", "en");
++        res.put("token", "5mz7qo8qqp4");
++        FnCommon.doPostRequestFormData("https://passport.igg.com/web_api/login/user_id", res, null);
+         return new ResponseEntity<>(tripleAPayment.getAccessToken(), HttpStatus.OK);
+     }
+ }
+Index: src/main/java/com/example/demo/repositories/tables/entities/GameEntity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.repositories.tables.entities;\r\n\r\nimport jakarta.persistence.*;\r\nimport lombok.Data;\r\nimport lombok.NoArgsConstructor;\r\n\r\nimport java.io.Serializable;\r\nimport java.util.Date;\r\n\r\n@Data\r\n@NoArgsConstructor\r\n@Entity\r\n@Table(name = \"GAME\")\r\npublic class GameEntity implements Serializable {\r\n    @Id\r\n    @Column(name = \"ID\")\r\n    String id;\r\n\r\n    @Column(name = \"NAME\")\r\n    String name;\r\n\r\n    @Column(name = \"DESCRIPTION\")\r\n    String description;\r\n\r\n    @Column(name = \"CODE\")\r\n    String code;\r\n\r\n    @Column(name = \"IMAGE\")\r\n    String image;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/entities/GameEntity.java b/src/main/java/com/example/demo/repositories/tables/entities/GameEntity.java
+--- a/src/main/java/com/example/demo/repositories/tables/entities/GameEntity.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/repositories/tables/entities/GameEntity.java	(date 1711828369386)
+@@ -10,7 +10,7 @@
+ @Data
+ @NoArgsConstructor
+ @Entity
+-@Table(name = "GAME")
++@Table(name = "TOP_UP_GAME")
+ public class GameEntity implements Serializable {
+     @Id
+     @Column(name = "ID")
+Index: src/main/java/com/example/demo/utils/constants/FnCommon.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.utils.constants;\r\n\r\nimport com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\n\r\nimport java.net.URI;\r\nimport java.net.URLEncoder;\r\nimport java.net.http.HttpClient;\r\nimport java.net.http.HttpRequest;\r\nimport java.net.http.HttpResponse;\r\nimport java.nio.charset.StandardCharsets;\r\nimport java.util.Map;\r\n\r\npublic class FnCommon {\r\n    public static String doPostRequest(String url, String token, Object obj) {\r\n        HttpClient httpClient = HttpClient.newHttpClient();\r\n        ObjectMapper objectMapper = new ObjectMapper();\r\n        try {\r\n            HttpRequest request = HttpRequest.newBuilder()\r\n                    .uri(URI.create(url))\r\n                    .header(\"Content-Type\", \"application/json\")\r\n                    .header(\"Authorization\", \"Bearer \" + token)\r\n                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(obj)))\r\n                    .build();\r\n            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());\r\n            System.out.println(response.body());\r\n            return response.body();\r\n        }\r\n        catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public static String doPostRequestFormData(String url, Map<String, String> params, String token) {\r\n        String encodedFormData = encodeFormData(params);\r\n        HttpRequest.BodyPublisher requestBody = HttpRequest.BodyPublishers.ofString(encodedFormData);\r\n        HttpClient httpClient = HttpClient.newHttpClient();\r\n        HttpRequest request = HttpRequest.newBuilder()\r\n                .uri(URI.create(url))\r\n                .header(\"Accept\", \"application/json\")\r\n                .header(\"Content-Type\", \"application/x-www-form-urlencoded\")\r\n                .POST(requestBody)\r\n                .build();\r\n        try {\r\n            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());\r\n            System.out.println(response.body());\r\n            return response.body();\r\n        } catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n        return null;\r\n    }\r\n\r\n    private static String encodeFormData(Map<String, String> formData) {\r\n        StringBuilder encodedForm = new StringBuilder();\r\n        for (Map.Entry<String, String> entry : formData.entrySet()) {\r\n            if (encodedForm.length() > 0) {\r\n                encodedForm.append(\"&\");\r\n            }\r\n            encodedForm.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));\r\n            encodedForm.append(\"=\");\r\n            encodedForm.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));\r\n        }\r\n        return encodedForm.toString();\r\n    }\r\n\r\n    public static String toString(Map<String, ?> map) {\r\n        StringBuilder mapAsString = new StringBuilder(\"{\");\r\n        for (String key : map.keySet()) {\r\n            mapAsString.append(key + \"=\" + map.get(key) + \", \");\r\n        }\r\n        mapAsString.delete(mapAsString.length()-2, mapAsString.length()).append(\"}\");\r\n        return mapAsString.toString();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/utils/constants/FnCommon.java b/src/main/java/com/example/demo/utils/constants/FnCommon.java
+--- a/src/main/java/com/example/demo/utils/constants/FnCommon.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/utils/constants/FnCommon.java	(date 1711876275199)
+@@ -1,14 +1,18 @@
+ package com.example.demo.utils.constants;
+ 
+ import com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;
++import com.example.demo.repositories.tables.entities.UserEntity;
+ import com.fasterxml.jackson.databind.ObjectMapper;
++import jakarta.servlet.http.HttpServletRequest;
+ 
++import java.net.HttpCookie;
+ import java.net.URI;
+ import java.net.URLEncoder;
+ import java.net.http.HttpClient;
+ import java.net.http.HttpRequest;
+ import java.net.http.HttpResponse;
+ import java.nio.charset.StandardCharsets;
++import java.util.List;
+ import java.util.Map;
+ 
+ public class FnCommon {
+@@ -23,6 +27,7 @@
+                     .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(obj)))
+                     .build();
+             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
++            if (response.statusCode() != 200) return null;
+             System.out.println(response.body());
+             return response.body();
+         }
+@@ -44,6 +49,13 @@
+                 .build();
+         try {
+             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
++            List<String> cookies = response.headers().allValues("Set-Cookie");
++            for (String cookieString : cookies) {
++                HttpCookie cookie = HttpCookie.parse(cookieString).get(0);
++                System.out.println("Cookie Name: " + cookie.getName());
++                System.out.println("Cookie Value: " + cookie.getValue());
++                // You can access other properties of the cookie such as domain, path, etc.
++            }
+             System.out.println(response.body());
+             return response.body();
+         } catch (Exception e) {
+@@ -73,4 +85,9 @@
+         mapAsString.delete(mapAsString.length()-2, mapAsString.length()).append("}");
+         return mapAsString.toString();
+     }
++
++    public static String getUsername(HttpServletRequest httpServletRequest){
++        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
++        return userEntity.getRole().equals("USER") ? userEntity.getUsername() : null;
++    }
+ }
+Index: src/main/java/com/example/demo/repositories/tables/entities/ItemImageEntity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/entities/ItemImageEntity.java b/src/main/java/com/example/demo/repositories/tables/entities/order/OrderDetailEntity.java
+rename from src/main/java/com/example/demo/repositories/tables/entities/ItemImageEntity.java
+rename to src/main/java/com/example/demo/repositories/tables/entities/order/OrderDetailEntity.java
+--- a/src/main/java/com/example/demo/repositories/tables/entities/ItemImageEntity.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/repositories/tables/entities/order/OrderDetailEntity.java	(date 1711826701876)
+@@ -1,24 +1,33 @@
+-package com.example.demo.repositories.tables.entities;
++package com.example.demo.repositories.tables.entities.order;
+ 
+ import jakarta.persistence.*;
+ import lombok.Data;
+ import lombok.NoArgsConstructor;
+ 
+ import java.io.Serializable;
++import java.util.Date;
+ 
+ @Data
+ @NoArgsConstructor
+ @Entity
+-@Table(name = "ITEM_IMAGE")
+-public class ItemImageEntity implements Serializable {
++@Table(name = "ORDER_DETAIL")
++public class OrderDetailEntity implements Serializable {
+     @Id
+-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+     @Column(name = "ID")
+-    Long id;
++    String id;
+ 
+     @Column(name = "ITEM_ID")
+     Long itemId;
+ 
+-    @Column(name = "FILE_ID")
+-    Long fileId;
++    @Column(name = "CREATE_DATE")
++    Date createDate;
++
++    @Column(name = "AMOUNT")
++    Long amount;
++
++    @Column(name = "CARD_ORDER_ID")
++    String cardOrderId;
++
++    @Column(name = "ORDER_ID")
++    String orderId;
+ }
+Index: src/main/java/com/example/demo/security/SecurityServletFilter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.security;\r\n\r\nimport com.example.demo.services.security.jwt.JwtTokenProvider;\r\nimport com.example.demo.repositories.tables.entities.UserEntity;\r\nimport com.example.demo.services.tables.UserServiceJPA;\r\nimport jakarta.servlet.FilterChain;\r\nimport jakarta.servlet.ServletException;\r\nimport jakarta.servlet.http.HttpFilter;\r\nimport jakarta.servlet.http.HttpServletRequest;\r\nimport jakarta.servlet.http.HttpServletResponse;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Component;\r\n\r\nimport java.io.IOException;\r\n\r\n@Component\r\npublic class SecurityServletFilter extends HttpFilter {\r\n    @Autowired\r\n    JwtTokenProvider jwtTokenProvider;\r\n\r\n    @Autowired\r\n    UserServiceJPA userServiceJPA;\r\n\r\n    @Override\r\n    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, ServletException {\r\n        String token = request.getHeader(\"Authorization\");\r\n        response.addHeader(\"Access-Control-Allow-Origin\", \"*\");\r\n        response.addHeader(\"Access-Control-Request-Method\", \"GET, PUT\");\r\n        response.addHeader(\"Access-Control-Allow-Headers\", \"Authorization, Content-Type\");\r\n        if (validSite(request.getRequestURI()) || authenticated(token) != null || request.getMethod().equals(\"OPTIONS\")) {\r\n            String userId = authenticated(token);\r\n            UserEntity userEntity = userServiceJPA.findByUserId(userId);\r\n            request.setAttribute(\"userInfo\", userEntity);\r\n            chain.doFilter(request, response); // (4)\r\n            return;\r\n        }\r\n        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // HTTP 401.\r\n    }\r\n\r\n    private boolean validSite(String sitePath) {\r\n        if (sitePath.startsWith(\"/user/login\")) return true;\r\n        if (sitePath.equals(\"/user/register\")) return true;\r\n        if (sitePath.equals(\"/user/admin-account/create\")) return true;\r\n        if (sitePath.startsWith(\"/test\")) return true;\r\n        if (sitePath.startsWith(\"/payment\")) return true;\r\n        return false;\r\n    }\r\n\r\n    private String authenticated(String token) {\r\n        return jwtTokenProvider.validateToken(token);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/security/SecurityServletFilter.java b/src/main/java/com/example/demo/security/SecurityServletFilter.java
+--- a/src/main/java/com/example/demo/security/SecurityServletFilter.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/security/SecurityServletFilter.java	(date 1711879296856)
+@@ -43,6 +43,9 @@
+         if (sitePath.equals("/user/admin-account/create")) return true;
+         if (sitePath.startsWith("/test")) return true;
+         if (sitePath.startsWith("/payment")) return true;
++        if (sitePath.startsWith("/game")) return true;
++        if (sitePath.startsWith("/card")) return true;
++        if (sitePath.startsWith("/item")) return true;
+         return false;
+     }
+ 
+Index: src/main/java/com/example/demo/controllers/item/ImageController.java
+===================================================================
+diff --git a/src/main/java/com/example/demo/controllers/item/ImageController.java b/src/main/java/com/example/demo/controllers/item/ImageController.java
+deleted file mode 100644
+--- a/src/main/java/com/example/demo/controllers/item/ImageController.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ /dev/null	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
+@@ -1,20 +0,0 @@
+-package com.example.demo.controllers.item;
+-
+-import com.example.demo.services.tables.item.ImageServiceJPA;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.http.MediaType;
+-import org.springframework.web.bind.annotation.*;
+-
+-import java.io.IOException;
+-
+-@RestController
+-@RequestMapping(value = "/image")
+-public class ImageController {
+-    @Autowired
+-    ImageServiceJPA imageServiceJPA;
+-
+-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+-    public @ResponseBody byte[] getImage(@PathVariable(value = "id") Long id) throws IOException {
+-        return imageServiceJPA.getImageById(id);
+-    }
+-}
+Index: src/main/java/com/example/demo/repositories/tables/ImageRepositoryJPA.java
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/ImageRepositoryJPA.java b/src/main/java/com/example/demo/repositories/tables/ImageRepositoryJPA.java
+deleted file mode 100644
+--- a/src/main/java/com/example/demo/repositories/tables/ImageRepositoryJPA.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ /dev/null	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
+@@ -1,12 +0,0 @@
+-package com.example.demo.repositories.tables;
+-import com.example.demo.repositories.tables.entities.ItemImageEntity;
+-import org.springframework.data.jpa.repository.JpaRepository;
+-import org.springframework.stereotype.Repository;
+-
+-import java.util.List;
+-
+-@Repository
+-public interface ImageRepositoryJPA extends JpaRepository<ItemImageEntity, Long> {
+-
+-    List<ItemImageEntity> findByItemId(Long itemId);
+-}
+Index: src/main/java/com/example/demo/repositories/tables/SaleOrderRepositoryJPA.java
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/SaleOrderRepositoryJPA.java b/src/main/java/com/example/demo/repositories/tables/SaleOrderRepositoryJPA.java
+deleted file mode 100644
+--- a/src/main/java/com/example/demo/repositories/tables/SaleOrderRepositoryJPA.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ /dev/null	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
+@@ -1,16 +0,0 @@
+-package com.example.demo.repositories.tables;
+-import com.example.demo.repositories.tables.entities.SaleOrderEntity;
+-import org.springframework.data.jpa.repository.JpaRepository;
+-import org.springframework.data.jpa.repository.Query;
+-import org.springframework.stereotype.Repository;
+-
+-import java.util.List;
+-
+-@Repository
+-public interface SaleOrderRepositoryJPA extends JpaRepository<SaleOrderEntity, Long> {
+-
+-    @Query("select e from SaleOrderEntity e order by e.createDate desc")
+-    List<SaleOrderEntity> getAll();
+-
+-    SaleOrderEntity findById(String orderId);
+-}
+Index: src/main/java/com/example/demo/repositories/tables/OrderRepositoryJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/OrderRepositoryJPA.java b/src/main/java/com/example/demo/repositories/tables/OrderRepositoryJPA.java
+new file mode 100644
+--- /dev/null	(date 1711826578673)
++++ b/src/main/java/com/example/demo/repositories/tables/OrderRepositoryJPA.java	(date 1711826578673)
+@@ -0,0 +1,16 @@
++package com.example.demo.repositories.tables;
++import com.example.demo.repositories.tables.entities.order.OrderEntity;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.data.jpa.repository.Query;
++import org.springframework.stereotype.Repository;
++
++import java.util.List;
++
++@Repository
++public interface OrderRepositoryJPA extends JpaRepository<OrderEntity, Long> {
++
++    @Query("select e from OrderEntity e where e.createUser = :username order by e.createDate desc")
++    List<OrderEntity> getAll(String username);
++
++    OrderEntity findById(String orderId);
++}
+Index: src/main/java/com/example/demo/services/tables/item/ImageServiceJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/tables/item/ImageServiceJPA.java b/src/main/java/com/example/demo/services/order/OrderDetailServiceJPA.java
+rename from src/main/java/com/example/demo/services/tables/item/ImageServiceJPA.java
+rename to src/main/java/com/example/demo/services/order/OrderDetailServiceJPA.java
+--- a/src/main/java/com/example/demo/services/tables/item/ImageServiceJPA.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/services/order/OrderDetailServiceJPA.java	(date 1711798493701)
+@@ -1,52 +1,7 @@
+-package com.example.demo.services.tables.item;
++package com.example.demo.services.order;
+ 
+-import com.example.demo.repositories.tables.ImageRepositoryJPA;
+-import com.example.demo.repositories.tables.entities.FileEntity;
+-import com.example.demo.repositories.tables.entities.ItemImageEntity;
+-import com.example.demo.services.tables.FileServiceJPA;
+-import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Service;
+-import org.springframework.web.multipart.MultipartFile;
+-
+-import java.io.IOException;
+-import java.util.LinkedList;
+-import java.util.List;
+ 
+ @Service
+-public class ImageServiceJPA {
+-    @Autowired
+-    FileServiceJPA fileServiceJPA;
+-
+-    @Autowired
+-    ImageRepositoryJPA imageRepositoryJPA;
+-
+-    private byte[] getImageByFileId(Long id) throws IOException {
+-        return fileServiceJPA.getByteFileById(id);
+-    }
+-
+-    public void saveImage(List<MultipartFile> listImages, Long imageId) throws IOException {
+-        for(MultipartFile image: listImages) {
+-            // save file to server
+-            FileEntity savedFile = fileServiceJPA.saveFile(image);
+-            ItemImageEntity itemImageEntity = new ItemImageEntity();
+-            itemImageEntity.setItemId(imageId);
+-            itemImageEntity.setFileId(savedFile.getId());
+-            imageRepositoryJPA.save(itemImageEntity);
+-        }
+-    }
+-
+-    public byte[] getImageById(Long id) throws IOException {
+-        ItemImageEntity itemImageEntity = imageRepositoryJPA.findById(id).get();
+-        return getImageByFileId(itemImageEntity.getFileId());
+-    }
+-
+-    public List<Long> getImagesByItemId(Long itemId) {
+-        List<ItemImageEntity> list = imageRepositoryJPA.findByItemId(itemId);
+-        List<Long> result = new LinkedList<>();
+-        for(ItemImageEntity item: list) {
+-            Long imageId = item.getId();
+-            result.add(imageId);
+-        }
+-        return result;
+-    }
++public class OrderDetailServiceJPA {
+ }
+Index: src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java b/src/main/java/com/example/demo/repositories/tables/entities/order/OrderEntity.java
+rename from src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java
+rename to src/main/java/com/example/demo/repositories/tables/entities/order/OrderEntity.java
+--- a/src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/repositories/tables/entities/order/OrderEntity.java	(date 1711804621269)
+@@ -1,4 +1,4 @@
+-package com.example.demo.repositories.tables.entities;
++package com.example.demo.repositories.tables.entities.order;
+ 
+ import jakarta.persistence.*;
+ import lombok.Data;
+@@ -10,8 +10,8 @@
+ @Data
+ @NoArgsConstructor
+ @Entity
+-@Table(name = "SALE_ORDER")
+-public class SaleOrderEntity implements Serializable {
++@Table(name = "ORDERS")
++public class OrderEntity implements Serializable {
+     @Id
+     @Column(name = "ID")
+     String id;
+@@ -22,15 +22,9 @@
+     @Column(name = "CREATE_DATE")
+     Date createDate;
+ 
+-    @Column(name = "ITEM_ID")
+-    Long itemId;
+-
+-    @Column(name = "AMOUNT")
+-    Long amount;
++    @Column(name = "PRICE")
++    Long price;
+ 
+     @Column(name = "STATUS")
+     Long status;
+-
+-    @Column(name = "PAYMENT_REFERENCE")
+-    String paymentReference;
+ }
+Index: src/main/java/com/example/demo/dtos/saleorder/RequestProcessOrderDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/saleorder/RequestProcessOrderDTO.java b/src/main/java/com/example/demo/dtos/order/RequestProcessOrderDTO.java
+rename from src/main/java/com/example/demo/dtos/saleorder/RequestProcessOrderDTO.java
+rename to src/main/java/com/example/demo/dtos/order/RequestProcessOrderDTO.java
+--- a/src/main/java/com/example/demo/dtos/saleorder/RequestProcessOrderDTO.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/dtos/order/RequestProcessOrderDTO.java	(date 1711798673684)
+@@ -1,4 +1,4 @@
+-package com.example.demo.dtos.saleorder;
++package com.example.demo.dtos.order;
+ 
+ import lombok.Data;
+ 
+Index: src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseDTO.java b/src/main/java/com/example/demo/dtos/order/SaleOrderResponseDTO.java
+rename from src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseDTO.java
+rename to src/main/java/com/example/demo/dtos/order/SaleOrderResponseDTO.java
+--- a/src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseDTO.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/dtos/order/SaleOrderResponseDTO.java	(date 1711798673695)
+@@ -1,4 +1,4 @@
+-package com.example.demo.dtos.saleorder;
++package com.example.demo.dtos.order;
+ 
+ import lombok.Data;
+ 
+Index: src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.java b/src/main/java/com/example/demo/dtos/order/SaleOrderResponseSummaryDTO.java
+rename from src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.java
+rename to src/main/java/com/example/demo/dtos/order/SaleOrderResponseSummaryDTO.java
+--- a/src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/dtos/order/SaleOrderResponseSummaryDTO.java	(date 1711798673692)
+@@ -1,6 +1,5 @@
+-package com.example.demo.dtos.saleorder;
++package com.example.demo.dtos.order;
+ 
+-import com.example.demo.dtos.saleorder.SaleOrderResponseDTO;
+ import lombok.Data;
+ 
+ import java.util.List;
+Index: src/main/java/com/example/demo/dtos/saleorder/ResponseProcessOrderDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/saleorder/ResponseProcessOrderDTO.java b/src/main/java/com/example/demo/dtos/order/ResponseProcessOrderDTO.java
+rename from src/main/java/com/example/demo/dtos/saleorder/ResponseProcessOrderDTO.java
+rename to src/main/java/com/example/demo/dtos/order/ResponseProcessOrderDTO.java
+--- a/src/main/java/com/example/demo/dtos/saleorder/ResponseProcessOrderDTO.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/dtos/order/ResponseProcessOrderDTO.java	(date 1711798673705)
+@@ -1,4 +1,4 @@
+-package com.example.demo.dtos.saleorder;
++package com.example.demo.dtos.order;
+ 
+ import lombok.Data;
+ 
+Index: src/main/java/com/example/demo/dtos/saleorder/SaleOrderDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/saleorder/SaleOrderDTO.java b/src/main/java/com/example/demo/dtos/order/OrderDTO.java
+rename from src/main/java/com/example/demo/dtos/saleorder/SaleOrderDTO.java
+rename to src/main/java/com/example/demo/dtos/order/OrderDTO.java
+--- a/src/main/java/com/example/demo/dtos/saleorder/SaleOrderDTO.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/dtos/order/OrderDTO.java	(date 1711804135923)
+@@ -1,10 +1,9 @@
+-package com.example.demo.dtos.saleorder;
++package com.example.demo.dtos.order;
+ 
+ import lombok.Data;
+ 
+ @Data
+-public class SaleOrderDTO {
++public class OrderDTO {
+     Long itemId;
+     Long amount;
+-    String createUser;
+ }
+Index: src/main/java/com/example/demo/services/payment/TripleAService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.services.payment;\r\n\r\nimport com.example.demo.dtos.payment.tripleA.RequestPaymentDTO;\r\nimport com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;\r\nimport com.example.demo.dtos.payment.tripleA.ResponseDetailPaymentDTO;\r\nimport com.example.demo.dtos.payment.tripleA.ResponsePaymentDTO;\r\nimport com.example.demo.repositories.tables.entities.ItemEntity;\r\nimport com.example.demo.repositories.tables.entities.SaleOrderEntity;\r\nimport com.example.demo.services.tables.item.ItemServiceJPA;\r\nimport com.example.demo.utils.constants.FnCommon;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.beans.factory.annotation.Value;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.io.IOException;\r\nimport java.util.LinkedHashMap;\r\nimport java.util.Map;\r\n\r\n@Service\r\npublic class TripleAService {\r\n    @Autowired\r\n    ItemServiceJPA itemServiceJPA;\r\n\r\n    @Value(\"${triple-a.auth.url}\")\r\n    String authUrl;\r\n\r\n    @Value(\"${triple-a.payment.url}\")\r\n    String paymentUrl;\r\n\r\n    @Value(\"${triple-a.client-id}\")\r\n    String client_id;\r\n\r\n    @Value(\"${triple-a.client-secret}\")\r\n    String client_secret;\r\n\r\n    @Value(\"${triple-a.grant-type}\")\r\n    String grant_type;\r\n\r\n    @Value(\"${CANCEL_URL}\")\r\n    String cancelUrl;\r\n\r\n    @Value(\"${RETURN_URL}\")\r\n    String successUrl;\r\n\r\n    public ResponseAccessTokenDTO getAccessToken() {\r\n        Map<String, String> params = new LinkedHashMap<>();\r\n        params.put(\"client_id\", \"oacid-clu1dpq2m0kwyrhis6fm0gisq\");\r\n        params.put(\"client_secret\", \"924c2d167a9ac6bbb2cfe041185ef4c68192b7758f3e9bb654c4dff80cc4ad27\");\r\n        params.put(\"grant_type\", \"client_credentials\");\r\n\r\n        String res = FnCommon.doPostRequestFormData(authUrl, params, null);\r\n        ObjectMapper objectMapper = new ObjectMapper();\r\n        try {\r\n            return objectMapper.readValue(res, ResponseAccessTokenDTO.class);\r\n        }\r\n        catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public ResponsePaymentDTO createPayment(SaleOrderEntity saleOrder) {\r\n        ItemEntity itemEntity = itemServiceJPA.findById(saleOrder.getItemId());\r\n        RequestPaymentDTO requestBody = new RequestPaymentDTO();\r\n        requestBody.setType(\"triplea\");\r\n        requestBody.setMerchant_key(\"mkey-cltzq8mtk0i8f2nisdy8124zp\");\r\n        requestBody.setOrder_currency(\"VND\");\r\n        requestBody.setOrder_amount(saleOrder.getAmount() * itemEntity.getPrice());\r\n        requestBody.setPayer_id(\"minhbn.gm@gmail.com\");\r\n        requestBody.setCancel_url(cancelUrl);\r\n        requestBody.setSuccess_url(successUrl);\r\n        ResponseAccessTokenDTO token = getAccessToken();\r\n        String access_token = token != null ? token.getAccess_token() : \"\";\r\n        System.out.println(requestBody);\r\n        String response = FnCommon.doPostRequest(paymentUrl, access_token, requestBody);\r\n        ObjectMapper objectMapper = new ObjectMapper();\r\n        try {\r\n           return objectMapper.readValue(response, ResponsePaymentDTO.class);\r\n        }\r\n        catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public ResponseDetailPaymentDTO getDetailPayment(String paymentReference) {\r\n        ResponseAccessTokenDTO token = getAccessToken();\r\n        String response = FnCommon.doPostRequest(paymentUrl + '/' + paymentReference , token.getAccess_token(), null);\r\n        ObjectMapper objectMapper = new ObjectMapper();\r\n        try {\r\n            return objectMapper.readValue(response, ResponseDetailPaymentDTO.class);\r\n        }\r\n        catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n        return null;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/payment/TripleAService.java b/src/main/java/com/example/demo/services/payment/TripleAService.java
+--- a/src/main/java/com/example/demo/services/payment/TripleAService.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/services/payment/TripleAService.java	(date 1711799711547)
+@@ -1,19 +1,20 @@
+ package com.example.demo.services.payment;
+ 
+-import com.example.demo.dtos.payment.tripleA.RequestPaymentDTO;
+ import com.example.demo.dtos.payment.tripleA.ResponseAccessTokenDTO;
+ import com.example.demo.dtos.payment.tripleA.ResponseDetailPaymentDTO;
+ import com.example.demo.dtos.payment.tripleA.ResponsePaymentDTO;
+-import com.example.demo.repositories.tables.entities.ItemEntity;
+-import com.example.demo.repositories.tables.entities.SaleOrderEntity;
++import com.example.demo.dtos.payment.tripleA.RequestPaymentDTO;
++import com.example.demo.repositories.tables.entities.order.OrderEntity;
+ import com.example.demo.services.tables.item.ItemServiceJPA;
++import com.example.demo.utils.constants.Constants;
+ import com.example.demo.utils.constants.FnCommon;
++import com.example.demo.utils.enums.ErrorApp;
++import com.example.demo.utils.exception.CustomException;
+ import com.fasterxml.jackson.databind.ObjectMapper;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Value;
+ import org.springframework.stereotype.Service;
+ 
+-import java.io.IOException;
+ import java.util.LinkedHashMap;
+ import java.util.Map;
+ 
+@@ -60,27 +61,33 @@
+         return null;
+     }
+ 
+-    public ResponsePaymentDTO createPayment(SaleOrderEntity saleOrder) {
+-        ItemEntity itemEntity = itemServiceJPA.findById(saleOrder.getItemId());
++    public ResponsePaymentDTO createPayment(OrderEntity saleOrder) {
+         RequestPaymentDTO requestBody = new RequestPaymentDTO();
+         requestBody.setType("triplea");
+         requestBody.setMerchant_key("mkey-cltzq8mtk0i8f2nisdy8124zp");
+         requestBody.setOrder_currency("VND");
+-        requestBody.setOrder_amount(saleOrder.getAmount() * itemEntity.getPrice());
++        requestBody.setOrder_amount(saleOrder.getPrice());
+         requestBody.setPayer_id("minhbn.gm@gmail.com");
+         requestBody.setCancel_url(cancelUrl);
+         requestBody.setSuccess_url(successUrl);
+         ResponseAccessTokenDTO token = getAccessToken();
+         String access_token = token != null ? token.getAccess_token() : "";
+-        System.out.println(requestBody);
++        // create payment
+         String response = FnCommon.doPostRequest(paymentUrl, access_token, requestBody);
+-        ObjectMapper objectMapper = new ObjectMapper();
+-        try {
+-           return objectMapper.readValue(response, ResponsePaymentDTO.class);
+-        }
+-        catch (Exception e) {
+-            e.printStackTrace();
++        if (response != null) {
++            saleOrder.setStatus(Constants.SALE_ORDER_STATUS.PAID);
++            ObjectMapper objectMapper = new ObjectMapper();
++            try {
++                return objectMapper.readValue(response, ResponsePaymentDTO.class);
++            }
++            catch (Exception e) {
++                e.printStackTrace();
++            }
+         }
++        else {
++            saleOrder.setStatus(Constants.SALE_ORDER_STATUS.UNPAID);
++            throw new CustomException(ErrorApp.NOT_AVAILABLE_METHOD);
++        }
+         return null;
+     }
+ 
+Index: src/main/java/com/example/demo/controllers/SaleOrderController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.controllers;\r\n\r\nimport com.example.demo.dtos.saleorder.RequestProcessOrderDTO;\r\nimport com.example.demo.dtos.saleorder.SaleOrderDTO;\r\nimport com.example.demo.repositories.tables.entities.UserEntity;\r\nimport com.example.demo.services.tables.SaleOrderServiceJPA;\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport jakarta.servlet.http.HttpServletRequest;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.MediaType;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\nimport java.io.IOException;\r\n\r\n@RestController\r\n@RequestMapping(value = \"/sale-order\")\r\npublic class SaleOrderController {\r\n    @Autowired\r\n    SaleOrderServiceJPA saleOrderServiceJPA;\r\n\r\n    @PostMapping(value = \"/create\", produces = MediaType.APPLICATION_JSON_VALUE)\r\n    public ResponseEntity<Object> create(@RequestBody SaleOrderDTO params, HttpServletRequest httpServletRequest) throws IOException {\r\n        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute(\"userInfo\");\r\n        if (userEntity.getRole().equals(\"USER\")) {\r\n            params.setCreateUser(userEntity.getUsername());\r\n        }\r\n        Object result = saleOrderServiceJPA.create(params);\r\n        return new ResponseEntity<>(result, HttpStatus.OK);\r\n    }\r\n\r\n    @PostMapping(value = \"/process\", produces = MediaType.APPLICATION_JSON_VALUE)\r\n    public ResponseEntity<Object> process(RequestProcessOrderDTO params, HttpServletRequest httpServletRequest) throws JsonProcessingException {\r\n        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute(\"userInfo\");\r\n        if (userEntity.getRole().equals(\"USER\")) {\r\n            params.setCreateUser(userEntity.getUsername());\r\n        }\r\n        Object result = saleOrderServiceJPA.processOrder(params);\r\n        return new ResponseEntity<>(result, HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(value = \"/list\", produces = MediaType.APPLICATION_JSON_VALUE)\r\n    public ResponseEntity<Object> getItem(SaleOrderDTO params) {\r\n        Object result = saleOrderServiceJPA.getAll(params);\r\n        return new ResponseEntity<>(result, HttpStatus.OK);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/controllers/SaleOrderController.java b/src/main/java/com/example/demo/controllers/SaleOrderController.java
+--- a/src/main/java/com/example/demo/controllers/SaleOrderController.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/controllers/SaleOrderController.java	(date 1711826551512)
+@@ -1,9 +1,11 @@
+ package com.example.demo.controllers;
+ 
+-import com.example.demo.dtos.saleorder.RequestProcessOrderDTO;
+-import com.example.demo.dtos.saleorder.SaleOrderDTO;
++import com.example.demo.dtos.order.RequestCreateOrderDTO;
++import com.example.demo.dtos.order.RequestProcessOrderDTO;
++import com.example.demo.dtos.order.OrderDTO;
+ import com.example.demo.repositories.tables.entities.UserEntity;
+-import com.example.demo.services.tables.SaleOrderServiceJPA;
++import com.example.demo.services.order.OrderServiceJPA;
++import com.example.demo.utils.constants.FnCommon;
+ import com.fasterxml.jackson.core.JsonProcessingException;
+ import jakarta.servlet.http.HttpServletRequest;
+ import org.springframework.beans.factory.annotation.Autowired;
+@@ -18,31 +20,29 @@
+ @RequestMapping(value = "/sale-order")
+ public class SaleOrderController {
+     @Autowired
+-    SaleOrderServiceJPA saleOrderServiceJPA;
++    OrderServiceJPA saleOrderServiceJPA;
+ 
++    /**
++     * Create new order.
++     *
++     * @param request - list order.
++     * @return The HTTP response object indicating the status of the operation.
++     */
+     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+-    public ResponseEntity<Object> create(@RequestBody SaleOrderDTO params, HttpServletRequest httpServletRequest) throws IOException {
+-        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
+-        if (userEntity.getRole().equals("USER")) {
+-            params.setCreateUser(userEntity.getUsername());
+-        }
+-        Object result = saleOrderServiceJPA.create(params);
++    public ResponseEntity<Object> create(@RequestBody RequestCreateOrderDTO request, HttpServletRequest httpServletRequest) throws IOException {
++        Object result = saleOrderServiceJPA.create(request, FnCommon.getUsername(httpServletRequest));
+         return new ResponseEntity<>(result, HttpStatus.OK);
+     }
+ 
+     @PostMapping(value = "/process", produces = MediaType.APPLICATION_JSON_VALUE)
+-    public ResponseEntity<Object> process(RequestProcessOrderDTO params, HttpServletRequest httpServletRequest) throws JsonProcessingException {
+-        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
+-        if (userEntity.getRole().equals("USER")) {
+-            params.setCreateUser(userEntity.getUsername());
+-        }
+-        Object result = saleOrderServiceJPA.processOrder(params);
++    public ResponseEntity<Object> process(RequestProcessOrderDTO params, HttpServletRequest httpServletRequest) {
++        Object result = saleOrderServiceJPA.processOrder(params, FnCommon.getUsername(httpServletRequest));
+         return new ResponseEntity<>(result, HttpStatus.OK);
+     }
+ 
+     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+-    public ResponseEntity<Object> getItem(SaleOrderDTO params) {
+-        Object result = saleOrderServiceJPA.getAll(params);
++    public ResponseEntity<Object> getItem(OrderDTO params, HttpServletRequest httpServletRequest) {
++        Object result = saleOrderServiceJPA.getAll(params, FnCommon.getUsername(httpServletRequest));
+         return new ResponseEntity<>(result, HttpStatus.OK);
+     }
+ }
+Index: src/main/java/com/example/demo/dtos/order/RequestCreateOrderDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/order/RequestCreateOrderDTO.java b/src/main/java/com/example/demo/dtos/order/RequestCreateOrderDTO.java
+new file mode 100644
+--- /dev/null	(date 1711798673701)
++++ b/src/main/java/com/example/demo/dtos/order/RequestCreateOrderDTO.java	(date 1711798673701)
+@@ -0,0 +1,11 @@
++package com.example.demo.dtos.order;
++
++import lombok.Data;
++
++import java.util.List;
++
++@Data
++public class RequestCreateOrderDTO {
++    List<OrderDTO> orderList;
++    Long price;
++}
+Index: src/main/java/com/example/demo/kafka/KafkaConsumer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.kafka;\r\nimport com.example.demo.services.tables.SaleOrderServiceJPA;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.kafka.annotation.KafkaListener;\r\nimport org.springframework.stereotype.Component;\r\n\r\n//@Component\r\npublic class KafkaConsumer {\r\n\r\n//    @KafkaListener(topics = \"order\", groupId = \"order-group\")\r\n//    public void listenOrderMessage(String orderId) {\r\n//        saleOrderServiceJPA.processOrder(orderId);\r\n//    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/kafka/KafkaConsumer.java b/src/main/java/com/example/demo/kafka/KafkaConsumer.java
+--- a/src/main/java/com/example/demo/kafka/KafkaConsumer.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/kafka/KafkaConsumer.java	(date 1711798433977)
+@@ -1,8 +1,4 @@
+ package com.example.demo.kafka;
+-import com.example.demo.services.tables.SaleOrderServiceJPA;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.kafka.annotation.KafkaListener;
+-import org.springframework.stereotype.Component;
+ 
+ //@Component
+ public class KafkaConsumer {
+Index: src/main/java/com/example/demo/utils/constants/Constants.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.utils.constants;\r\n\r\nimport com.example.demo.dtos.payment.tripleA.ResponsePaymentDTO;\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport org.apache.catalina.connector.Response;\r\nimport org.springframework.web.bind.annotation.ResponseBody;\r\n\r\nimport java.net.URI;\r\nimport java.net.http.HttpClient;\r\nimport java.net.http.HttpRequest;\r\nimport java.net.http.HttpResponse;\r\nimport java.util.*;\r\n\r\npublic class Constants {\r\n    public interface SALE_ORDER_STATUS {\r\n        Long CREATE = 0L;\r\n        Long SUCCESS = 1L;\r\n        Long FAIL = 2L;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/utils/constants/Constants.java b/src/main/java/com/example/demo/utils/constants/Constants.java
+--- a/src/main/java/com/example/demo/utils/constants/Constants.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/utils/constants/Constants.java	(date 1711799293034)
+@@ -15,7 +15,7 @@
+ public class Constants {
+     public interface SALE_ORDER_STATUS {
+         Long CREATE = 0L;
+-        Long SUCCESS = 1L;
+-        Long FAIL = 2L;
++        Long PAID = 1L;
++        Long UNPAID = 2L;
+     }
+ }
+\ No newline at end of file
+Index: src/main/java/com/example/demo/repositories/tables/OrderDetailRepositoryJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/OrderDetailRepositoryJPA.java b/src/main/java/com/example/demo/repositories/tables/OrderDetailRepositoryJPA.java
+new file mode 100644
+--- /dev/null	(date 1711798493705)
++++ b/src/main/java/com/example/demo/repositories/tables/OrderDetailRepositoryJPA.java	(date 1711798493705)
+@@ -0,0 +1,10 @@
++package com.example.demo.repositories.tables;
++import com.example.demo.repositories.tables.entities.order.OrderDetailEntity;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++import java.util.List;
++
++@Repository
++public interface OrderDetailRepositoryJPA extends JpaRepository<OrderDetailEntity, Long> {
++}
+Index: src/main/java/com/example/demo/services/security/jwt/JwtTokenProvider.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.services.security.jwt;\r\n\r\nimport com.example.demo.dtos.ResponseUserDTO;\r\nimport com.example.demo.dtos.UserDTO;\r\nimport io.jsonwebtoken.*;\r\nimport org.springframework.beans.factory.annotation.Value;\r\nimport org.springframework.stereotype.Component;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.Date;\r\nimport java.util.HashMap;\r\nimport java.util.LinkedHashMap;\r\nimport java.util.Map;\r\n\r\n@Service\r\n@Slf4j\r\npublic class JwtTokenProvider {\r\n    @Value(\"${login.secret}\")\r\n    String loginSecret;\r\n\r\n    // Tạo ra jwt từ thông tin user\r\n    public String generateToken(ResponseUserDTO userDetails) {\r\n        Date now = new Date();\r\n        Long expireTime = 36000000L;\r\n        Date expiryDate = new Date(now.getTime() + expireTime);\r\n        System.out.println(\"Expired in\" + expiryDate);\r\n        // Tạo chuỗi json web token từ id của user.\r\n        return Jwts.builder()\r\n                .setSubject(userDetails.getId())\r\n                .setIssuedAt(now)\r\n                .setExpiration(expiryDate)\r\n                .signWith(SignatureAlgorithm.HS512, loginSecret)\r\n                .compact();\r\n    }\r\n\r\n    public String generateToken(Map<String, Object> header, String payload, String secret, SignatureAlgorithm algorithm) {\r\n        return Jwts.builder()\r\n                .setHeader(header)\r\n                .setPayload(payload)\r\n                .signWith(algorithm, secret)\r\n                .compact();\r\n    }\r\n\r\n    // Lấy thông tin user từ jwt\r\n    public String getUserIdFromJWT(String token) {\r\n        Claims claims = Jwts.parser()\r\n                .setSigningKey(loginSecret)\r\n                .parseClaimsJws(token)\r\n                .getBody();\r\n\r\n        return claims.getSubject();\r\n    }\r\n\r\n    public String validateToken(String authToken) {\r\n        try {\r\n            Jwts.parser().setSigningKey(loginSecret).parseClaimsJws(authToken);\r\n            return getUserIdFromJWT(authToken);\r\n        } catch (MalformedJwtException ex) {\r\n            log.error(\"Invalid JWT token\");\r\n        } catch (ExpiredJwtException ex) {\r\n            log.error(\"Expired JWT token\");\r\n        } catch (UnsupportedJwtException ex) {\r\n            log.error(\"Unsupported JWT token\");\r\n        } catch (IllegalArgumentException ex) {\r\n            log.error(\"JWT claims string is empty.\");\r\n        }\r\n        return null;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/security/jwt/JwtTokenProvider.java b/src/main/java/com/example/demo/services/security/jwt/JwtTokenProvider.java
+--- a/src/main/java/com/example/demo/services/security/jwt/JwtTokenProvider.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/services/security/jwt/JwtTokenProvider.java	(date 1711806352881)
+@@ -63,7 +63,7 @@
+         } catch (UnsupportedJwtException ex) {
+             log.error("Unsupported JWT token");
+         } catch (IllegalArgumentException ex) {
+-            log.error("JWT claims string is empty.");
++//            log.error("JWT claims string is empty.");
+         }
+         return null;
+     }
+Index: src/main/java/com/example/demo/utils/enums/ErrorApp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.utils.enums;\r\n\r\npublic enum ErrorApp {\r\n    WRONG_LOGIN(\"Wrong username or password\"),\r\n    USERNAME_EXIST(\"Username is exist\"),\r\n    EXIST_ITEM_HAS_TYPE(\"Exist item has this type\"),\r\n    INVALID_ORDER(\"Invalid Order\");\r\n    private final String description;\r\n\r\n    ErrorApp(String description) {\r\n        this.description = description;\r\n    }\r\n\r\n    public String getDescription() {\r\n        return description;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/utils/enums/ErrorApp.java b/src/main/java/com/example/demo/utils/enums/ErrorApp.java
+--- a/src/main/java/com/example/demo/utils/enums/ErrorApp.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/utils/enums/ErrorApp.java	(date 1711799689056)
+@@ -4,7 +4,8 @@
+     WRONG_LOGIN("Wrong username or password"),
+     USERNAME_EXIST("Username is exist"),
+     EXIST_ITEM_HAS_TYPE("Exist item has this type"),
+-    INVALID_ORDER("Invalid Order");
++    INVALID_ORDER("Invalid Order"),
++    NOT_AVAILABLE_METHOD("Payment method not available");
+     private final String description;
+ 
+     ErrorApp(String description) {
+Index: src/main/java/com/example/demo/repositories/tables/entities/PaymentMethodEntity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.repositories.tables.entities;\r\n\r\nimport jakarta.persistence.*;\r\nimport lombok.Data;\r\nimport lombok.NoArgsConstructor;\r\n\r\nimport java.io.Serializable;\r\n\r\n@Data\r\n@NoArgsConstructor\r\n@Entity\r\n@Table(name = \"PAYMENT_METHOD\")\r\npublic class PaymentMethodEntity implements Serializable {\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    @Column(name = \"ID\")\r\n    Long id;\r\n\r\n    @Column(name = \"NAME\")\r\n    String name;\r\n\r\n    @Column(name = \"IMAGE\")\r\n    String image;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/entities/PaymentMethodEntity.java b/src/main/java/com/example/demo/repositories/tables/entities/PaymentMethodEntity.java
+--- a/src/main/java/com/example/demo/repositories/tables/entities/PaymentMethodEntity.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/repositories/tables/entities/PaymentMethodEntity.java	(date 1711801547659)
+@@ -9,7 +9,7 @@
+ @Data
+ @NoArgsConstructor
+ @Entity
+-@Table(name = "PAYMENT_METHOD")
++@Table(name = "PAYMENT")
+ public class PaymentMethodEntity implements Serializable {
+     @Id
+     @GeneratedValue(strategy = GenerationType.IDENTITY)
+Index: src/main/java/com/example/demo/repositories/tables/entities/ItemEntity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.repositories.tables.entities;\r\n\r\nimport jakarta.persistence.*;\r\nimport lombok.Data;\r\nimport lombok.NoArgsConstructor;\r\n\r\nimport java.io.Serializable;\r\nimport java.sql.Date;\r\n\r\n@Data\r\n@NoArgsConstructor\r\n@Entity\r\n@Table(name = \"ITEM\")\r\npublic class ItemEntity implements Serializable {\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    @Column(name = \"ID\")\r\n    Long id;\r\n\r\n    @Column(name = \"PRICE\")\r\n    Long price;\r\n\r\n    @Column(name = \"CARD_ID\")\r\n    Long cardId;\r\n\r\n    @Column(name = \"CODE\")\r\n    String code;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/entities/ItemEntity.java b/src/main/java/com/example/demo/repositories/tables/entities/ItemEntity.java
+--- a/src/main/java/com/example/demo/repositories/tables/entities/ItemEntity.java	(revision dcf2ad62ae0892cff2455739a0e41c3e2abdaa2c)
++++ b/src/main/java/com/example/demo/repositories/tables/entities/ItemEntity.java	(date 1711800536910)
+@@ -10,7 +10,7 @@
+ @Data
+ @NoArgsConstructor
+ @Entity
+-@Table(name = "ITEM")
++@Table(name = "CARD_ITEM")
+ public class ItemEntity implements Serializable {
+     @Id
+     @GeneratedValue(strategy = GenerationType.IDENTITY)

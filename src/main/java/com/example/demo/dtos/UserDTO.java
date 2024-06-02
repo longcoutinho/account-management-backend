@@ -29,4 +29,6 @@ public class UserDTO {
     String loginMethod;
 
     String email;
+
+    String accessToken;
 }

@@ -1,0 +1,388 @@
+Index: src/main/java/com/example/demo/services/tables/item/ItemServiceJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.services.tables.item;\r\n\r\nimport com.example.demo.dtos.ItemDTO;\r\nimport com.example.demo.repositories.tables.ItemRepositoryJPA;\r\nimport com.example.demo.repositories.tables.entities.ItemEntity;\r\nimport jakarta.transaction.Transactional;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.io.IOException;\r\nimport java.util.LinkedList;\r\nimport java.util.List;\r\n\r\n@Service\r\npublic class ItemServiceJPA {\r\n    @Autowired\r\n    ItemRepositoryJPA itemRepositoryJPA;\r\n\r\n    @Autowired\r\n    ImageServiceJPA imageServiceJPA;\r\n\r\n    public Object getItem(ItemDTO params) {\r\n        List<ItemEntity> itemEntity = itemRepositoryJPA.getAllItem(params.getName(), params.getTypeId());\r\n        return convertFromListEntity(itemEntity);\r\n    }\r\n\r\n    public ItemDTO getItemById(Long id) {\r\n        ItemEntity itemEntity = itemRepositoryJPA.findById(id).get();\r\n        return convertFromEntity(itemEntity);\r\n    }\r\n\r\n    public Object createNewItem(ItemDTO params) throws IOException {\r\n        // save item\r\n        ItemEntity newItem = new ItemEntity();\r\n        newItem.setName(params.getName());\r\n        newItem.setPrice(params.getPrice());\r\n        newItem.setTypeId(params.getTypeId());\r\n        ItemEntity savedItem = itemRepositoryJPA.save(newItem);\r\n        // save image\r\n        imageServiceJPA.saveImage(params.getListImages(), savedItem.getId());\r\n        return newItem;\r\n    }\r\n\r\n    private ItemDTO convertFromEntity(ItemEntity entity) {\r\n        ItemDTO itemDTO = new ItemDTO();\r\n        itemDTO.setName(entity.getName());\r\n        itemDTO.setPrice(entity.getPrice());\r\n        itemDTO.setId(entity.getId());\r\n        itemDTO.setListImageIds(imageServiceJPA.getImagesByItemId(entity.getId()));\r\n        return itemDTO;\r\n    }\r\n\r\n    private List<ItemDTO> convertFromListEntity(List<ItemEntity> list) {\r\n        List<ItemDTO> result = new LinkedList<>();\r\n        for(ItemEntity entity: list) {\r\n            ItemDTO itemDTO = convertFromEntity(entity);\r\n            result.add(itemDTO);\r\n        }\r\n        return result;\r\n    }\r\n\r\n    public List<ItemEntity> getItemByTypeIdAndLevel(Long typeId, Long level) {\r\n//        if (level == 1) {\r\n//            return itemRepositoryJPA.findByLv1TypeId(typeId);\r\n//        }\r\n//        else if (level == 2) {\r\n//            return itemRepositoryJPA.findByLv2TypeId(typeId);\r\n//        }\r\n        return new LinkedList<>();\r\n    }\r\n\r\n    @Transactional\r\n    public Object deleteItem(Long id) {\r\n        itemRepositoryJPA.deleteById(id);\r\n        return 1L;\r\n    }\r\n\r\n    public Object editItem(Long id, ItemDTO params) {\r\n        ItemEntity item = itemRepositoryJPA.findById(id).get();\r\n        if (params.getPrice() != null && !params.getPrice().equals(item.getPrice())) item.setPrice(params.getPrice());\r\n        if (params.getName() != null && !params.getName().equals(item.getName())) item.setName(params.getName());\r\n        return 1L;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/tables/item/ItemServiceJPA.java b/src/main/java/com/example/demo/services/tables/item/ItemServiceJPA.java
+--- a/src/main/java/com/example/demo/services/tables/item/ItemServiceJPA.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/services/tables/item/ItemServiceJPA.java	(date 1709736436994)
+@@ -3,6 +3,8 @@
+ import com.example.demo.dtos.ItemDTO;
+ import com.example.demo.repositories.tables.ItemRepositoryJPA;
+ import com.example.demo.repositories.tables.entities.ItemEntity;
++import com.example.demo.repositories.tables.entities.StockAccountEntity;
++import com.example.demo.services.tables.StockAccountServiceJPA;
+ import jakarta.transaction.Transactional;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Service;
+@@ -19,6 +21,9 @@
+     @Autowired
+     ImageServiceJPA imageServiceJPA;
+ 
++    @Autowired
++    StockAccountServiceJPA stockAccountServiceJPA;
++
+     public Object getItem(ItemDTO params) {
+         List<ItemEntity> itemEntity = itemRepositoryJPA.getAllItem(params.getName(), params.getTypeId());
+         return convertFromListEntity(itemEntity);
+@@ -47,6 +52,8 @@
+         itemDTO.setPrice(entity.getPrice());
+         itemDTO.setId(entity.getId());
+         itemDTO.setListImageIds(imageServiceJPA.getImagesByItemId(entity.getId()));
++        List<StockAccountEntity> stockAccountEntity = stockAccountServiceJPA.findByItemId(entity.getId());
++        itemDTO.setAmount((long) stockAccountEntity.size());
+         return itemDTO;
+     }
+ 
+Index: src/main/java/com/example/demo/repositories/tables/StockAccountRepositoryJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.repositories.tables;\r\nimport com.example.demo.repositories.tables.entities.ItemTypeEntity;\r\nimport com.example.demo.repositories.tables.entities.SizeEntity;\r\nimport com.example.demo.repositories.tables.entities.StockAccountEntity;\r\nimport org.springframework.data.jpa.repository.JpaRepository;\r\nimport org.springframework.data.jpa.repository.Query;\r\nimport org.springframework.stereotype.Repository;\r\n\r\nimport java.util.List;\r\n\r\n@Repository\r\npublic interface StockAccountRepositoryJPA extends JpaRepository<StockAccountEntity, Long> {\r\n    @Query(\"select e from StockAccountEntity e where :itemId is null or :itemId = e.itemId\")\r\n    List<StockAccountEntity> getAll(String itemId);\r\n\r\n    @Query(\"select e from StockAccountEntity e where e.itemId = :itemId and e.status = 0\")\r\n    List<StockAccountEntity> getRandomAccount(String itemId);\r\n\r\n    StockAccountEntity findById(String accountId);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/StockAccountRepositoryJPA.java b/src/main/java/com/example/demo/repositories/tables/StockAccountRepositoryJPA.java
+--- a/src/main/java/com/example/demo/repositories/tables/StockAccountRepositoryJPA.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/repositories/tables/StockAccountRepositoryJPA.java	(date 1709736688864)
+@@ -17,4 +17,7 @@
+     List<StockAccountEntity> getRandomAccount(String itemId);
+ 
+     StockAccountEntity findById(String accountId);
++
++    @Query("select e from StockAccountEntity e where e.itemId = :id and e.status = 0")
++    List<StockAccountEntity> findByItemId(String id);
+ }
+Index: src/main/java/com/example/demo/services/tables/StockAccountServiceJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.services.tables;\r\n\r\nimport com.example.demo.dtos.StockAccountDTO;\r\nimport com.example.demo.repositories.tables.StockAccountRepositoryJPA;\r\nimport com.example.demo.repositories.tables.entities.StockAccountEntity;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.Date;\r\nimport java.util.List;\r\nimport java.util.Random;\r\nimport java.util.UUID;\r\n\r\n@Service\r\npublic class StockAccountServiceJPA {\r\n    @Autowired\r\n    StockAccountRepositoryJPA stockAccountRepositoryJPA;\r\n\r\n    public Object createNewAccount(StockAccountDTO params) {\r\n        StockAccountEntity stockAccountEntity = new StockAccountEntity();\r\n        stockAccountEntity.setId(String.valueOf(UUID.randomUUID()));\r\n        stockAccountEntity.setCreateDate(new Date(System.currentTimeMillis()));\r\n        stockAccountEntity.setCreateUser(null);\r\n        stockAccountEntity.setStatus(0L);\r\n        stockAccountEntity.setUsername(params.getUsername());\r\n        stockAccountEntity.setItemId(params.getItemId());\r\n        stockAccountEntity.setPassword(params.getPassword());\r\n        stockAccountRepositoryJPA.save(stockAccountEntity);\r\n        return stockAccountEntity;\r\n    }\r\n\r\n    public Object getAll(StockAccountDTO params) {\r\n        return stockAccountRepositoryJPA.getAll(params.getItemId());\r\n    }\r\n\r\n    public StockAccountEntity orderAccount(String itemId) {\r\n        List<StockAccountEntity> stockAccountEntity = stockAccountRepositoryJPA.getRandomAccount(itemId);\r\n        if (stockAccountEntity.size() == 0) return null;\r\n        Random rand = new Random();\r\n        StockAccountEntity randomElement = stockAccountEntity.get(rand.nextInt(stockAccountEntity.size()));\r\n        randomElement.setStatus(1L);\r\n        stockAccountRepositoryJPA.save(randomElement);\r\n        return randomElement;\r\n    }\r\n\r\n    public StockAccountEntity findById(String accountId) {\r\n        return stockAccountRepositoryJPA.findById(accountId);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/tables/StockAccountServiceJPA.java b/src/main/java/com/example/demo/services/tables/StockAccountServiceJPA.java
+--- a/src/main/java/com/example/demo/services/tables/StockAccountServiceJPA.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/services/tables/StockAccountServiceJPA.java	(date 1709736651537)
+@@ -46,4 +46,8 @@
+     public StockAccountEntity findById(String accountId) {
+         return stockAccountRepositoryJPA.findById(accountId);
+     }
++
++    public List<StockAccountEntity> findByItemId(Long id) {
++        return stockAccountRepositoryJPA.findByItemId(id.toString());
++    }
+ }
+Index: src/main/java/com/example/demo/dtos/ItemDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.dtos;\r\n\r\nimport lombok.Data;\r\nimport org.springframework.web.multipart.MultipartFile;\r\n\r\nimport java.util.List;\r\n\r\n@Data\r\npublic class ItemDTO {\r\n    Long id;\r\n    Long price;\r\n    Long typeId;\r\n    String name;\r\n    List<MultipartFile> listImages;\r\n    List<Long> listImageIds;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/ItemDTO.java b/src/main/java/com/example/demo/dtos/ItemDTO.java
+--- a/src/main/java/com/example/demo/dtos/ItemDTO.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/dtos/ItemDTO.java	(date 1709736294162)
+@@ -13,4 +13,5 @@
+     String name;
+     List<MultipartFile> listImages;
+     List<Long> listImageIds;
++    Long amount;
+ }
+Index: src/main/java/com/example/demo/services/tables/UserServiceJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.services.tables;\r\n\r\nimport com.example.demo.dtos.ResponseUserDTO;\r\nimport com.example.demo.dtos.TopUpRequestDTO;\r\nimport com.example.demo.dtos.UserDTO;\r\nimport com.example.demo.dtos.user.AdjustBalanceDTO;\r\nimport com.example.demo.dtos.user.RequestUserDTO;\r\nimport com.example.demo.dtos.user.ResetPasswordDTO;\r\nimport com.example.demo.jwt.JwtTokenProvider;\r\nimport com.example.demo.repositories.tables.UserRepositoryJPA;\r\nimport com.example.demo.repositories.tables.entities.UserEntity;\r\nimport com.example.demo.utils.enums.ErrorApp;\r\nimport com.example.demo.utils.exception.CustomException;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.security.crypto.password.PasswordEncoder;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.List;\r\nimport java.util.Objects;\r\n\r\n@Service\r\npublic class UserServiceJPA {\r\n    @Autowired\r\n    UserRepositoryJPA userRepositoryJPA;\r\n\r\n    @Autowired\r\n    PasswordEncoder passwordEncoder;\r\n\r\n    @Autowired\r\n    JwtTokenProvider jwtTokenProvider;\r\n\r\n    public List<UserEntity> findAll() {\r\n        return userRepositoryJPA.findAll();\r\n    }\r\n\r\n    public Object createNewUser(UserDTO user) throws Exception {\r\n        validateUser(user);\r\n        user.setPassword(passwordEncoder.encode(user.getPassword()));\r\n        UserEntity newUser = new UserEntity(user, user.getType());\r\n        return userRepositoryJPA.save(newUser);\r\n    }\r\n\r\n    public void validateUser(UserDTO user) throws Exception {\r\n        if (existUsername(user.getUsername())) throw new CustomException(ErrorApp.USERNAME_EXIST);\r\n    }\r\n\r\n    public Boolean existUsername(String username) {\r\n        UserEntity results = userRepositoryJPA.findByUsername(username);\r\n        return results != null;\r\n    }\r\n\r\n    public Object loginUser(UserDTO user) {\r\n        UserEntity results = userRepositoryJPA.findByUsername(user.getUsername());\r\n        if (results == null) {\r\n            throw new CustomException(ErrorApp.WRONG_LOGIN);\r\n        }\r\n        if (!passwordEncoder.matches(user.getPassword(), results.getPassword())) throw new CustomException(ErrorApp.WRONG_LOGIN);\r\n        if (user.getType() == 1 && !results.getRole().equals(\"USER\")) throw new CustomException(ErrorApp.WRONG_LOGIN);\r\n        if (user.getType() == 2 && !results.getRole().equals(\"ADMIN\")) throw new CustomException(ErrorApp.WRONG_LOGIN);\r\n        ResponseUserDTO responseUser = results.convertFromEntity();\r\n        responseUser.setAccessToken(jwtTokenProvider.generateToken(responseUser));\r\n        return responseUser;\r\n    }\r\n\r\n    public Object addBalance(TopUpRequestDTO params) {\r\n        UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());\r\n        user.setBalance(user.getBalance() + params.getAmount());\r\n        userRepositoryJPA.save(user);\r\n        return 1L;\r\n    }\r\n\r\n    public Object getUserById(String id) {\r\n        return userRepositoryJPA.findByUserId(id);\r\n    }\r\n\r\n    public UserEntity findByUserId(String userId) {\r\n        return userRepositoryJPA.findByUserId(userId);\r\n    }\r\n\r\n    public Object getAll(RequestUserDTO params) {\r\n        String role = params.getType() == 1L ? \"USER\" : \"ADMIN\";\r\n        return userRepositoryJPA.findByRole(role);\r\n    }\r\n\r\n    public Object findByUsername(String username) {\r\n        return userRepositoryJPA.findByUsername(username);\r\n    }\r\n\r\n    public Object resetPassword(ResetPasswordDTO params) {\r\n        UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());\r\n        user.setPassword(passwordEncoder.encode(params.getPassword()));\r\n        userRepositoryJPA.save(user);\r\n        return 1L;\r\n    }\r\n\r\n    public Object adjustBalance(AdjustBalanceDTO params) {\r\n        UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());\r\n        user.setBalance(params.getNewBalance());\r\n        userRepositoryJPA.save(user);\r\n        return 1L;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/tables/UserServiceJPA.java b/src/main/java/com/example/demo/services/tables/UserServiceJPA.java
+--- a/src/main/java/com/example/demo/services/tables/UserServiceJPA.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/services/tables/UserServiceJPA.java	(date 1709735771120)
+@@ -95,7 +95,7 @@
+ 
+     public Object adjustBalance(AdjustBalanceDTO params) {
+         UserEntity user = userRepositoryJPA.findByUsername(params.getUsername());
+-        user.setBalance(params.getNewBalance());
++        user.setBalance(user.getBalance() + params.getAmount());
+         userRepositoryJPA.save(user);
+         return 1L;
+     }
+Index: src/main/java/com/example/demo/services/tables/item/ItemTypeServiceJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.services.tables.item;\r\n\r\nimport com.example.demo.dtos.ItemTypeDTO;\r\nimport com.example.demo.repositories.tables.ItemTypeRepositoryJPA;\r\nimport com.example.demo.repositories.tables.entities.ItemEntity;\r\nimport com.example.demo.repositories.tables.entities.ItemTypeEntity;\r\nimport com.example.demo.utils.enums.ErrorApp;\r\nimport com.example.demo.utils.exception.CustomException;\r\nimport jakarta.transaction.Transactional;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.List;\r\n\r\n@Service\r\npublic class ItemTypeServiceJPA {\r\n    @Autowired\r\n    ItemTypeRepositoryJPA itemTypeRepositoryJPA;\r\n\r\n    @Autowired\r\n    ItemServiceJPA itemServiceJPA;\r\n\r\n    public Object createNewType(ItemTypeDTO params) {\r\n        ItemTypeEntity entity = new ItemTypeEntity();\r\n        entity.setName(params.getName());\r\n        entity.setCreateUser(null);\r\n        entity.setCreateDate(null);\r\n        itemTypeRepositoryJPA.save(entity);\r\n        return entity;\r\n    }\r\n\r\n    public Object getItemType(ItemTypeDTO params) {\r\n        return itemTypeRepositoryJPA.findAll();\r\n    }\r\n\r\n    public Object editItemType(Long id, ItemTypeDTO params) {\r\n        ItemTypeEntity itemTypeEntity = itemTypeRepositoryJPA.findById(id).get();\r\n        if (params.getName() != null) {\r\n            itemTypeEntity.setName(params.getName());\r\n        }\r\n        itemTypeRepositoryJPA.save(itemTypeEntity);\r\n        return itemTypeEntity;\r\n    }\r\n\r\n    @Transactional\r\n    public Object deleteItemType(Long id) {\r\n//        ItemTypeEntity itemType = itemTypeRepositoryJPA.findById(id).get();\r\n//        if (!listItem.isEmpty()) throw new CustomException(ErrorApp.EXIST_ITEM_HAS_TYPE);\r\n//        itemTypeRepositoryJPA.delete(itemType);\r\n        return 1L;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/tables/item/ItemTypeServiceJPA.java b/src/main/java/com/example/demo/services/tables/item/ItemTypeServiceJPA.java
+--- a/src/main/java/com/example/demo/services/tables/item/ItemTypeServiceJPA.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/services/tables/item/ItemTypeServiceJPA.java	(date 1709729759813)
+@@ -10,6 +10,7 @@
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Service;
+ 
++import java.util.Date;
+ import java.util.List;
+ 
+ @Service
+@@ -24,7 +25,7 @@
+         ItemTypeEntity entity = new ItemTypeEntity();
+         entity.setName(params.getName());
+         entity.setCreateUser(null);
+-        entity.setCreateDate(null);
++        entity.setCreateDate(new Date(System.currentTimeMillis()));
+         itemTypeRepositoryJPA.save(entity);
+         return entity;
+     }
+Index: src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.repositories.tables.entities;\r\n\r\nimport jakarta.persistence.*;\r\nimport lombok.Data;\r\nimport lombok.NoArgsConstructor;\r\n\r\nimport java.io.Serializable;\r\nimport java.util.Date;\r\n\r\n@Data\r\n@NoArgsConstructor\r\n@Entity\r\n@Table(name = \"SALE_ORDER\")\r\npublic class SaleOrderEntity implements Serializable {\r\n    @Id\r\n    @Column(name = \"ID\")\r\n    String id;\r\n\r\n    @Column(name = \"USER_ID\")\r\n    String userId;\r\n\r\n    @Column(name = \"CREATE_DATE\")\r\n    Date createDate;\r\n\r\n    @Column(name = \"ITEM_ID\")\r\n    String itemId;\r\n\r\n    @Column(name = \"STATUS\")\r\n    Long status;\r\n\r\n    @Column(name = \"ACCOUNT_ID\")\r\n    String accountId;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java b/src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java
+--- a/src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/repositories/tables/entities/SaleOrderEntity.java	(date 1709730835347)
+@@ -16,8 +16,8 @@
+     @Column(name = "ID")
+     String id;
+ 
+-    @Column(name = "USER_ID")
+-    String userId;
++    @Column(name = "USERNAME")
++    String username;
+ 
+     @Column(name = "CREATE_DATE")
+     Date createDate;
+Index: src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.services.tables;\r\n\r\nimport com.example.demo.dtos.*;\r\nimport com.example.demo.kafka.KafkaProducer;\r\nimport com.example.demo.repositories.tables.SaleOrderRepositoryJPA;\r\nimport com.example.demo.repositories.tables.entities.ItemEntity;\r\nimport com.example.demo.repositories.tables.entities.SaleOrderEntity;\r\nimport com.example.demo.repositories.tables.entities.StockAccountEntity;\r\nimport com.example.demo.services.tables.item.ItemServiceJPA;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.Date;\r\nimport java.util.LinkedList;\r\nimport java.util.List;\r\nimport java.util.UUID;\r\n\r\n@Service\r\npublic class SaleOrderServiceJPA {\r\n    @Autowired\r\n    SaleOrderRepositoryJPA saleOrderRepositoryJPA;\r\n\r\n    @Autowired\r\n    KafkaProducer kafkaProducer;\r\n\r\n    @Autowired\r\n    StockAccountServiceJPA stockAccountServiceJPA;\r\n\r\n    @Autowired\r\n    ItemServiceJPA itemServiceJPA;\r\n\r\n    @Autowired\r\n    UserServiceJPA userServiceJPA;\r\n\r\n    public Object create(SaleOrderDTO params) {\r\n        for(int i = 0; i < params.getAmount(); i++) {\r\n            SaleOrderEntity saleOrderEntity = new SaleOrderEntity();\r\n            saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));\r\n            saleOrderEntity.setUserId(params.getUserId());\r\n            saleOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));\r\n            saleOrderEntity.setItemId(params.getItemId());\r\n            saleOrderEntity.setStatus(0L);\r\n            saleOrderEntity.setAccountId(null);\r\n            SaleOrderEntity saved = saleOrderRepositoryJPA.save(saleOrderEntity);\r\n//            kafkaProducer.sendOrderMessage(saved.getId());\r\n        }\r\n        return 1L;\r\n    }\r\n\r\n    public List<SaleOrderResponseDTO> getAll(SaleOrderDTO params) {\r\n        List<SaleOrderResponseDTO> res = new LinkedList<>();\r\n        List<SaleOrderEntity> list = saleOrderRepositoryJPA.getAll();\r\n        for(SaleOrderEntity saleOrderEntity: list) {\r\n            SaleOrderResponseDTO saleOrderResponseDTO = new SaleOrderResponseDTO();\r\n            saleOrderResponseDTO.setId(saleOrderEntity.getId());\r\n            saleOrderResponseDTO.setCreateDate(saleOrderEntity.getCreateDate());\r\n            saleOrderResponseDTO.setStatus(saleOrderEntity.getStatus());\r\n            StockAccountEntity stockAccountEntity = stockAccountServiceJPA.findById(saleOrderEntity.getAccountId());\r\n            if (stockAccountEntity != null) {\r\n                saleOrderResponseDTO.setUsername(stockAccountEntity.getUsername());\r\n                saleOrderResponseDTO.setPassword(stockAccountEntity.getPassword());\r\n            }\r\n            res.add(saleOrderResponseDTO);\r\n        }\r\n        return res;\r\n    }\r\n\r\n    public void processOrder(String orderId) {\r\n        SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(orderId);\r\n        ItemDTO itemEntity = itemServiceJPA.getItemById(Long.valueOf(saleOrderEntity.getItemId()));\r\n        TopUpRequestDTO topUpRequestDTO = new TopUpRequestDTO();\r\n        topUpRequestDTO.setUsername(saleOrderEntity.getUserId());\r\n        topUpRequestDTO.setAmount(-itemEntity.getPrice());\r\n        userServiceJPA.addBalance(topUpRequestDTO);\r\n        StockAccountEntity stockAccountEntity = stockAccountServiceJPA.orderAccount(saleOrderEntity.getItemId());\r\n        if (stockAccountEntity != null) {\r\n            saleOrderEntity.setStatus(1L);\r\n            saleOrderEntity.setAccountId(stockAccountEntity.getId());\r\n            saleOrderRepositoryJPA.save(saleOrderEntity);\r\n        }\r\n        else {\r\n            topUpRequestDTO.setAmount(itemEntity.getPrice());\r\n            userServiceJPA.addBalance(topUpRequestDTO);\r\n            saleOrderEntity.setStatus(2L);\r\n            saleOrderRepositoryJPA.save(saleOrderEntity);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java b/src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java
+--- a/src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/services/tables/SaleOrderServiceJPA.java	(date 1709734662739)
+@@ -1,6 +1,7 @@
+ package com.example.demo.services.tables;
+ 
+ import com.example.demo.dtos.*;
++import com.example.demo.dtos.saleorder.SaleOrderResponseSummaryDTO;
+ import com.example.demo.kafka.KafkaProducer;
+ import com.example.demo.repositories.tables.SaleOrderRepositoryJPA;
+ import com.example.demo.repositories.tables.entities.ItemEntity;
+@@ -36,40 +37,57 @@
+         for(int i = 0; i < params.getAmount(); i++) {
+             SaleOrderEntity saleOrderEntity = new SaleOrderEntity();
+             saleOrderEntity.setId(String.valueOf(UUID.randomUUID()));
+-            saleOrderEntity.setUserId(params.getUserId());
++            saleOrderEntity.setUsername(params.getUsername());
+             saleOrderEntity.setCreateDate(new Date(System.currentTimeMillis()));
+             saleOrderEntity.setItemId(params.getItemId());
+             saleOrderEntity.setStatus(0L);
+             saleOrderEntity.setAccountId(null);
+             SaleOrderEntity saved = saleOrderRepositoryJPA.save(saleOrderEntity);
+-//            kafkaProducer.sendOrderMessage(saved.getId());
++            kafkaProducer.sendOrderMessage(saved.getId());
+         }
+         return 1L;
+     }
+ 
+-    public List<SaleOrderResponseDTO> getAll(SaleOrderDTO params) {
++    public SaleOrderResponseSummaryDTO getAll(SaleOrderDTO params) {
+         List<SaleOrderResponseDTO> res = new LinkedList<>();
+         List<SaleOrderEntity> list = saleOrderRepositoryJPA.getAll();
++        Long amount = 0L;
+         for(SaleOrderEntity saleOrderEntity: list) {
+             SaleOrderResponseDTO saleOrderResponseDTO = new SaleOrderResponseDTO();
+             saleOrderResponseDTO.setId(saleOrderEntity.getId());
+             saleOrderResponseDTO.setCreateDate(saleOrderEntity.getCreateDate());
+             saleOrderResponseDTO.setStatus(saleOrderEntity.getStatus());
++            saleOrderResponseDTO.setUserId(saleOrderEntity.getUsername());
+             StockAccountEntity stockAccountEntity = stockAccountServiceJPA.findById(saleOrderEntity.getAccountId());
+             if (stockAccountEntity != null) {
+                 saleOrderResponseDTO.setUsername(stockAccountEntity.getUsername());
+                 saleOrderResponseDTO.setPassword(stockAccountEntity.getPassword());
+             }
++            ItemDTO itemEntity = itemServiceJPA.getItemById(Long.valueOf(saleOrderEntity.getItemId()));
++            saleOrderResponseDTO.setItemName(itemEntity.getName());
++            saleOrderResponseDTO.setPrice(itemEntity.getPrice());
++            amount += itemEntity.getPrice();
+             res.add(saleOrderResponseDTO);
+         }
+-        return res;
++        SaleOrderResponseSummaryDTO result = new SaleOrderResponseSummaryDTO();
++        result.setListSaleOrder(res);
++        result.setTotalRequest((long) res.size());
++        result.setTotalAmount(amount);
++        return result;
+     }
++
++//    public ReportTopUp report() {
++//        ReportTopUp reportTopUp = new ReportTopUp();
++//        reportTopUp.setTotalAmount(saleOrderRepositoryJPA.getSumAmount());
++//        reportTopUp.setTotalRequest(saleOrderRepositoryJPA.getSumRequest());
++//        return reportTopUp;
++//    }
+ 
+     public void processOrder(String orderId) {
+         SaleOrderEntity saleOrderEntity = saleOrderRepositoryJPA.findById(orderId);
+         ItemDTO itemEntity = itemServiceJPA.getItemById(Long.valueOf(saleOrderEntity.getItemId()));
+         TopUpRequestDTO topUpRequestDTO = new TopUpRequestDTO();
+-        topUpRequestDTO.setUsername(saleOrderEntity.getUserId());
++        topUpRequestDTO.setUsername(saleOrderEntity.getUsername());
+         topUpRequestDTO.setAmount(-itemEntity.getPrice());
+         userServiceJPA.addBalance(topUpRequestDTO);
+         StockAccountEntity stockAccountEntity = stockAccountServiceJPA.orderAccount(saleOrderEntity.getItemId());
+Index: src/main/java/com/example/demo/dtos/SaleOrderDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.dtos;\r\n\r\nimport lombok.Data;\r\n\r\n@Data\r\npublic class SaleOrderDTO {\r\n    String userId;\r\n    String itemId;\r\n    Long amount;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/SaleOrderDTO.java b/src/main/java/com/example/demo/dtos/SaleOrderDTO.java
+--- a/src/main/java/com/example/demo/dtos/SaleOrderDTO.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/dtos/SaleOrderDTO.java	(date 1709730931461)
+@@ -4,7 +4,7 @@
+ 
+ @Data
+ public class SaleOrderDTO {
+-    String userId;
++    String username;
+     String itemId;
+     Long amount;
+ }
+Index: src/main/java/com/example/demo/controllers/item/SaleOrderController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.controllers.item;\r\n\r\nimport com.example.demo.dtos.ItemDTO;\r\nimport com.example.demo.dtos.SaleOrderDTO;\r\nimport com.example.demo.repositories.tables.SaleOrderRepositoryJPA;\r\nimport com.example.demo.services.tables.SaleOrderServiceJPA;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.MediaType;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\n@RestController\r\n@RequestMapping(value = \"/sale-order\")\r\npublic class SaleOrderController {\r\n    @Autowired\r\n    SaleOrderServiceJPA saleOrderServiceJPA;\r\n\r\n    @PostMapping(value = \"/create\", produces = MediaType.APPLICATION_JSON_VALUE)\r\n    public ResponseEntity<Object> create(SaleOrderDTO params) {\r\n        Object result = saleOrderServiceJPA.create(params);\r\n        return new ResponseEntity<>(result, HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(value = \"/list\", produces = MediaType.APPLICATION_JSON_VALUE)\r\n    public ResponseEntity<Object> getItem(SaleOrderDTO params) {\r\n        Object result = saleOrderServiceJPA.getAll(params);\r\n        return new ResponseEntity<>(result, HttpStatus.OK);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/controllers/item/SaleOrderController.java b/src/main/java/com/example/demo/controllers/item/SaleOrderController.java
+--- a/src/main/java/com/example/demo/controllers/item/SaleOrderController.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/controllers/item/SaleOrderController.java	(date 1709730941623)
+@@ -3,7 +3,9 @@
+ import com.example.demo.dtos.ItemDTO;
+ import com.example.demo.dtos.SaleOrderDTO;
+ import com.example.demo.repositories.tables.SaleOrderRepositoryJPA;
++import com.example.demo.repositories.tables.entities.UserEntity;
+ import com.example.demo.services.tables.SaleOrderServiceJPA;
++import jakarta.servlet.http.HttpServletRequest;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.http.HttpStatus;
+ import org.springframework.http.MediaType;
+@@ -17,7 +19,9 @@
+     SaleOrderServiceJPA saleOrderServiceJPA;
+ 
+     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+-    public ResponseEntity<Object> create(SaleOrderDTO params) {
++    public ResponseEntity<Object> create(SaleOrderDTO params, HttpServletRequest httpServletRequest) {
++        UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
++        params.setUsername(userEntity.getUsername());
+         Object result = saleOrderServiceJPA.create(params);
+         return new ResponseEntity<>(result, HttpStatus.OK);
+     }
+Index: src/main/java/com/example/demo/kafka/KafkaConsumer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.kafka;\r\nimport com.example.demo.services.tables.SaleOrderServiceJPA;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.kafka.annotation.KafkaListener;\r\nimport org.springframework.stereotype.Component;\r\n\r\n//@Component\r\npublic class KafkaConsumer {\r\n    @Autowired\r\n    SaleOrderServiceJPA saleOrderServiceJPA;\r\n\r\n    @KafkaListener(topics = \"order\", groupId = \"order-group\")\r\n    public void listenOrderMessage(String orderId) {\r\n        saleOrderServiceJPA.processOrder(orderId);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/kafka/KafkaConsumer.java b/src/main/java/com/example/demo/kafka/KafkaConsumer.java
+--- a/src/main/java/com/example/demo/kafka/KafkaConsumer.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/kafka/KafkaConsumer.java	(date 1709729399025)
+@@ -4,7 +4,7 @@
+ import org.springframework.kafka.annotation.KafkaListener;
+ import org.springframework.stereotype.Component;
+ 
+-//@Component
++@Component
+ public class KafkaConsumer {
+     @Autowired
+     SaleOrderServiceJPA saleOrderServiceJPA;
+Index: src/main/java/com/example/demo/dtos/user/AdjustBalanceDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.dtos.user;\r\n\r\nimport lombok.Data;\r\n\r\n@Data\r\npublic class AdjustBalanceDTO {\r\n    String username;\r\n    Long newBalance;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/user/AdjustBalanceDTO.java b/src/main/java/com/example/demo/dtos/user/AdjustBalanceDTO.java
+--- a/src/main/java/com/example/demo/dtos/user/AdjustBalanceDTO.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/dtos/user/AdjustBalanceDTO.java	(date 1709735763035)
+@@ -5,5 +5,5 @@
+ @Data
+ public class AdjustBalanceDTO {
+     String username;
+-    Long newBalance;
++    Long amount;
+ }
+Index: src/main/java/com/example/demo/repositories/tables/entities/ItemTypeEntity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.repositories.tables.entities;\r\n\r\nimport jakarta.persistence.*;\r\nimport lombok.Data;\r\nimport lombok.NoArgsConstructor;\r\n\r\nimport java.io.Serializable;\r\nimport java.sql.Date;\r\n\r\n@Data\r\n@NoArgsConstructor\r\n@Entity\r\n@Table(name = \"ITEM_TYPE\")\r\npublic class ItemTypeEntity implements Serializable {\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    @Column(name = \"ITEM_TYPE_ID\")\r\n    String itemTypeId;\r\n\r\n    @Column(name = \"NAME\")\r\n    String name;\r\n\r\n    @Column(name = \"CREATE_USER\")\r\n    String createUser;\r\n\r\n    @Column(name = \"CREATE_DATE\")\r\n    Date createDate;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/repositories/tables/entities/ItemTypeEntity.java b/src/main/java/com/example/demo/repositories/tables/entities/ItemTypeEntity.java
+--- a/src/main/java/com/example/demo/repositories/tables/entities/ItemTypeEntity.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/repositories/tables/entities/ItemTypeEntity.java	(date 1709729792150)
+@@ -5,7 +5,7 @@
+ import lombok.NoArgsConstructor;
+ 
+ import java.io.Serializable;
+-import java.sql.Date;
++import java.util.Date;
+ 
+ @Data
+ @NoArgsConstructor
+Index: src/main/java/com/example/demo/dtos/SaleOrderResponseDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.dtos;\r\n\r\nimport lombok.Data;\r\n\r\nimport java.util.Date;\r\n\r\n@Data\r\npublic class SaleOrderResponseDTO {\r\n    String id;\r\n    Date createDate;\r\n    Long status;\r\n    String username;\r\n    String password;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/SaleOrderResponseDTO.java b/src/main/java/com/example/demo/dtos/SaleOrderResponseDTO.java
+--- a/src/main/java/com/example/demo/dtos/SaleOrderResponseDTO.java	(revision df2c66ba9ed3774cfa1aa3aa0dd8833aff8ee312)
++++ b/src/main/java/com/example/demo/dtos/SaleOrderResponseDTO.java	(date 1709734321165)
+@@ -11,4 +11,7 @@
+     Long status;
+     String username;
+     String password;
++    String itemName;
++    Long price;
++    String userId;
+ }
+Index: src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.java b/src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.java
+new file mode 100644
+--- /dev/null	(date 1709733430970)
++++ b/src/main/java/com/example/demo/dtos/saleorder/SaleOrderResponseSummaryDTO.java	(date 1709733430970)
+@@ -0,0 +1,16 @@
++package com.example.demo.dtos.saleorder;
++
++import com.example.demo.dtos.SaleOrderResponseDTO;
++import com.example.demo.repositories.tables.entities.SaleOrderEntity;
++import lombok.Data;
++
++import java.util.List;
++
++@Data
++public class SaleOrderResponseSummaryDTO {
++    List<SaleOrderResponseDTO> listSaleOrder;
++
++    Long totalAmount;
++
++    Long totalRequest;
++}
