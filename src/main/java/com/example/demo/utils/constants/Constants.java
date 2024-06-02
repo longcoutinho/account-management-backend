@@ -26,16 +26,11 @@ public class Constants {
     }
 
     public enum LoginMethod {
-        DIRECT(1),
-        FACEBOOK(2),
-        GOOGLE(3),
-        X(4),
-        TELEGRAM(5);
-
-        final int value;
-        LoginMethod(int val) {
-            this.value = val;
-        }
+        DIRECT,
+        FACEBOOK,
+        GOOGLE,
+        X,
+        TELEGRAM;
     }
 
     public enum PaymentMethod {

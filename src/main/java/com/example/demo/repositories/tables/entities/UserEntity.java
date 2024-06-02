@@ -2,6 +2,8 @@ package com.example.demo.repositories.tables.entities;
 
 import com.example.demo.dtos.ResponseUserDTO;
 import com.example.demo.dtos.UserDTO;
+import com.example.demo.utils.constants.Constants;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -58,6 +60,7 @@ public class UserEntity implements Serializable {
         this.createDate = new Date(System.currentTimeMillis());
         this.role = user.getRole();
         this.email = user.getEmail();
+        this.loginMethod = String.valueOf(Constants.LoginMethod.DIRECT);
     }
 
     public ResponseUserDTO convertFromEntity() {

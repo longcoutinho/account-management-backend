@@ -1,14 +1,8 @@
 package com.example.demo.dtos;
 
-import com.example.demo.repositories.tables.entities.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import java.sql.Connection;
-import java.sql.ConnectionBuilder;
-import java.sql.SQLException;
-import java.sql.ShardingKey;
 
 @Data
 public class UserDTO {

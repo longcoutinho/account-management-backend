@@ -73,13 +73,18 @@ public class UserServiceJPA {
     }
 
     public Object login(UserDTO user) {
+        if (user.getLoginMethod() == null) {
+            user.setLoginMethod(Constants.LoginMethod.DIRECT.name());
+        }
         switch (Constants.LoginMethod.valueOf(user.getLoginMethod())) {
             case DIRECT:
                 return directLogin(user);
             case GOOGLE:
                 return googleLogin(user);
+            case TELEGRAM:
+                return telegramLogin(user);
             default:
-                return null;
+                return directLogin(user);
         }
     }
 
@@ -91,10 +96,22 @@ public class UserServiceJPA {
             String jsonResponse = FnCommon.doGetRequest(url, null, params);
             ObjectMapper objectMapper = new ObjectMapper();
             GoogleLoginResponse response = objectMapper.readValue(jsonResponse, GoogleLoginResponse.class);
-            return response;
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(response.getId());
+            userDTO.setUsername(response.getEmail());
+            userDTO.setLoginMethod(Constants.LoginMethod.GOOGLE.name());
+            return createNewUserThirdApp(userDTO);
         } catch (Exception e) {
             throw new CustomException(ErrorApp.WRONG_LOGIN);
         }
+    }
+
+    private Object telegramLogin(UserDTO user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getId());
+        userDTO.setLoginMethod(Constants.LoginMethod.TELEGRAM.name());
+        return createNewUserThirdApp(userDTO);
     }
 
     private Object directLogin(UserDTO user) {
