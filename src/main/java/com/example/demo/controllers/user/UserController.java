@@ -50,7 +50,7 @@ public class UserController {
      * @return thong tin dang nhap
      */
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> login(@Valid @RequestBody UserDTO params) {
+    public ResponseEntity<Object> login(@RequestBody UserDTO params) {
         params.setRole(UserEntity.Role.USER.value);
         Object result = userServiceJPA.login(params);
         return new ResponseEntity<>(result, HttpStatus.OK);
