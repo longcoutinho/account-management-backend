@@ -88,7 +88,7 @@ public class UserServiceJPA {
     }
 
     private Object googleLogin(UserDTO user) {
-        String url = "https://api.example.com/userinfo"; // Giả sử URL được lưu ở đây
+        String url = "https://www.googleapis.com/oauth2/v1/userinfo"; // Giả sử URL được lưu ở đây
         try {
             Map<String, String> params = new LinkedHashMap<>();
             params.put("access_token", user.getAccessToken());
