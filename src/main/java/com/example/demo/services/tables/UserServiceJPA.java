@@ -59,7 +59,9 @@ public class UserServiceJPA {
             user.setLoginMethod(userDTO.getLoginMethod());
             userRepositoryJPA.save(user);
         }
-        return user.convertFromEntity();
+        ResponseUserDTO responseUser = user.convertFromEntity();
+        responseUser.setAccessToken(jwtTokenProvider.generateToken(responseUser));
+        return responseUser;
     }
 
     public void validateUser(UserDTO user) throws Exception {
