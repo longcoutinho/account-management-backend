@@ -41,4 +41,9 @@ public class PaymentServiceJPA {
         paymentRepositoryJPA.save(paymentEntity);
         return paymentEntity;
     }
+
+    public PaymentEntity findById(Long paymentId) {
+        // TODO Auto-generated method stub
+        return paymentRepositoryJPA.findById(paymentId).get();
+    }
 }

@@ -10,8 +10,8 @@ public enum ErrorApp {
     WRONG_OTP("Wrong OTP"),
     ACCESS_DENIED("Access denied"),
     INSUFFICIENT_BALANCE("Insufficient balance"),
-    LOGIN_FAILED("Login failed");
-
+    LOGIN_FAILED("Login failed"),
+    INVALID_PAYMENT("Invalid payment");
 
     private final String description;
 

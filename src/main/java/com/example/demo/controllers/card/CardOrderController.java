@@ -26,4 +26,13 @@ public class CardOrderController {
         request.setUserInfo(userEntity);
         return new ResponseEntity<>(cardOrderServiceJPA.create(request), HttpStatus.OK);
     }
+
+    /**
+     * Mua the
+     * @param request - Thong tin mua the
+     */
+    @PostMapping(value = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getInfo(@RequestBody RequestCardInfoDTO request, HttpServletRequest servletRequest) {
+        return new ResponseEntity<>(cardOrderServiceJPA.getInfo(request), HttpStatus.OK);
+    }
 }
