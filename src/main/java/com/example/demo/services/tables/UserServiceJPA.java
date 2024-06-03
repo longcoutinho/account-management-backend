@@ -59,7 +59,7 @@ public class UserServiceJPA {
             user.setLoginMethod(userDTO.getLoginMethod());
             userRepositoryJPA.save(user);
         }
-        return user;
+        return user.convertFromEntity();
     }
 
     public void validateUser(UserDTO user) throws Exception {
