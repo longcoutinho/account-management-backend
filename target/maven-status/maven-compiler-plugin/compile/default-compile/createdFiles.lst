@@ -59,9 +59,11 @@ com\example\demo\dtos\GetAllTopUpDTO.class
 com\example\demo\repositories\tables\entities\FileEntity.class
 com\example\demo\services\tables\item\CardItemServiceJPA.class
 com\example\demo\dtos\RequestOrderCardDTO.class
+com\example\demo\services\tables\item\CardOrderServiceJPA$1.class
 com\example\demo\utils\constants\FnCommon.class
 com\example\demo\repositories\tables\entities\GameEntity.class
 com\example\demo\controllers\payment\PaymentController.class
+com\example\demo\controllers\card\RequestCardInfoDTO.class
 com\example\demo\dtos\payment\appotaPay\ResponseBuyCardDTO.class
 com\example\demo\dtos\user\ResetPasswordDTO.class
 com\example\demo\repositories\tables\entities\TopUpEntity.class
