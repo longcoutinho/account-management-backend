@@ -37,22 +37,21 @@ public class CardOrderServiceJPA {
         // Create card order
         CardOrderEntity order = new CardOrderEntity(request);
 
-        // Do payment 
+        // Do payment
         Long totalPrice = 0L;
         for (CardOrderDTO card : request.getCardInfo()) {
             CardItemEntity cardItemEntity = cardItemServiceJPA.findById(card.getCardId());
             totalPrice += cardItemEntity.getPrice() * card.getQuantity();
         }
+        order.setPrice(totalPrice);
         CreatePaymentDTO requestPayment = new CreatePaymentDTO(request.getPaymentMethodCode(),
                 request.getUserInfo().getUsername(), totalPrice);
         PaymentEntity payment = new PaymentEntity(requestPayment);
         payment = paymentServiceJPA.create(payment);
-        
-        // Update card order
         order.setPaymentId(payment.getId());
         cardOrderRepositoryJPA.save(order);
 
-        // Response 
+        // Response
         ResponseOrderCardDTO response = new ResponseOrderCardDTO();
         response.setReturnURL(payment.getUrl());
         response.setOrderId(order.getId());
@@ -64,7 +63,7 @@ public class CardOrderServiceJPA {
         CardOrderEntity cardOrderEntity = cardOrderRepositoryJPA.findById(request.getOrderId()).get();
         PaymentEntity paymentEntity = paymentServiceJPA.findById(cardOrderEntity.getPaymentId());
         switch (Constants.PaymentMethod.valueOf(paymentEntity.getMethod())) {
-            case EPOINT:
+            case EP:
                 if (!paymentEntity.getStatus().equals(PaymentEntity.Status.SUCCESS.name())) {
                     throw new CustomException(ErrorApp.INVALID_PAYMENT);
                 }

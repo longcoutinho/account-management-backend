@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class RequestBuyCardDTO {
-    String transactionId;
+    String partnerRefId;
     String productCode;
     String quantity;
     String signature;

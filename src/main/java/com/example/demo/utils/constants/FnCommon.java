@@ -4,6 +4,8 @@ import com.example.demo.dtos.topup.ResponseSendOTPLordMobile;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.codec.binary.Hex;
+
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -47,7 +49,7 @@ public class FnCommon {
         if (body != null) {
             bodyStr = body.toString();
         }
-
+        System.out.println(body);
         try {
             // Tạo một HttpRequest.Builder
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
@@ -215,7 +217,7 @@ public class FnCommon {
             byte[] signature = mac.doFinal(dataString.getBytes(StandardCharsets.UTF_8));
 
             // Convert the byte array to a Base64-encoded string
-            return Base64.getEncoder().encodeToString(signature);
+            return Hex.encodeHexString(signature);
         } catch (Exception e) {
             throw new RuntimeException("Error generating HMAC-SHA256 signature", e);
         }

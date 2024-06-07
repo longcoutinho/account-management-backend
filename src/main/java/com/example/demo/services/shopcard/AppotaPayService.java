@@ -49,7 +49,7 @@ public class AppotaPayService {
         String url = "https://api.appotapay.com/api/v1/service/shopcard/buy";
         String token = genAccessToken();
         HashMap<String, String> params = new LinkedHashMap<>();
-        params.put("partnerRefId", request.getTransactionId());
+        params.put("partnerRefId", request.getPartnerRefId());
         params.put("productCode", request.getProductCode());
         params.put("quantity", request.getQuantity());
         request.setSignature(FnCommon.generateHmacSha256Signature(params, secretKey));

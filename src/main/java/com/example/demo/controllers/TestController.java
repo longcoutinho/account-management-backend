@@ -24,7 +24,7 @@ public class TestController {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> test() throws ServletException, IOException {
         RequestBuyCardDTO request = new RequestBuyCardDTO();
-        request.setTransactionId("1");
+        request.setPartnerRefId("1");
         request.setQuantity("1");
         request.setProductCode("VTT10");
         return new ResponseEntity<>(appotaPayService.buyCard(request), HttpStatus.OK);

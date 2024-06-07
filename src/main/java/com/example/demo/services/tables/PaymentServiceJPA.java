@@ -23,7 +23,7 @@ public class PaymentServiceJPA {
 
     public PaymentEntity create(PaymentEntity paymentEntity) {
         switch (Constants.PaymentMethod.valueOf(paymentEntity.getMethod())) {
-            case EPOINT:
+            case EP:
                 return createEpointPayment(paymentEntity);        
             default:
                 return null;
