@@ -1,5 +1,6 @@
 package com.example.demo.services.tables;
 
+import com.example.demo.services.payment.StripeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +22,24 @@ public class PaymentServiceJPA {
     @Autowired
     UserServiceJPA userServiceJPA;
 
+    @Autowired
+    StripeService stripeService;
+
     public PaymentEntity create(PaymentEntity paymentEntity) {
         switch (Constants.PaymentMethod.valueOf(paymentEntity.getMethod())) {
             case EP:
-                return createEpointPayment(paymentEntity);        
+                return createEpointPayment(paymentEntity);
+            case STP:
+                return createStripePayment(paymentEntity);
             default:
                 return null;
         }
+    }
+
+    private PaymentEntity createStripePayment(PaymentEntity paymentEntity) {
+        PaymentEntity paymentEntity1 = stripeService.createPayment(paymentEntity);
+        paymentRepositoryJPA.save(paymentEntity1);
+        return paymentEntity1;
     }
 
     private PaymentEntity createEpointPayment(PaymentEntity paymentEntity) {

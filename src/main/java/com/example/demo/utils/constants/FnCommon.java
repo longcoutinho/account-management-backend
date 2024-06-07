@@ -75,7 +75,7 @@ public class FnCommon {
         }
     }
 
-    public static String doPostRequestFormData(String url, Map<String, String> params, String token) {
+    public static HttpResponse<String> doPostRequestFormData(String url, Map<String, String> params, String token) {
         String encodedFormData = encodeFormData(params);
         HttpRequest.BodyPublisher requestBody = HttpRequest.BodyPublishers.ofString(encodedFormData);
         HttpClient httpClient = HttpClient.newHttpClient();
@@ -83,12 +83,12 @@ public class FnCommon {
                 .uri(URI.create(url))
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Authorization", token)
                 .POST(requestBody)
                 .build();
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-            return response.body();
+            return response;
         } catch (Exception e) {
             e.printStackTrace();
         }

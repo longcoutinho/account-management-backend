@@ -34,6 +34,7 @@ public class Constants {
     }
 
     public enum PaymentMethod {
-        EP;
+        EP,
+        STP
     }
 }

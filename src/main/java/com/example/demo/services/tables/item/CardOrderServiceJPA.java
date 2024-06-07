@@ -76,9 +76,13 @@ public class CardOrderServiceJPA {
 
         // Order card
 
-        // Find card to order
+        // Fill card to order
 
         // Response
         return new CardInfo("CODE", "SERIAL", "VENDOR", 5000, new Date(System.currentTimeMillis()));
+    }
+
+    public Object getAll(String username) {
+        return cardOrderRepositoryJPA.findByCreateUser(username);
     }
 }
