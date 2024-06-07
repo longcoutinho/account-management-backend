@@ -19,6 +19,8 @@ import com.example.demo.utils.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class CardOrderServiceJPA {
     @Autowired
@@ -58,7 +60,7 @@ public class CardOrderServiceJPA {
         return response;
     }
 
-    public Object getInfo(RequestCardInfoDTO request) {
+    public CardInfo getInfo(RequestCardInfoDTO request) {
         // Check payment status
         CardOrderEntity cardOrderEntity = cardOrderRepositoryJPA.findById(request.getOrderId()).get();
         PaymentEntity paymentEntity = paymentServiceJPA.findById(cardOrderEntity.getPaymentId());
@@ -77,6 +79,6 @@ public class CardOrderServiceJPA {
         // Find card to order
 
         // Response
-        return null;
+        return new CardInfo("CODE", "SERIAL", "VENDOR", 5000, new Date(System.currentTimeMillis()));
     }
 }
