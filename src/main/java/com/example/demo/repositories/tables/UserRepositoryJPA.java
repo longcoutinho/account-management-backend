@@ -14,7 +14,7 @@ public interface UserRepositoryJPA extends JpaRepository<UserEntity, Long> {
     UserEntity findByUserId(String userId);
 
     @Query("select e from UserEntity e " +
-            "where (:username is null or e.username = :username) " +
+            "where e.role = 'USER' and (:username is null or e.username like '%' || :username || '%')" +
             "order by e.createDate desc")
     List<UserEntity> getAll(String username);
 

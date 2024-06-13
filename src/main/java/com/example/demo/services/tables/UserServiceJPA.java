@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class UserServiceJPA {
             user.setPassword(null);
             user.setRole(UserEntity.Role.USER.value);
             user.setLoginMethod(userDTO.getLoginMethod());
+            user.setCreateDate(new Date(System.currentTimeMillis()));
             userRepositoryJPA.save(user);
         }
         ResponseUserDTO responseUser = user.convertFromEntity();
@@ -84,9 +86,19 @@ public class UserServiceJPA {
                 return googleLogin(user);
             case TELEGRAM:
                 return telegramLogin(user);
+            case FACEBOOK:
+                return facebookLogin(user);
             default:
                 return directLogin(user);
         }
+    }
+
+    private Object facebookLogin(UserDTO user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getId());
+        userDTO.setLoginMethod(Constants.LoginMethod.FACEBOOK.name());
+        return createNewUserThirdApp(userDTO);
     }
 
     private Object googleLogin(UserDTO user) {
