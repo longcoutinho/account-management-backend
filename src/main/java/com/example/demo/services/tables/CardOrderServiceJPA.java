@@ -69,8 +69,10 @@ public class CardOrderServiceJPA {
         return response;
     }
 
-    public List<CardInfoResponse> getInfo(RequestCardInfoDTO request) throws Exception {
+    public List<CardInfoResponse> getInfo(RequestCardInfoDTO request, String username) throws Exception {
         CardOrderEntity cardOrderEntity = cardOrderRepositoryJPA.findById(request.getOrderId()).get();
+        if (!cardOrderEntity.getCreateUser().equals(username)) throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
+        if (!(cardOrderEntity.getStatus()).equals(CardOrderEntity.Status.PENDING.name())) throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
         try {
             List<CardInfoResponse> res = new LinkedList<>();
             /** CHECK PAYMENT STATUS **/
@@ -115,8 +117,6 @@ public class CardOrderServiceJPA {
                 CardInfoResponse cardInfoResponse = new CardInfoResponse();
                 cardInfoResponse.setCards(responseBuyCardDTO.getCards());
                 cardInfoResponse.setCardItemId(cardOrderDetailEntity.getCardOrderId());
-
-
                 res.add(cardInfoResponse);
             }
             cardOrderEntity.setStatus(CardOrderEntity.Status.SUCCESS.name());

@@ -45,6 +45,7 @@ public class CardOrderController {
      */
     @PostMapping(value = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getInfo(@RequestBody RequestCardInfoDTO request, HttpServletRequest servletRequest) throws Exception {
-        return new ResponseEntity<>(cardOrderServiceJPA.getInfo(request), HttpStatus.OK);
+        UserEntity userEntity = (UserEntity) servletRequest.getAttribute("userInfo");
+        return new ResponseEntity<>(cardOrderServiceJPA.getInfo(request, userEntity.getUsername()), HttpStatus.OK);
     }
 }
