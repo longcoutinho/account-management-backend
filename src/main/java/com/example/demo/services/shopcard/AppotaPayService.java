@@ -3,11 +3,19 @@ package com.example.demo.services.shopcard;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.dtos.RequestBuyCardDTO;
+import com.example.demo.dtos.payment.appotaPay.ResponseBuyCardDTO;
+import com.example.demo.services.decryption.RSADecryption;
 import com.example.demo.services.security.jwt.JwtTokenProvider;
+import com.example.demo.services.tables.item.CardInfo;
 import com.example.demo.utils.constants.FnCommon;
+import com.example.demo.utils.enums.ErrorApp;
+import com.example.demo.utils.exception.CustomException;
+import com.fasterxml.jackson.databind.*;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.net.http.HttpResponse;
@@ -45,16 +53,33 @@ public class AppotaPayService {
         return generateToken(header, payload, secretKey);
     }
 
-    public Object buyCard(RequestBuyCardDTO request) {
+    public ResponseBuyCardDTO buyCard(RequestBuyCardDTO request) {
         String url = "https://api.appotapay.com/api/v1/service/shopcard/buy";
         String token = genAccessToken();
+        System.out.println(token);
         HashMap<String, String> params = new LinkedHashMap<>();
         params.put("partnerRefId", request.getPartnerRefId());
         params.put("productCode", request.getProductCode());
         params.put("quantity", request.getQuantity());
         request.setSignature(FnCommon.generateHmacSha256Signature(params, secretKey));
-        HttpResponse<String> response = FnCommon.doPostRequest(url, token, null, request);
-        return response;
+        try {
+            HttpResponse<String> response = FnCommon.doPostRequest(url, token, null, request);
+            if (response.statusCode() != HttpStatus.OK.value()) {
+                throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
+            }
+//            String body = "{\"errorCode\":0,\"message\":\"Th\\u00e0nh c\\u00f4ng\",\"cards\":[{\"serial\":\"20000277202666\",\"code\":\"724889714164747\",\"value\":10000,\"vendor\":\"viettel\",\"expiry\":\"31-12-2024\"}],\"transaction\":{\"appotapayTransId\":\"01J04PGFAY3PGHJM116JVVGQHE\",\"amount\":9800,\"time\":\"12-06-2024 05:25:44\"}}";
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            ResponseBuyCardDTO responseBuyCardDTO = objectMapper.readValue(response.body(), ResponseBuyCardDTO.class);
+            for(CardInfo cardInfo: responseBuyCardDTO.getCards()) {
+                cardInfo.setCode(RSADecryption.decryptCard(cardInfo.getCode()));
+            }
+            return responseBuyCardDTO;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String generateToken(Map<String, Object> header, Map<String, Object> payload, String secretKey) {

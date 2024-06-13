@@ -11,7 +11,8 @@ public enum ErrorApp {
     ACCESS_DENIED("Access denied"),
     INSUFFICIENT_BALANCE("Insufficient balance"),
     LOGIN_FAILED("Login failed"),
-    INVALID_PAYMENT("Invalid payment");
+    INVALID_PAYMENT("Invalid payment"),
+    ORDER_CARD_FAILED("Order card fail");
 
     private final String description;
 

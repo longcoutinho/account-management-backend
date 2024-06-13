@@ -9,4 +9,5 @@ public class CreatePaymentDTO {
     String paymentCode;
     String username;
     Long price;
+    String orderId;
 }

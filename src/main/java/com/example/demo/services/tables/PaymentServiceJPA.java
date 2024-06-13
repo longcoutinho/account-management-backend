@@ -58,4 +58,8 @@ public class PaymentServiceJPA {
         // TODO Auto-generated method stub
         return paymentRepositoryJPA.findById(paymentId).get();
     }
+
+    public PaymentEntity findByOrderId(String orderId) {
+        return paymentRepositoryJPA.findByOrderId(orderId);
+    }
 }

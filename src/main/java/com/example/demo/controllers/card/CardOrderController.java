@@ -2,7 +2,8 @@ package com.example.demo.controllers.card;
 
 import com.example.demo.dtos.RequestOrderCardDTO;
 import com.example.demo.repositories.tables.entities.UserEntity;
-import com.example.demo.services.tables.item.CardOrderServiceJPA;
+import com.example.demo.services.tables.CardOrderServiceJPA;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class CardOrderController {
      * @param request - Thong tin mua the
      */
     @PostMapping(value = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getInfo(@RequestBody RequestCardInfoDTO request, HttpServletRequest servletRequest) {
+    public ResponseEntity<Object> getInfo(@RequestBody RequestCardInfoDTO request, HttpServletRequest servletRequest) throws Exception {
         return new ResponseEntity<>(cardOrderServiceJPA.getInfo(request), HttpStatus.OK);
     }
 }

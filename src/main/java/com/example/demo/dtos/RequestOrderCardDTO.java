@@ -16,4 +16,5 @@ public class RequestOrderCardDTO {
     List<CardOrderDTO> cardInfo;
     String paymentMethodCode;
     UserEntity userInfo;
+    Long totalPrice;
 }

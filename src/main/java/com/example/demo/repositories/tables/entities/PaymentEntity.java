@@ -36,12 +36,16 @@ public class PaymentEntity implements Serializable {
     @Column(name = "PRICE")
     Long price;
 
+    @Column(name = "ORDER_ID")
+    String orderId;
+
     public PaymentEntity(CreatePaymentDTO request) {
         this.status = Status.PENDING.name();
         this.createDate = new Date(System.currentTimeMillis());
         this.createUser = request.getUsername();
         this.price = request.getPrice();
         this.method = request.getPaymentCode();
+        this.orderId = request.getOrderId();
     }
 
     public enum Status {

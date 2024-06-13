@@ -1,24 +1,14 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dtos.saleorder.RequestProcessOrderDTO;
-import com.example.demo.dtos.saleorder.RequestCardDTO;
-import com.example.demo.repositories.tables.entities.UserEntity;
-import com.example.demo.services.tables.SaleOrderServiceJPA;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.demo.services.tables.CardOrderDetailServiceJPA;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/sale-order")
 public class SaleOrderController {
     @Autowired
-    SaleOrderServiceJPA saleOrderServiceJPA;
+    CardOrderDetailServiceJPA cardOrderDetailServiceJPA;
 
 //     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
 //     public ResponseEntity<Object> create(@RequestBody RequestCardDTO params, HttpServletRequest httpServletRequest) throws IOException {

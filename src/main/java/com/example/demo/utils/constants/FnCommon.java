@@ -5,6 +5,8 @@ import com.example.demo.repositories.tables.entities.UserEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Hex;
+import com.google.gson.Gson;
+
 
 
 import javax.crypto.Mac;
@@ -47,7 +49,8 @@ public class FnCommon {
         HttpClient client = HttpClient.newHttpClient();
         String bodyStr = "";
         if (body != null) {
-            bodyStr = body.toString();
+            Gson gson = new Gson();
+            bodyStr = gson.toJson(body);
         }
         System.out.println(body);
         try {
@@ -57,11 +60,6 @@ public class FnCommon {
                     .header("Content-Type", "application/json")
                     .header("X-APPOTAPAY-AUTH", "Bearer " + token)
                     .POST(HttpRequest.BodyPublishers.ofString(bodyStr));
-
-            // Thêm tham số vào request
-//            for (Map.Entry<String, String> entry : params.entrySet()) {
-//                requestBuilder.header(entry.getKey(), entry.getValue());
-//            }
 
             // Tạo và gửi request
             HttpRequest request = requestBuilder.build();
@@ -240,4 +238,5 @@ public class FnCommon {
 
         return parameterString.toString();
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.demo.repositories.tables.entities;
 
+import com.google.gson.Gson;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,11 +20,8 @@ public class CardOrderEntity implements Serializable {
     @Column(name = "ID")
     String id;
 
-    @Column(name = "PAYMENT_ID")
-    Long paymentId;
-
-    @Column(name = "CARD_ORDER_ID")
-    Long cardOrderId;
+    @Column(name = "REQUEST")
+    String request;
 
     @Column(name = "PRICE")
     Long price;
@@ -45,6 +43,9 @@ public class CardOrderEntity implements Serializable {
         this.createUser = request.getUserInfo().getUsername();
         this.createDate = new Date(System.currentTimeMillis());
         this.status = Status.PENDING.name();
+        this.price = request.getTotalPrice();
+        Gson gson = new Gson();
+        this.request = gson.toJson(request.getCardInfo());
     }
 
     public enum Status {
