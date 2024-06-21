@@ -8,4 +8,5 @@ import java.util.List;
 public class CardInfoResponse {
     List<CardInfo> cards;
     String cardItemId;
+    String cardName;
 }

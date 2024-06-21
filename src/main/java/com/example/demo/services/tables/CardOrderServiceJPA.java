@@ -43,6 +43,9 @@ public class CardOrderServiceJPA {
     @Autowired
     CardInfoServiceJPA cardInfoServiceJPA;
 
+    @Autowired
+    CardServiceJPA cardServiceJPA;
+
     public Object create(RequestOrderCardDTO request) {
         // Create card order
         CardOrderEntity order = new CardOrderEntity(request);
@@ -72,7 +75,7 @@ public class CardOrderServiceJPA {
     public List<CardInfoResponse> getInfo(RequestCardInfoDTO request, String username) throws Exception {
         CardOrderEntity cardOrderEntity = cardOrderRepositoryJPA.findById(request.getOrderId()).get();
         if (!cardOrderEntity.getCreateUser().equals(username)) throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
-        if (!(cardOrderEntity.getStatus()).equals(CardOrderEntity.Status.PENDING.name())) throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
+//        if (!(cardOrderEntity.getStatus()).equals(CardOrderEntity.Status.PENDING.name())) throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
         try {
             List<CardInfoResponse> res = new LinkedList<>();
             /** CHECK PAYMENT STATUS **/
@@ -133,5 +136,23 @@ public class CardOrderServiceJPA {
 
     public Object getAll(String username) {
         return cardOrderRepositoryJPA.findByCreateUser(username);
+    }
+
+    public List<CardInfoResponse> getDetail(String orderId, String username) {
+        List<CardInfoResponse> res = new LinkedList<>();
+        CardOrderEntity cardOrderEntity = cardOrderRepositoryJPA.findById(orderId).get();
+        if (!cardOrderEntity.getCreateUser().equals(username)) throw new CustomException(ErrorApp.ACCESS_DENIED);
+        List<CardOrderDetailEntity> list = cardOrderDetailServiceJPA.findByCardOrderId(cardOrderEntity.getId());
+        for(CardOrderDetailEntity cardOrderDetailEntity: list) {
+            List<CardInfoEntity> cardInfoEntities = cardInfoServiceJPA.findByOrderDetailId(cardOrderDetailEntity.getId());
+            CardInfoResponse cardInfoResponse = new CardInfoResponse();
+            cardInfoResponse.setCards(CardInfoEntity.covertToListDTO(cardInfoEntities));
+            cardInfoResponse.setCardItemId(cardOrderDetailEntity.getItemId().toString());
+            CardItemEntity cardItemEntity = cardItemServiceJPA.findById(cardOrderDetailEntity.getItemId());
+            CardEntity cardEntity = cardServiceJPA.findById(cardItemEntity.getCardId());
+            cardInfoResponse.setCardName(cardEntity.getName());
+            res.add(cardInfoResponse);
+        }
+        return res;
     }
 }

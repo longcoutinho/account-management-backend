@@ -12,7 +12,8 @@ public enum ErrorApp {
     INSUFFICIENT_BALANCE("Insufficient balance"),
     LOGIN_FAILED("Login failed"),
     INVALID_PAYMENT("Invalid payment"),
-    ORDER_CARD_FAILED("Order card fail");
+    ORDER_CARD_FAILED("Order card fail"),
+    FILE_NOT_EXIST("File not exist");
 
     private final String description;
 

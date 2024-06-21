@@ -21,4 +21,7 @@ public class FileEntity implements Serializable {
 
     @Column(name = "PATH")
     String path;
+
+    @Column(name = "URL")
+    String url;
 }

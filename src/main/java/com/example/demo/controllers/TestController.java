@@ -1,17 +1,12 @@
 package com.example.demo.controllers;
 
+import com.example.demo.controllers.card.RequestCardInfoDTO;
 import com.example.demo.dtos.RequestBuyCardDTO;
 import com.example.demo.repositories.tables.entities.PaymentEntity;
 import com.example.demo.services.payment.StripeService;
-import com.example.demo.services.payment.TripleAService;
-import com.example.demo.payment.VNPayPayment;
 import com.example.demo.services.shopcard.AppotaPayService;
-import com.example.demo.services.tables.item.CardOrderServiceJPA;
-import com.example.demo.services.topupgame.LordMobileService;
-import com.example.demo.services.topupgame.TopUpGameServiceJPA;
-import com.example.demo.services.tables.UserServiceJPA;
+import com.example.demo.services.tables.CardOrderServiceJPA;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.*;
@@ -31,12 +26,8 @@ public class TestController {
     CardOrderServiceJPA cardOrderServiceJPA;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> test() throws ServletException, IOException {
-        RequestBuyCardDTO request = new RequestBuyCardDTO();
-        request.setPartnerRefId("1");
-        request.setQuantity("1");
-        request.setProductCode("VTT10");
-        return new ResponseEntity<>(appotaPayService.buyCard(request), HttpStatus.OK);
+    public ResponseEntity<Object> test() throws Exception {
+        return new ResponseEntity<>(cardOrderServiceJPA.getInfo(new RequestCardInfoDTO("971fb522-6ba7-4325-a37b-8b20c9aa2b01"), "maiphg31"), HttpStatus.OK);
     }
 
     @GetMapping(value = "/stripe", produces = MediaType.APPLICATION_JSON_VALUE)

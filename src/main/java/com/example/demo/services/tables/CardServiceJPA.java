@@ -45,4 +45,8 @@ public class CardServiceJPA {
         CardEntity cardEntity = optionalCardEntity.get();
         cardRepositoryJPA.delete(cardEntity);
     }
+
+    public CardEntity findById(Long cardId) {
+        return cardRepositoryJPA.findById(cardId).get();
+    }
 }

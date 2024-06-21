@@ -41,6 +41,17 @@ public class CardOrderController {
 
     /**
      * Mua the
+     * @param - Thong tin mua the
+     */
+    @GetMapping(value = "/detail", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getDetail(RequestCardInfoDTO request, HttpServletRequest servletRequest) {
+        UserEntity userEntity = (UserEntity) servletRequest.getAttribute("userInfo");
+        String username = userEntity.getUsername();
+        return new ResponseEntity<>(cardOrderServiceJPA.getDetail(request.getOrderId(), username), HttpStatus.OK);
+    }
+
+    /**
+     * Mua the
      * @param request - Thong tin mua the
      */
     @PostMapping(value = "/info", produces = MediaType.APPLICATION_JSON_VALUE)

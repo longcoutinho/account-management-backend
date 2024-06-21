@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CardOrderRepositoryJPA extends JpaRepository<CardOrderEntity, String> {
-    @Query("select e from CardOrderEntity e where e.createUser = :username order by e.createDate desc")
+    @Query("select e from CardOrderEntity e where e.createUser = :username and e.status != 'PENDING'" +
+            "order by e.createDate desc")
     List<CardOrderEntity> findByCreateUser(String username);
 }
