@@ -54,6 +54,7 @@ public class ProductController {
     public ResponseEntity<Object> createImage(@RequestParam("imagesList") List<MultipartFile> imagesList,
                                               @PathVariable(value = "productId") Long productId,
                                          HttpServletRequest httpServletRequest) throws IOException {
+        if (!FnCommon.isAdmin(httpServletRequest)) throw new CustomException(ErrorApp.ACCESS_DENIED);
         UserEntity userEntity = (UserEntity) httpServletRequest.getAttribute("userInfo");
         productServiceJPA.saveImage(imagesList, productId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -66,6 +67,18 @@ public class ProductController {
     @GetMapping(value = "/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getDetail(@PathVariable(value = "productId") Long productId) {
         return new ResponseEntity<>(productServiceJPA.getDetail(productId), HttpStatus.OK);
+    }
+
+    /**
+     * Lay thong tin chi tiet san pham
+     * @return
+     */
+    @PostMapping(value = "remove/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> remove(@PathVariable(value = "productId") Long productId,
+                                         HttpServletRequest httpServletRequest) {
+        if (!FnCommon.isAdmin(httpServletRequest)) throw new CustomException(ErrorApp.ACCESS_DENIED);
+        productServiceJPA.removeById(productId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 //    /**

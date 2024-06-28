@@ -3,6 +3,7 @@ package com.example.demo.controllers.card;
 import com.example.demo.dtos.RequestOrderCardDTO;
 import com.example.demo.repositories.tables.entities.UserEntity;
 import com.example.demo.services.tables.CardOrderServiceJPA;
+import com.example.demo.utils.constants.FnCommon;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class CardOrderController {
     public ResponseEntity<Object> create(@RequestBody RequestOrderCardDTO request, HttpServletRequest servletRequest) {
         UserEntity userEntity = (UserEntity) servletRequest.getAttribute("userInfo");
         request.setUserInfo(userEntity);
+        request.setIp_address(FnCommon.getClientIpAddress(servletRequest));
         return new ResponseEntity<>(cardOrderServiceJPA.create(request), HttpStatus.OK);
     }
 
@@ -33,10 +35,10 @@ public class CardOrderController {
      * @param - Thong tin mua the
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getAll(HttpServletRequest servletRequest) {
+    public ResponseEntity<Object> getAll(HttpServletRequest servletRequest, RequestAllOrder request) {
         UserEntity userEntity = (UserEntity) servletRequest.getAttribute("userInfo");
-        String username = userEntity.getUsername();
-        return new ResponseEntity<>(cardOrderServiceJPA.getAll(username), HttpStatus.OK);
+        if (!FnCommon.isAdmin(servletRequest)) request.setUsername(userEntity.getUsername());
+        return new ResponseEntity<>(cardOrderServiceJPA.getAll(request), HttpStatus.OK);
     }
 
     /**
@@ -46,8 +48,7 @@ public class CardOrderController {
     @GetMapping(value = "/detail", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getDetail(RequestCardInfoDTO request, HttpServletRequest servletRequest) {
         UserEntity userEntity = (UserEntity) servletRequest.getAttribute("userInfo");
-        String username = userEntity.getUsername();
-        return new ResponseEntity<>(cardOrderServiceJPA.getDetail(request.getOrderId(), username), HttpStatus.OK);
+        return new ResponseEntity<>(cardOrderServiceJPA.getDetail(request.getOrderId(), userEntity), HttpStatus.OK);
     }
 
     /**

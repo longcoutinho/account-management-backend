@@ -1,6 +1,8 @@
 package com.example.demo.services.tables;
 
+import com.example.demo.controllers.card.RequestAllOrder;
 import com.example.demo.controllers.card.RequestCardInfoDTO;
+import com.example.demo.dtos.CountAllOrderDTO;
 import com.example.demo.dtos.RequestBuyCardDTO;
 import com.example.demo.dtos.RequestOrderCardDTO;
 import com.example.demo.dtos.card.CardOrderDTO;
@@ -12,10 +14,14 @@ import com.example.demo.services.tables.item.*;
 import com.example.demo.utils.constants.Constants;
 import com.example.demo.utils.enums.ErrorApp;
 import com.example.demo.utils.exception.CustomException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -75,7 +81,7 @@ public class CardOrderServiceJPA {
     public List<CardInfoResponse> getInfo(RequestCardInfoDTO request, String username) throws Exception {
         CardOrderEntity cardOrderEntity = cardOrderRepositoryJPA.findById(request.getOrderId()).get();
         if (!cardOrderEntity.getCreateUser().equals(username)) throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
-//        if (!(cardOrderEntity.getStatus()).equals(CardOrderEntity.Status.PENDING.name())) throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
+        if (!(cardOrderEntity.getStatus()).equals(CardOrderEntity.Status.PENDING.name())) throw new CustomException(ErrorApp.ORDER_CARD_FAILED);
         try {
             List<CardInfoResponse> res = new LinkedList<>();
             /** CHECK PAYMENT STATUS **/
@@ -134,14 +140,38 @@ public class CardOrderServiceJPA {
         }
     }
 
-    public Object getAll(String username) {
-        return cardOrderRepositoryJPA.findByCreateUser(username);
+    public ResponseAllOrder getAll(RequestAllOrder request) {
+        Long page = (request.getPage() == null) ? 0 : request.getPage();
+        Long pageSize = (request.getPageSize() == null) ? 10 : request.getPageSize();
+        Pageable pageable = PageRequest.of(Math.toIntExact(page), Math.toIntExact(pageSize));
+        List<Object> listData = cardOrderRepositoryJPA.findAllByRequest(request.getFromDate(), setEndOfDay(request.getToDate()),
+                request.getStatus(), request.getUsername(), request.getTransId(), pageable);
+        Long count = cardOrderRepositoryJPA.countTotalByRequest(request.getFromDate(), setEndOfDay(request.getToDate()),
+                request.getStatus(), request.getUsername(), request.getTransId());
+        Long toTalRevenue = cardOrderRepositoryJPA.countToTalRevenue(request.getFromDate(), setEndOfDay(request.getToDate()),
+                request.getStatus(), request.getUsername(), request.getTransId());
+        ResponseAllOrder response = new ResponseAllOrder();
+        response.setCount(count);
+        response.setTotalRevenue(toTalRevenue);
+        response.setListData(listData);
+        return response;
     }
 
-    public List<CardInfoResponse> getDetail(String orderId, String username) {
+    private static Date setEndOfDay(Date date) {
+        if (date == null) return null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTime();
+    }
+
+    public List<CardInfoResponse> getDetail(String orderId, UserEntity user) {
         List<CardInfoResponse> res = new LinkedList<>();
         CardOrderEntity cardOrderEntity = cardOrderRepositoryJPA.findById(orderId).get();
-        if (!cardOrderEntity.getCreateUser().equals(username)) throw new CustomException(ErrorApp.ACCESS_DENIED);
+        if (!cardOrderEntity.getCreateUser().equals(user.getUsername()) && user.getRole().equals("USER")) throw new CustomException(ErrorApp.ACCESS_DENIED);
         List<CardOrderDetailEntity> list = cardOrderDetailServiceJPA.findByCardOrderId(cardOrderEntity.getId());
         for(CardOrderDetailEntity cardOrderDetailEntity: list) {
             List<CardInfoEntity> cardInfoEntities = cardInfoServiceJPA.findByOrderDetailId(cardOrderDetailEntity.getId());

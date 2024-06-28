@@ -17,4 +17,5 @@ public class RequestOrderCardDTO {
     String paymentMethodCode;
     UserEntity userInfo;
     Long totalPrice;
+    String ip_address;
 }

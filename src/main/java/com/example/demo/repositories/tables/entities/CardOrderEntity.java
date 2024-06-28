@@ -1,5 +1,6 @@
 package com.example.demo.repositories.tables.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.Gson;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class CardOrderEntity implements Serializable {
     String createUser;
 
     @Column(name = "CREATE_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", locale = "vi_VN", timezone = "Asia/Ho_Chi_Minh")
     Date createDate;
 
     @Column(name = "STATUS")
@@ -37,6 +39,9 @@ public class CardOrderEntity implements Serializable {
 
     @Column(name = "MSG_ERROR")
     Long msgError;
+
+    @Column(name = "IP")
+    String ip;
 
     public CardOrderEntity(RequestOrderCardDTO request) {
         this.id = String.valueOf(UUID.randomUUID());
@@ -46,6 +51,7 @@ public class CardOrderEntity implements Serializable {
         this.price = request.getTotalPrice();
         Gson gson = new Gson();
         this.request = gson.toJson(request.getCardInfo());
+        this.ip = request.getIp_address();
     }
 
     public enum Status {

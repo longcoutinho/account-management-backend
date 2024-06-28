@@ -45,9 +45,11 @@ public class ProductServiceJPA {
         List<ProductResponseDTO> res = new LinkedList<>();
         List<ProductEntity> productEntityList = productRepositoryJPA.getAll();
         for(ProductEntity product: productEntityList) {
-            FileEntity file = fileServiceJPA.findById(product.getImageId());
             String url = "";
-            if (file != null) url = file.getUrl();
+            if (product.getImageId() !=null) {
+                FileEntity file = fileServiceJPA.findById(product.getImageId());
+                if (file != null) url = file.getUrl();
+            }
             res.add(new ProductResponseDTO(product.getName(), product.getId(), url, product.getTypeId()));
         }
         return res;
@@ -134,5 +136,9 @@ public class ProductServiceJPA {
         ProductDetailEntity productDetailEntity = productDetailServiceJPA.findByProductId(productId);
         productDetailEntity.setImageList(myString);
         productDetailServiceJPA.save(productDetailEntity);
+    }
+
+    public void removeById(Long productId) {
+        productRepositoryJPA.deleteById(productId);
     }
 }
