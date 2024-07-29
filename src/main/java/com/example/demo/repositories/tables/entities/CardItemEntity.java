@@ -16,12 +16,12 @@ public class CardItemEntity implements Serializable {
     @Column(name = "ID")
     Long id;
 
-    @Column(name = "PRICE")
-    Long price;
-
     @Column(name = "CARD_ID")
     Long cardId;
 
     @Column(name = "CODE")
     String code;
+
+    @Column(name = "NAME")
+    String name;
 }

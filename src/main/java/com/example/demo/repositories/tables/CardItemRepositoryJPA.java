@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 public interface CardItemRepositoryJPA extends JpaRepository<CardItemEntity, Long> {
-    @Query("select e from CardItemEntity e where e.cardId = :id order by e.price")
+    @Query("select e from CardItemEntity e join CardFeeEntity c on e.id = c.cardItemId where e.cardId = :id order by c.price")
     List<CardItemEntity> findByCardId(Long id);
 
-    @Query("select e from CardItemEntity e order by e.price")
+    @Query("select e from CardItemEntity e join CardFeeEntity c on e.id = c.cardItemId order by c.price")
     List<CardItemEntity> getAll();
 }

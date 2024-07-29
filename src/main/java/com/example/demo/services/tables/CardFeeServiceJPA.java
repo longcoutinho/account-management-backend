@@ -7,6 +7,8 @@ import com.example.demo.repositories.tables.entities.CardItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CardFeeServiceJPA {
     @Autowired
@@ -14,5 +16,9 @@ public class CardFeeServiceJPA {
 
     public CardFeeEntity findByCardItemIdAndPaymentMethodCode(Long cardId, String paymentMethodCode) {
         return cardFeeRepositoryJPA.findByCardItemIdAndPaymentMethodCode(cardId, paymentMethodCode);
+    }
+
+    public List<CardFeeEntity> findByCardItemId(Long id) {
+        return cardFeeRepositoryJPA.findByCardItemId(id);
     }
 }
