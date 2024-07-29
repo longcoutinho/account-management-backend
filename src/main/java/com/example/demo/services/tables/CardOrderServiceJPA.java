@@ -52,19 +52,22 @@ public class CardOrderServiceJPA {
     @Autowired
     CardServiceJPA cardServiceJPA;
 
+    @Autowired
+    CardFeeServiceJPA cardFeeServiceJPA;
+
     public Object create(RequestOrderCardDTO request) {
         // Create card order
         CardOrderEntity order = new CardOrderEntity(request);
 
-        // Do payment
         // Tinh lai gia tien
-        Long totalPrice = 0L;
+        float totalPrice = 0;
         for (CardOrderDTO card : request.getCardInfo()) {
-            CardItemEntity cardItemEntity = cardItemServiceJPA.findById(card.getCardId());
-            totalPrice += cardItemEntity.getPrice() * card.getQuantity();
+            CardFeeEntity cardFeeEntity = cardFeeServiceJPA.findByCardItemIdAndPaymentMethodCode(card.getCardId(), request.getPaymentMethodCode());
+            totalPrice += cardFeeEntity.getPrice() * card.getQuantity();
         }
         order.setPrice(totalPrice);
         cardOrderRepositoryJPA.save(order);
+
         // Create payment
         CreatePaymentDTO requestPayment = new CreatePaymentDTO(request.getPaymentMethodCode(),
                 request.getUserInfo().getUsername(), totalPrice, order.getId());
@@ -135,6 +138,7 @@ public class CardOrderServiceJPA {
         }
         catch (Exception e) {
             cardOrderEntity.setStatus(CardOrderEntity.Status.FAILED.name());
+            cardOrderEntity.setMsgError(e.getMessage());
             cardOrderRepositoryJPA.save(cardOrderEntity);
             throw new Exception(e.getMessage());
         }

@@ -25,7 +25,7 @@ public class CardOrderEntity implements Serializable {
     String request;
 
     @Column(name = "PRICE")
-    Long price;
+    float price;
 
     @Column(name = "CREATE_USER")
     String createUser;
@@ -38,7 +38,7 @@ public class CardOrderEntity implements Serializable {
     String status;
 
     @Column(name = "MSG_ERROR")
-    Long msgError;
+    String msgError;
 
     @Column(name = "IP")
     String ip;

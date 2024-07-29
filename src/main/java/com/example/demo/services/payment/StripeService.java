@@ -18,7 +18,7 @@ public class StripeService {
     public PaymentEntity createPayment(PaymentEntity paymentEntity) {
         String url = "https://api.stripe.com/v1/payment_links";
         Map<String, String> params = new HashMap<>();
-        params.put("line_items[0][price]", paymentEntity.getPrice().toString());
+        params.put("line_items[0][price]", String.valueOf(paymentEntity.getPrice()));
         params.put("line_items[0][quantity]", "1");
         String username = "sk_test_4eC39HqLyjWDarjtT1zdp7dc";
         String password = "";

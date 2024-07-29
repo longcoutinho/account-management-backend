@@ -47,7 +47,7 @@ public class PaymentServiceJPA {
         if (user.getBalance() < paymentEntity.getPrice()) {
             throw new CustomException(ErrorApp.INSUFFICIENT_BALANCE);
         }
-        user.setBalance(user.getBalance() - paymentEntity.getPrice());
+        user.setBalance(user.getBalance() - (long)paymentEntity.getPrice());
         userServiceJPA.save(user);
         paymentEntity.setStatus(PaymentEntity.Status.SUCCESS.name());
         paymentRepositoryJPA.save(paymentEntity);

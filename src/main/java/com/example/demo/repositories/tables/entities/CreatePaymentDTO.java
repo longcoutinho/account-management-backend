@@ -8,6 +8,6 @@ import lombok.Data;
 public class CreatePaymentDTO {
     String paymentCode;
     String username;
-    Long price;
+    float price;
     String orderId;
 }

@@ -34,7 +34,7 @@ public class PaymentEntity implements Serializable {
     String createUser;
 
     @Column(name = "PRICE")
-    Long price;
+    float price;
 
     @Column(name = "ORDER_ID")
     String orderId;

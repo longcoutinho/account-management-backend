@@ -37,9 +37,4 @@ public class TestController {
         System.out.println(stripeService.createPayment(paymentEntity));
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @GetMapping(value = "/history", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getHistory() {
-        return new ResponseEntity<>(cardOrderServiceJPA.getAll("maiphg31"), HttpStatus.OK);
-    }
 }
