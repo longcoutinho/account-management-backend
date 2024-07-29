@@ -39,6 +39,9 @@ public class PaymentEntity implements Serializable {
     @Column(name = "ORDER_ID")
     String orderId;
 
+    @Column(name = "ORDER_EXTERNAL_ID")
+    String orderExternalId;
+
     public PaymentEntity(CreatePaymentDTO request) {
         this.status = Status.PENDING.name();
         this.createDate = new Date(System.currentTimeMillis());

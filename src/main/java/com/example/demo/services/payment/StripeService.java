@@ -30,10 +30,29 @@ public class StripeService {
         try {
             StripeCreatePaymentRes res = objectMapper.readValue(response.body(), StripeCreatePaymentRes.class);
             paymentEntity.setUrl(res.getUrl());
+            paymentEntity.setOrderExternalId(res.getId());
         }
         catch (Exception e) {
             e.printStackTrace();
         }
         return paymentEntity;
+    }
+
+    public boolean checkPaymentSuccess(PaymentEntity paymentEntity) {
+        String url = "https://api.stripe.com/v1/payment_links/" + paymentEntity.getOrderExternalId();
+        String username = "sk_test_4eC39HqLyjWDarjtT1zdp7dc";
+        String password = "";
+        String credentials = username + ":" + password;
+        String authHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
+        String response = FnCommon.doGetRequest(url, authHeader, null);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            StripePaymentStatus res = objectMapper.readValue(response, StripePaymentStatus.class);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 }

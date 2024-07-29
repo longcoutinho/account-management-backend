@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class StripeCreatePaymentRes {
     String url;
+    String id;
 }

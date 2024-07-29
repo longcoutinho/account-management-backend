@@ -18,4 +18,9 @@ public class ItemController {
         Object result = cardItemServiceJPA.getItemByCardId(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getById(@PathVariable(value = "id") Long id) {
+        return new ResponseEntity<>(cardItemServiceJPA.getItemById(id), HttpStatus.OK);
+    }
 }

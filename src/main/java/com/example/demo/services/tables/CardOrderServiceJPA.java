@@ -9,6 +9,7 @@ import com.example.demo.dtos.card.CardOrderDTO;
 import com.example.demo.dtos.payment.appotaPay.ResponseBuyCardDTO;
 import com.example.demo.repositories.tables.CardOrderRepositoryJPA;
 import com.example.demo.repositories.tables.entities.*;
+import com.example.demo.services.payment.StripeService;
 import com.example.demo.services.shopcard.AppotaPayService;
 import com.example.demo.services.tables.item.*;
 import com.example.demo.utils.constants.Constants;
@@ -55,6 +56,9 @@ public class CardOrderServiceJPA {
     @Autowired
     CardFeeServiceJPA cardFeeServiceJPA;
 
+    @Autowired
+    StripeService stripeService;
+
     public Object create(RequestOrderCardDTO request) {
         // Create card order
         CardOrderEntity order = new CardOrderEntity(request);
@@ -92,6 +96,11 @@ public class CardOrderServiceJPA {
             switch (Constants.PaymentMethod.valueOf(paymentEntity.getMethod())) {
                 case EP:
                     if (!paymentEntity.getStatus().equals(PaymentEntity.Status.SUCCESS.name())) {
+                        throw new CustomException(ErrorApp.INVALID_PAYMENT);
+                    }
+                    break;
+                case STP:
+                    if (!stripeService.checkPaymentSuccess(paymentEntity)) {
                         throw new CustomException(ErrorApp.INVALID_PAYMENT);
                     }
                     break;
